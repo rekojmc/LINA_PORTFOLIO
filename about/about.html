@@ -65,7 +65,7 @@
 		const gallery = document.getElementById('about-gallery');
 
 		try {
-			const response = await fetch('/images/about/about-manifest.json');
+			const response = await fetch('../images/about/about-manifest.json');
 			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 			
 			const files = await response.json();

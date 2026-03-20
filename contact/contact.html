@@ -64,40 +64,59 @@
 			// 2. FORM SUBMISSION: Handles translation of UI feedback states
 			document.getElementById('lina-contact-form').addEventListener('submit', async function(e) {
 				e.preventDefault();
+				
 				const btn = document.getElementById('submit-btn');
 				const feedback = document.getElementById('form-feedback');
 				const lang = localStorage.getItem('preferredLang') || 'en';
 
-				// Fetch translation strings for the current state
-				const responseTrans = await fetch('/translations.json');
-				const trans = await responseTrans.json();
+				// 1. Fetch translation strings (Ensures the messages match the current language)
+				let trans;
+				try {
+					const responseTrans = await fetch('/translations.json');
+					const allTrans = await responseTrans.json();
+					trans = allTrans[lang];
+				} catch (err) {
+					console.error("Translation fetch failed", err);
+					// Minimal fallback if JSON fails
+					trans = { form_sending: "Sending...", form_success: "Sent!", form_error: "Error" };
+				}
 
-				const formData = new FormData(this);
-				const payload = Object.fromEntries(formData.entries());
-
+				// 2. Prepare the UI state
 				btn.disabled = true;
-				btn.textContent = trans[lang]['form_sending']; // e.g. "ENVIANDO..."
+				btn.textContent = trans['form_sending']; 
+				feedback.textContent = ""; // Clear previous messages
+
+				// 3. Prepare Payload (Optimized for Google Apps Script e.parameter)
+				const formData = new FormData(this);
+				// Add the current language to the payload so Lina knows which language the fan was using
+				formData.append('browser_language', lang); 
 
 				try {
-					const response = await fetch('https://your-private-api.com/send-mail', {
+					// REPLACE THIS URL with your Google Web App URL from the deployment step
+					const googleScriptUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+					const response = await fetch(googleScriptUrl, {
 						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify(payload)
+						body: formData, // Sending raw FormData is the most reliable path for Google Script
+						mode: 'no-cors' // Google Script requires no-cors for a direct POST from a static site
 					});
 
-					if (response.ok) {
-						feedback.style.color = "#d4af37"; 
-						feedback.textContent = trans[lang]['form_success'];
-						this.reset();
-					} else {
-						throw new Error();
-					}
+					// 4. Success Handling
+					// Note: With 'no-cors', we can't always read the response body, 
+					// but if the fetch doesn't throw, the data hit the script.
+					feedback.style.color = "#d4af37"; // Lina's gold accent
+					feedback.textContent = trans['form_success'];
+					this.reset(); // Clear the form fields
+
 				} catch (err) {
-					feedback.style.color = "#ff6b6b";
-					feedback.textContent = trans[lang]['form_error'];
+					// 5. Error Handling
+					console.error("Form Submission Error:", err);
+					feedback.style.color = "#ff6b6b"; // Soft error red
+					feedback.textContent = trans['form_error'];
 				} finally {
+					// 6. Reset Button State
 					btn.disabled = false;
-					btn.textContent = trans[lang]['form_submit'];
+					btn.textContent = trans['form_submit'];
 				}
 			});
 

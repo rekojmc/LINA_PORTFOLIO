@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
             <nav class="glass-nav">
                 <div class="nav-name">Lina Hernandez</div>
                 <div class="nav-links">
-                    <a href="/index.html#gallery" data-i18n="nav_portfolio">Portfolio</a>
-                    <a href="/about/about.html" data-i18n="nav_about">About Lina</a>
-                    <a href="/contact/contact.html" data-i18n="nav_contact">Contact</a>
+                    <a href="index.html#gallery" data-i18n="nav_portfolio">Portfolio</a>
+                    <a href="about/about.html" data-i18n="nav_about">About Lina</a>
+                    <a href="contact/contact.html" data-i18n="nav_contact">Contact</a>
                     
                     <span class="lang-switcher">
                         <button onclick="toggleLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
@@ -38,9 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
                 </div>
                 <nav class="footer-nav">
-                    <a href="/index.html" data-i18n="nav_portfolio">Home</a>
-                    <a href="/about/about.html" data-i18n="nav_about">About</a>
-                    <a href="/contact/contact.html" data-i18n="nav_contact">Contact</a>
+                    <a href="index.html" data-i18n="nav_portfolio">Home</a>
+                    <a href="about/about.html" data-i18n="nav_about">About</a>
+                    <a href="contact/contact.html" data-i18n="nav_contact">Contact</a>
                 </nav>
                 <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights">All rights reserved.</span></p>
             </footer>
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function updatePageText(lang) {
     try {
-        const response = await fetch('/translations.json');
+        const response = await fetch('translations.json');
         const translations = await response.json();
         const data = translations[lang];
 

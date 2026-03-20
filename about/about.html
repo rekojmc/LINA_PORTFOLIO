@@ -143,50 +143,48 @@
 				document.getElementById('lightbox-content-container').innerHTML = '';
 			}
 			
-async function loadBio() {
-    const bioContainer = document.getElementById('bio-content');
-    if (!bioContainer) return;
+	async function loadBio() {
+  		const bioContainer = document.getElementById('bio-content');
+   	 	if (!bioContainer) return;
 
-    // 1. Context Detection
-    const lang = localStorage.getItem('preferredLang') || 'es';
-    const isSubfolder = window.location.pathname.includes('/about/') || 
-                       window.location.pathname.includes('/contact/');
-    const basePath = isSubfolder ? '../' : '';
+  	  	// 1. Context Detection
+   	 	const lang = localStorage.getItem('preferredLang') || 'es';
+    	const isSubfolder = window.location.pathname.includes('/about/') || window.location.pathname.includes('/contact/');
+    	const basePath = isSubfolder ? '../' : '';
 
-    try {
-        // 2. Content Fetch (with Cache Buster)
-        const response = await fetch(`bio-${lang}.txt?v=${Date.now()}`);
+    	try {
+        	// 2. Content Fetch (with Cache Buster)
+        	const response = await fetch(`bio-${lang}.txt?v=${Date.now()}`);
         
-        if (!response.ok) throw new Error(`Status: ${response.status}`);
+        	if (!response.ok) throw new Error(`Status: ${response.status}`);
 
-        const text = await response.text();
-        bioContainer.innerText = text;
+        	const text = await response.text();
+        	bioContainer.innerText = text;
 
-    } catch (err) {
-        console.error("Bio Loader Error:", err);
+    	} catch (err) {
+        	console.error("Bio Loader Error:", err);
         
-        // 3. Graceful Localized Fallback
-        try {
-            const res = await fetch(`${basePath}translations.json`);
-            const allTrans = await res.json();
+        	// 3. Graceful Localized Fallback
+        	try {
+            	const res = await fetch(`${basePath}translations.json`);
+            	const allTrans = await res.json();
             
-            bioContainer.innerText = allTrans[lang]?.['bio_fallback'] || 
-                                    (lang === 'es' ? "Cargando..." : "Loading...");
-        } catch (fallbackErr) {
-            // 4. Absolute Safety Net
-            bioContainer.innerText = lang === 'es' ? "Próximamente..." : "Coming soon...";
-        }
-    }
-}
+            	bioContainer.innerText = allTrans[lang]?.['bio_fallback'] || (lang === 'es' ? "Cargando..." : "Loading...");
+        	} catch (fallbackErr) {
+            	// 4. Absolute Safety Net
+            	bioContainer.innerText = lang === 'es' ? "Próximamente..." : "Coming soon...";
+        	}
+    	}
+	}
 
-			// Initialize content
-			loadBio().catch(err => console.error("Bio failed but moving on...", err));
-			loadAboutGallery().catch(err => console.error("Gallery failed but moving on...", err));
-
-			// Listen for language changes to reload the bio file
-			window.addEventListener('languageChanged', () => {
-				loadBio();
-			});
+	// Initialize content
+	loadBio().catch(err => console.error("Bio failed but moving on...", err));
+	loadAboutGallery().catch(err => console.error("Gallery failed but moving on...", err));
+	window.addEventListener('languageChanged', loadBio);
+	// Listen for language changes to reload the bio file
+	window.addEventListener('languageChanged', () => {
+		loadBio();
+	});
 
 			// 2. THE "START BUTTON" (Place this at the very end)
    // document.addEventListener("DOMContentLoaded", () => {

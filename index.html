@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title data-i18n="site_title">Lina Hernandez | Official</title>
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Mr+De+Haviland&display=swap" rel="stylesheet">
+		
+		<link rel="icon" type="image/png" href="/images/icons/lina-96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="/images/icons/lina-favicon.svg" />
+		<link rel="shortcut icon" href="/images/icons/lina-favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/icons/lina-apple.png" />
+		<meta name="apple-mobile-web-app-title" content="Lina Hernandez" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+		<link rel="stylesheet" href="/style.css">
+		
+        <script src="/components.js" defer></script>
+	</head>
+	<body>
+
+		<header class="hero-header">
+			<div class="hero-overlay">
+				<h1 class="main-title" data-i18n="hero_title">Lina Hernandez</h1>
+                <h2 class="main-subheading" data-i18n="hero_subtitle">MODELO & CREADORA DE CONTENIDO</h2>
+				<nav class="hero-nav">
+					<a href="#gallery" data-i18n="nav_portfolio">Portfolio</a>&emsp;
+					<a href="/about/about.html" data-i18n="nav_about">About Lina</a>&emsp;
+					<a href="/contact/contact.html" data-i18n="nav_contact">Contact</a>&emsp;
+				</nav>
+			</div>
+		</header>
+
+		<main class="gallery-wrapper" id="gallery">
+			<div id="portfolio-gallery" class="masonry-grid">
+				<div id="gallery-loader" class="gallery-loader">
+					<div class="spinner"></div>
+					<p data-i18n="loading_text">Curating Collection...</p>
+				</div>
+			</div>
+		</main>
+
+		<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+			<span class="close-lightbox">&times;</span>
+			<div id="lightbox-content-container"></div>
+		</div>
+
+		<div id="global-footer"></div>
+
+		<script>
+			const gallery = document.getElementById('portfolio-gallery');
+
+async function loadDynamicGallery() {
+    const loader = document.getElementById('gallery-loader');
+    
+    // FAIL-SAFE: If anything hangs, hide the loader after 5 seconds
+    const failSafe = setTimeout(() => {
+        if (loader) loader.classList.add('loader-hidden');
+    }, 5000);
+
+    try {
+        const response = await fetch('/images/portfolio/portfolio-manifest.json');
+        let files = await response.json();
+
+        // Shuffle logic (Fisher-Yates)
+        for (let i = files.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [files[i], files[j]] = [files[j], files[i]];
+        }
+
+   files.forEach((fileName, index) => {
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    
+    if (index % 5 === 0) item.classList.add('tall');
+    if (index % 8 === 0) item.classList.add('wide');
+
+    const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
+    const filePath = `/images/portfolio/${fileName}`;
+
+    if (isVideo) {
+        // We inject the video AND the play icon div
+        item.innerHTML = `
+            <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
+            <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
+        `;
+        const video = item.querySelector('video');
+
+        item.onmouseenter = () => video.play().catch(() => {});
+        item.onmouseleave = () => {
+            video.pause();
+            video.currentTime = 0;
+        };
+    } else {
+        const img = document.createElement('img');
+        img.src = filePath;
+        img.loading = "lazy";
+        item.appendChild(img);
+    }
+
+    // CLICK TO OPEN (Fixes your "click not working" issue)
+    item.onclick = () => openLightbox(filePath, isVideo);
+
+    gallery.appendChild(item);
+});
+
+        // SUCCESS: Remove the loader and clear the failsafe
+        clearTimeout(failSafe);
+        if (loader) loader.classList.add('loader-hidden');
+
+    } catch (error) {
+        console.error("Gallery failed:", error);
+        // ERROR: Hide loader even on failure so page isn't broken
+        if (loader) loader.classList.add('loader-hidden');
+    }
+}
+			function openLightbox(src, isVideo) {
+				const lb = document.getElementById('lightbox');
+				const container = document.getElementById('lightbox-content-container');
+				container.innerHTML = ''; 
+
+				if (isVideo) {
+					const video = document.createElement('video');
+					video.src = src;
+					video.controls = true;
+					video.autoplay = true;
+					video.style.maxWidth = '90%';
+					container.appendChild(video);
+				} else {
+					const img = document.createElement('img');
+					img.src = src;
+					img.style.maxWidth = '90%';
+					container.appendChild(img);
+				}
+				lb.classList.add('active');
+			}
+
+			function closeLightbox() {
+				document.getElementById('lightbox').classList.remove('active');
+                document.getElementById('lightbox-content-container').innerHTML = '';
+			}
+
+			loadDynamicGallery();
+		</script>
+	</body>
+</html>

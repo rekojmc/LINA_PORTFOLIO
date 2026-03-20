@@ -1,0 +1,47 @@
+{
+  "en": {
+    "site_title": "Lina Hernandez | Official",
+    "site_title_about": "About | Lina Hernandez",
+    "site_title_contact": "Contact | Lina Hernandez",
+    "hero_title": "Lina Hernandez",
+    "hero_subtitle": "Model & Content Creator",
+    "nav_portfolio": "Portfolio",
+    "nav_about": "About Lina",
+    "nav_contact": "Contact",
+	"loading_text": "Curating Collection...",
+    "about_heading": "Behind the Lens",
+    "sign_off": "With much love,",
+    "copyright_rights": "All rights reserved.",
+    "form_name": "YOUR NAME",
+    "form_email": "YOUR EMAIL ADDRESS",
+    "form_reason": "REASON",
+    "form_message": "YOUR MESSAGE",
+    "form_submit": "SEND MESSAGE",
+    "form_sending": "SENDING...",
+    "form_success": "Success! Lina will be in touch soon.",
+    "form_error": "Oops! Something went wrong. Please try again."
+},
+
+  "es": {
+    "site_title": "Lina Hernández | Oficial",
+    "site_title_about": "Sobre | Lina Hernández",
+    "site_title_contact": "Contacto | Lina Hernández",
+    "hero_title": "Lina Hernández",
+    "hero_subtitle": "Model & Creadora de Contenido",
+    "nav_portfolio": "Portafolio",
+    "nav_about": "Sobre Lina",
+    "nav_contact": "Contacto",
+	"loading_text": "Curando Colección...",
+    "about_heading": "Detrás del Lente",
+    "sign_off": "Con mucho amor,",
+    "copyright_rights": "Todos los derechos reservados.",
+    "form_name": "TU NOMBRE",
+    "form_email": "TU CORREO ELECTRÓNICO",
+    "form_reason": "MOTIVO",
+    "form_message": "TU MENSAJE",
+    "form_submit": "ENVIAR MENSAJE",
+    "form_sending": "ENVIANDO...",
+    "form_success": "¡Éxito! Lina se pondrá en contacto pronto.",
+    "form_error": "¡Ups! Algo salió mal. Por favor intenta de nuevo."
+  }
+}

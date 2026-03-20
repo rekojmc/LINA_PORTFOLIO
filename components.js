@@ -80,16 +80,22 @@ if (footerPlaceholder) {
 // --- TRANSLATION CORE LOGIC ---
 
 async function updatePageText(lang) {
+    // 1. SMART PATH DETECTION
+    const path = window.location.pathname;
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
+    const basePath = isSubfolder ? '../' : '';
+
     try {
-        const response = await fetch('/translations.json');
+        // 2. FETCH WITH DYNAMIC BASE PATH
+        // Removed the leading slash so it's relative to basePath
+        const response = await fetch(`${basePath}translations.json`);
         const translations = await response.json();
         const data = translations[lang];
 
-        // Update all standard text elements tagged with data-i18n
+        // 3. UPDATE ELEMENTS
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (data[key]) {
-                // If it's an input or textarea, update the placeholder
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                     el.placeholder = data[key];
                 } else {
@@ -98,20 +104,19 @@ async function updatePageText(lang) {
             }
         });
 
-        // Update Document Title (Browser Tab)
+        // 4. UPDATE TITLE
         if (data['site_title']) {
             document.title = data['site_title'];
         }
 
-        // Visual Feedback: Bold the active language button
+        // 5. VISUAL FEEDBACK & PERSISTENCE
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.getElementById(`btn-${lang}`);
         if (activeBtn) activeBtn.classList.add('active');
 
-        // Persist the choice
         localStorage.setItem('preferredLang', lang);
 
-        // Notify specific pages to reload their .txt files (Bio/Contact Intro)
+        // 6. NOTIFY OTHER SCRIPTS (Bio/Intro)
         window.dispatchEvent(new Event('languageChanged'));
 
     } catch (err) {

@@ -1,0 +1,33 @@
+name: Generate Image Manifests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'images/**' # Only runs when files in the images folder change
+
+permissions:
+  contents: write # Important: Gives the action permission to save the JSON back to your repo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/checkout@v4
+        with:
+          node-version: '20'
+
+      - name: Run Manifest Script
+        run: node generate-manifest.js
+
+      - name: Commit and Push Manifests
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Automated Manifest Update [skip ci]"
+          file_pattern: 'images/**/*.json'

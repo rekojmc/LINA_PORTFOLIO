@@ -26,7 +26,7 @@
 
 		<main class="contact-hero-overlay">
 			<div class="contact-glass-card">
-				<h1 class="contact-heading" data-i18n="nav_contact">Contact Lina</h1>
+				<h1 class="contact-heading" data-i18n="contact_heading">Contact Lina</h1>
 				
 				<p id="contact-intro-content" class="contact-intro"></p>
 
@@ -94,7 +94,7 @@
 
 				try {
 					// REPLACE THIS URL with your Google Web App URL from the deployment step
-            		const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzdHluogJGY4VSTZW2G6ro80LjWImIvOGOBZaQB0cZs3wQEvo8w8PJPZtgfCWz-mSBF/exec';
+            		const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbxXPUZHXsomyIa0ptKcPbApkjW1eW0htgPxE3L6WRi1jycqDius8GYKRu4n_HQ7_Sg/exec';
 
 					const response = await fetch(googleScriptUrl, {
 						method: 'POST',
@@ -105,9 +105,7 @@
 					// 4. Success Handling
 					// Note: With 'no-cors', we can't always read the response body, 
 					// but if the fetch doesn't throw, the data hit the script.
-					feedback.style.color = "#d4af37"; // Lina's gold accent
-					feedback.textContent = trans['form_success'];
-					this.reset(); // Clear the form fields
+					window.location.href = 'thankyou.html';
 
 				} catch (err) {
 					// 5. Error Handling

@@ -8,10 +8,11 @@
     "nav_portfolio": "Portfolio",
     "nav_about": "About Lina",
     "nav_contact": "Contact",
-	"loading_text": "Curating Collection...",
+	  "loading_text": "Curating Collection...",
     "about_heading": "Behind the Lens",
     "sign_off": "With much love,",
     "copyright_rights": "All rights reserved.",
+    "contact_heading": "Contact Lina",
     "form_name": "YOUR NAME",
     "form_email": "YOUR EMAIL ADDRESS",
     "form_reason": "REASON",
@@ -19,7 +20,11 @@
     "form_submit": "SEND MESSAGE",
     "form_sending": "SENDING...",
     "form_success": "Success! Lina will be in touch soon.",
-    "form_error": "Oops! Something went wrong. Please try again."
+    "form_error": "Oops! Something went wrong. Please try again.",
+    "thank_you_header": "THANK YOU",
+    "thank_you_body": "I appreciate your email. I will respond as soon as possible. I look forward to colaborating with you.",
+    "thank_you_redirect": "redirecting to Lina's Portfolio",
+    "thank_you_countdown": "in {sec} seconds..."
 },
 
   "es": {
@@ -31,10 +36,11 @@
     "nav_portfolio": "Portafolio",
     "nav_about": "Sobre Lina",
     "nav_contact": "Contacto",
-	"loading_text": "Curando Colección...",
+	  "loading_text": "Curando Colección...",
     "about_heading": "Detrás del Lente",
     "sign_off": "Con mucho amor,",
     "copyright_rights": "Todos los derechos reservados.",
+    "contact_heading": "Contacto Lina",
     "form_name": "TU NOMBRE",
     "form_email": "TU CORREO ELECTRÓNICO",
     "form_reason": "MOTIVO",
@@ -42,6 +48,10 @@
     "form_submit": "ENVIAR MENSAJE",
     "form_sending": "ENVIANDO...",
     "form_success": "¡Éxito! Lina se pondrá en contacto pronto.",
-    "form_error": "¡Ups! Algo salió mal. Por favor intenta de nuevo."
+    "form_error": "¡Ups! Algo salió mal. Por favor intenta de nuevo.",
+    "thank_you_header": "GRACIAS",
+    "thank_you_body": "Aprecio tu mensaje. Responderé lo antes posible. Espero con interés colaborar contigo.",
+    "thank_you_redirect": "redirigiendo al Portafolio de Lina",
+    "thank_you_countdown": "en {sec} segundos..."
   }
 }

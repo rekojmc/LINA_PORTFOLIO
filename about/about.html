@@ -180,9 +180,15 @@
         loadAboutGallery().catch(console.error);
     });
 
-    // One single listener for language changes
-    window.addEventListener('languageChanged', loadBio);
+        // 1. Listen for the toggle click from the Nav
+        window.addEventListener('languageChanged', () => {
+            console.log("Signal Received: Updating Bio..."); // Check your console for this!
+            loadBio();
+        });
 
-</script>
+        // 2. Initial load when the page first opens
+        document.addEventListener('DOMContentLoaded', loadBio);
+
+    </script>
 	</body>
 </html>

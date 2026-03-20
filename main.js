@@ -12,24 +12,21 @@ async function setLanguage(lang) {
 async function applyTranslations(lang) {
     try {
         // 1. SMART PATH CALCULATION
-        // We detect if we are in a subfolder and adjust the fetch path
         const path = window.location.pathname;
         const isSubfolder = path.includes('/about/') || path.includes('/contact/');
         const basePath = isSubfolder ? '../' : '';
 
-        // 2. FETCH THE JSON FROM THE CORRECT LEVEL
+        // 2. FETCH THE JSON
         const response = await fetch(`${basePath}translations.json`);
-        
         if (!response.ok) throw new Error("Translation file not found.");
         
         const allTrans = await response.json();
         const trans = allTrans[lang];
 
-        // 3. SWAP TEXT (including injected components)
+        // 3. SWAP TEXT
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (trans[key]) {
-                // If it's an input/textarea, update placeholder
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                     el.placeholder = trans[key];
                 } else {
@@ -42,6 +39,11 @@ async function applyTranslations(lang) {
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.classList.toggle('active', btn.id === `btn-${lang}`);
         });
+
+        // --- THE MISSING LINK ---
+        // 5. BROADCAST THE CHANGE
+        // This sends a signal that loadBio() and loadContactIntro() are listening for.
+        window.dispatchEvent(new Event('languageChanged'));
 
     } catch (err) {
         console.error("Translation Error:", err);

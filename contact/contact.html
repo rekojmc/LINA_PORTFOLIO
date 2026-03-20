@@ -47,19 +47,36 @@
 		<script>
 			// 1. INTRO LOADER: Grabs text from /contact/intro-en.txt or intro-es.txt
 			async function loadContactIntro() {
-				const lang = localStorage.getItem('preferredLang') || 'en';
+				const lang = localStorage.getItem('preferredLang') || 'es';
 				const introContainer = document.getElementById('contact-intro-content');
 				
 				try {
-					const response = await fetch(`/contact/intro-${lang}.txt`);
+					const response = await fetch(`intro-${lang}.txt`);
 					if (!response.ok) throw new Error('Intro file missing');
 					const text = await response.text();
 					introContainer.innerText = text;
 				} catch (err) {
-					console.error("Intro Load Error:", err);
-					introContainer.innerText = "Let's connect!";
-				}
-			}
+    console.error("Intro Load Error:", err);
+    
+    // 1. Get the current language and path context
+    const lang = localStorage.getItem('preferredLang') || 'en';
+    const path = window.location.pathname;
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
+    const basePath = isSubfolder ? '../' : '';
+
+    // 2. Fetch the "Emergency" translation for the fallback
+    fetch(`${basePath}translations.json`)
+        .then(response => response.json())
+        .then(allTrans => {
+            // Use 'intro_fallback' from your JSON, or a hard-coded backup if that fails
+            const fallbackText = allTrans[lang]['intro_fallback'] || (lang === 'es' ? '¡Conectemos!' : "Let's connect!");
+            introContainer.innerText = fallbackText;
+        })
+        .catch(() => {
+            // The ultimate "Nothing works" backup
+            introContainer.innerText = "Let's connect!";
+        });
+}
 
 			document.getElementById('lina-contact-form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -71,7 +88,7 @@
     // 1. Fetch translation strings
     let trans;
     try {
-        const responseTrans = await fetch('/translations.json');
+        const responseTrans = await fetch('../translations.json');
         const allTrans = await responseTrans.json();
         trans = allTrans[lang];
     } catch (err) {

@@ -79,7 +79,7 @@ async function loadDynamicGallery() {
     if (index % 8 === 0) item.classList.add('wide');
 
     const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
-    const filePath = `/images/portfolio/${fileName}`;
+    const filePath = `images/portfolio/${fileName}`;
 
     if (isVideo) {
         // We inject the video AND the play icon div

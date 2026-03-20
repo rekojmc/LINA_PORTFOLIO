@@ -60,7 +60,7 @@
 			const gallery = document.getElementById('about-gallery');
 
 			// 1. BIO LOADER: Grabs the text file based on current language
-	async function loadAboutGallery() {
+		async function loadAboutGallery() {
 		const loader = document.getElementById('about-loader');
 		const gallery = document.getElementById('about-gallery');
 
@@ -143,31 +143,39 @@
 				document.getElementById('lightbox-content-container').innerHTML = '';
 			}
 			
-			async function loadBio() {
+async function loadBio() {
     const bioContainer = document.getElementById('bio-content');
-    if (!bioContainer) return; // Guard clause
+    if (!bioContainer) return;
 
-    // 1. Get current language from storage (defaults to 'en')
+    // 1. Context Detection
     const lang = localStorage.getItem('preferredLang') || 'es';
-    
+    const isSubfolder = window.location.pathname.includes('/about/') || 
+                       window.location.pathname.includes('/contact/');
+    const basePath = isSubfolder ? '../' : '';
+
     try {
-        // 2. Fetch the file with a 'cache buster' to ensure Lina's latest edits show up
-        const response = await fetch(`bio-${lang}.txt?v=${new Date().getTime()}`);
+        // 2. Content Fetch (with Cache Buster)
+        const response = await fetch(`bio-${lang}.txt?v=${Date.now()}`);
         
-        if (!response.ok) {
-            throw new Error(`Failed to load /about/bio-${lang}.txt`);
-        }
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
 
         const text = await response.text();
-
-        // 3. Inject the text. We use .innerText to prevent Lina from 
-        // accidentally injecting broken HTML/scripts.
         bioContainer.innerText = text;
 
     } catch (err) {
         console.error("Bio Loader Error:", err);
-        // Fallback text so the page doesn't look broken
-        bioContainer.innerText = " ";
+        
+        // 3. Graceful Localized Fallback
+        try {
+            const res = await fetch(`${basePath}translations.json`);
+            const allTrans = await res.json();
+            
+            bioContainer.innerText = allTrans[lang]?.['bio_fallback'] || 
+                                    (lang === 'es' ? "Cargando..." : "Loading...");
+        } catch (fallbackErr) {
+            // 4. Absolute Safety Net
+            bioContainer.innerText = lang === 'es' ? "Próximamente..." : "Coming soon...";
+        }
     }
 }
 

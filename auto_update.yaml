@@ -1,4 +1,4 @@
 on:
   push:
     paths:
-      - 'data/**'   # Or changes in a specific data folder
+      - 'images/**'   # Or changes in a specific data folder

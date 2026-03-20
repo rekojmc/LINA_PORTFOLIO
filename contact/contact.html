@@ -62,6 +62,7 @@
 			}
 
 			// 2. FORM SUBMISSION: Handles translation of UI feedback states
+
 			document.getElementById('lina-contact-form').addEventListener('submit', async function(e) {
 				e.preventDefault();
 				
@@ -93,7 +94,7 @@
 
 				try {
 					// REPLACE THIS URL with your Google Web App URL from the deployment step
-					const googleScriptUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+            		const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzdHluogJGY4VSTZW2G6ro80LjWImIvOGOBZaQB0cZs3wQEvo8w8PJPZtgfCWz-mSBF/exec';
 
 					const response = await fetch(googleScriptUrl, {
 						method: 'POST',

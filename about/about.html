@@ -9,16 +9,16 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Mr+De+Haviland&display=swap" rel="stylesheet">
 		
-		<link rel="icon" type="image/png" href="/images/icons/lina-96.png" sizes="96x96" />
-		<link rel="icon" type="image/svg+xml" href="/images/icons/lina-favicon.svg" />
-		<link rel="shortcut icon" href="/images/icons/lina-favicon.ico" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/images/icons/lina-apple.png" />
+		<link rel="icon" type="image/png" href="../images/icons/lina-96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="../images/icons/lina-favicon.svg" />
+		<link rel="shortcut icon" href="../images/icons/lina-favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="../images/icons/lina-apple.png" />
 		<meta name="apple-mobile-web-app-title" content="Lina Hernandez" />
-		<link rel="manifest" href="/site.webmanifest" />
+		<link rel="manifest" href="../site.webmanifest" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-		<link rel="stylesheet" href="/style.css">
-		<script src="main.js"></script>
-		<script src="/components.js" defer></script>
+		<link rel="stylesheet" href="../style.css">
+		<script src="../main.js"></script>
+		<script src="../components.js" defer></script>
 	</head>
 	<body class="about-page">
 
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<div class="about-main-image">
-					<img src="/images/about/hero.jpg" alt="Lina Hernandez Portrait">
+					<img src="../images/about/hero.jpg" alt="Lina Hernandez Portrait">
 				</div>
 			</header>
 
@@ -56,136 +56,124 @@
 
 		<div id="global-footer"></div>
 
-		<script>
-			const gallery = document.getElementById('about-gallery');
+<script>
+    // 1. GALLERY LOADER: Handles the Masonry Grid and Lightbox
+    async function loadAboutGallery() {
+        const loader = document.getElementById('about-loader');
+        const gallery = document.getElementById('about-gallery');
+        if (!gallery) return;
 
-			// 1. BIO LOADER: Grabs the text file based on current language
-	async function loadAboutGallery() {
-		const loader = document.getElementById('about-loader');
-		const gallery = document.getElementById('about-gallery');
+        try {
+            const response = await fetch('../images/about/about-manifest.json');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const files = await response.json();
+            files.sort(() => Math.random() - 0.5);
 
-		try {
-			const response = await fetch('/images/about/about-manifest.json');
-			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-			
-			const files = await response.json();
-			files.sort(() => Math.random() - 0.5);
+            files.forEach((fileName, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                
+                if (index % 5 === 0) item.classList.add('tall');
+                if (index % 8 === 0) item.classList.add('wide');
 
-			files.forEach((fileName, index) => {
-    const item = document.createElement('div');
-    item.className = 'gallery-item';
-    
-    if (index % 5 === 0) item.classList.add('tall');
-    if (index % 8 === 0) item.classList.add('wide');
+                const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
+                const filePath = `../images/about/${fileName}`;
 
-    const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
-    const filePath = `/images/about/${fileName}`;
+                if (isVideo) {
+                    item.innerHTML = `
+                        <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
+                        <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
+                    `;
+                    const video = item.querySelector('video');
+                    item.onmouseenter = () => video.play().catch(() => {});
+                    item.onmouseleave = () => {
+                        video.pause();
+                        video.currentTime = 0;
+                    };
+                } else {
+                    const img = document.createElement('img');
+                    img.src = filePath;
+                    img.loading = "lazy";
+                    item.appendChild(img);
+                }
 
-    if (isVideo) {
-        // We inject the video AND the play icon div
-        item.innerHTML = `
-            <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
-            <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
-        `;
-        const video = item.querySelector('video');
-
-        item.onmouseenter = () => video.play().catch(() => {});
-        item.onmouseleave = () => {
-            video.pause();
-            video.currentTime = 0;
-        };
-    } else {
-        const img = document.createElement('img');
-        img.src = filePath;
-        img.loading = "lazy";
-        item.appendChild(img);
-    }
-
-    // CLICK TO OPEN (Fixes your "click not working" issue)
-    item.onclick = () => openLightbox(filePath, isVideo);
-
-    gallery.appendChild(item);
-});
-		} catch (error) {
-			console.error("Critical Gallery Failure:", error);
-		} finally {
-			// THIS ALWAYS RUNS: Success or Failure, the loader dies here.
-			if (loader) {
-				loader.classList.add('loader-hidden');
-				console.log("Loader forced to hide.");
-			}
-		}
-	}
-
-	function openLightbox(src, isVideo) {
-				const lb = document.getElementById('lightbox');
-				const container = document.getElementById('lightbox-content-container');
-				container.innerHTML = ''; 
-
-				if (isVideo) {
-					const video = document.createElement('video');
-					video.src = src;
-					video.controls = true;
-					video.autoplay = true;
-					video.style.maxWidth = '90%';
-					container.appendChild(video);
-				} else {
-					const img = document.createElement('img');
-					img.src = src;
-					img.style.maxWidth = '90%';
-					container.appendChild(img);
-				}
-				lb.classList.add('active');
-			}
-
-			function closeLightbox() {
-				document.getElementById('lightbox').classList.remove('active');
-				document.getElementById('lightbox-content-container').innerHTML = '';
-			}
-			
-			async function loadBio() {
-    const bioContainer = document.getElementById('bio-content');
-    if (!bioContainer) return; // Guard clause
-
-    // 1. Get current language from storage (defaults to 'en')
-    const lang = localStorage.getItem('preferredLang') || 'en';
-    
-    try {
-        // 2. Fetch the file with a 'cache buster' to ensure Lina's latest edits show up
-        const response = await fetch(`/about/bio-${lang}.txt?v=${new Date().getTime()}`);
-        
-        if (!response.ok) {
-            throw new Error(`Failed to load /about/bio-${lang}.txt`);
+                item.onclick = () => openLightbox(filePath, isVideo);
+                gallery.appendChild(item);
+            });
+        } catch (error) {
+            console.error("Critical Gallery Failure:", error);
+        } finally {
+            if (loader) loader.classList.add('loader-hidden');
         }
-
-        const text = await response.text();
-
-        // 3. Inject the text. We use .innerText to prevent Lina from 
-        // accidentally injecting broken HTML/scripts.
-        bioContainer.innerText = text;
-
-    } catch (err) {
-        console.error("Bio Loader Error:", err);
-        // Fallback text so the page doesn't look broken
-        bioContainer.innerText = "Biography coming soon...";
     }
-}
 
-			// Initialize content
-			loadBio().catch(err => console.error("Bio failed but moving on...", err));
-			loadAboutGallery().catch(err => console.error("Gallery failed but moving on...", err));
+    // 2. LIGHTBOX LOGIC
+    function openLightbox(src, isVideo) {
+        const lb = document.getElementById('lightbox');
+        const container = document.getElementById('lightbox-content-container');
+        container.innerHTML = ''; 
 
-			// Listen for language changes to reload the bio file
-			window.addEventListener('languageChanged', () => {
-				loadBio();
-			});
+        if (isVideo) {
+            const video = document.createElement('video');
+            video.src = src;
+            video.controls = true;
+            video.autoplay = true;
+            video.style.maxWidth = '90%';
+            container.appendChild(video);
+        } else {
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.maxWidth = '90%';
+            container.appendChild(img);
+        }
+        lb.classList.add('active');
+    }
 
-			// 2. THE "START BUTTON" (Place this at the very end)
-   // document.addEventListener("DOMContentLoaded", () => {
-        // Call them separately so one crash doesn't kill the other
-       // loadBio().catch(err => console.error("Bio failed but moving on...", err));
-        //loadAboutGallery().catch(err => console.error("Gallery failed but moving on...", err));
-    //})
-		</script>
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.getElementById('lightbox-content-container').innerHTML = '';
+    }
+
+    // 3. SMART BIO LOADER: The "State-Aware" Function
+    async function loadBio() {
+        const bioContainer = document.getElementById('bio-content');
+        if (!bioContainer) return;
+
+        const lang = localStorage.getItem('preferredLang') || 'en';
+        const isSubfolder = window.location.pathname.includes('/about/');
+        const basePath = isSubfolder ? '../' : '';
+
+        // Visual Feedback: Clear the container while loading the new language
+        bioContainer.style.opacity = '0.4';
+
+        try {
+            // Fetch the bio file (assuming it's in the same folder as about.html)
+            const response = await fetch(`bio-${lang}.txt?v=${Date.now()}`);
+            
+            if (!response.ok) throw new Error(`Bio file missing: ${response.status}`);
+
+            const text = await response.text();
+            bioContainer.innerText = text;
+
+        } catch (err) {
+            console.error("Bio Loader Error:", err);
+            
+            // Fallback to translations.json if the txt file is missing
+            try {
+                const res = await fetch(`${basePath}translations.json`);
+                const allTrans = await res.json();
+                bioContainer.innerText = allTrans[lang]?.['bio_fallback'] || "Biography coming soon...";
+            } catch (fallbackErr) {
+                bioContainer.innerText = lang === 'es' ? "Próximamente..." : "Coming soon...";
+            }
+        } finally {
+            // Fade the text back in once loaded
+            bioContainer.style.opacity = '1';
+        }
+    }
+
+    // 4. INITIALIZATION & EVENT LISTENERS
+    document.addEventListener("DOMContentLoaded
 	</body>
 </html>

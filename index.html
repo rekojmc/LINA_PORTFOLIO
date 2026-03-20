@@ -62,7 +62,7 @@ async function loadDynamicGallery() {
     }, 5000);
 
     try {
-        const response = await fetch('/images/portfolio/portfolio-manifest.json');
+        const response = await fetch('images/portfolio/portfolio-manifest.json');
         let files = await response.json();
 
         // Shuffle logic (Fisher-Yates)

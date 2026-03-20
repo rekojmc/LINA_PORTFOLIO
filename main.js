@@ -18,7 +18,7 @@ async function setLanguage(lang) {
 
 async function applyTranslations(lang) {
     try {
-        const response = await fetch('/translations.json');
+        const response = await fetch('translations.json');
         const allTrans = await response.json();
         const trans = allTrans[lang];
 

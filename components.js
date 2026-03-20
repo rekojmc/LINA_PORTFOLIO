@@ -1,5 +1,19 @@
 /* Lina Hernandez - Global Component & Translation Engine */
 
+// Add this helper at the top of your components file
+const getBasePath = () => {
+    // If the URL contains '/pages/' or any subfolder, we need to go up one level
+    // This is a simple way to detect if we are in a subfolder
+    const path = window.location.pathname;
+    
+    // If we are on the main index.html or root
+    if (path.endsWith('/') || path.endsWith('index.html') || !path.includes('/', 1)) {
+        return './';
+    }
+    // If we are in /pages/about.html, we need to go up
+    return '../';
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Target the placeholders in your HTML
     const navPlaceholder = document.getElementById('global-nav');
@@ -9,43 +23,55 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('preferredLang') || 'en';
 
     // 3. Inject Navigation (Preserving your root-relative paths and adding translation tags)
-    if (navPlaceholder) {
-        navPlaceholder.innerHTML = `
-            <nav class="glass-nav">
-                <div class="nav-name">Lina Hernandez</div>
-                <div class="nav-links">
-                    <a href="index.html#gallery" data-i18n="nav_portfolio">Portfolio</a>
-                    <a href="about/about.html" data-i18n="nav_about">About Lina</a>
-                    <a href="contact/contact.html" data-i18n="nav_contact">Contact</a>
-                    
-                    <span class="lang-switcher">
-                        <button onclick="toggleLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
-                        <button onclick="toggleLanguage('es')" id="btn-es" class="lang-btn">ES</button>
-                    </span>
-                </div>
-            </nav>
-        `;
-    }
+if (navPlaceholder) {
+    // 1. DYNAMIC PATH CALCULATION (Same as footer for consistency)
+    const path = window.location.pathname;
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
+    const basePath = isSubfolder ? '../' : '';
+
+    navPlaceholder.innerHTML = `
+        <nav class="glass-nav">
+            <div class="nav-name">Lina Hernandez</div>
+            <div class="nav-links">
+                <a href="${basePath}index.html#gallery" data-i18n="nav_portfolio">Portfolio</a>
+                <a href="${basePath}about/about.html" data-i18n="nav_about">About Lina</a>
+                <a href="${basePath}contact/contact.html" data-i18n="nav_contact">Contact</a>
+                
+                <span class="lang-switcher">
+                    <button onclick="setLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
+                    <button onclick="setLanguage('es')" id="btn-es" class="lang-btn">ES</button>
+                </span>
+            </div>
+        </nav>
+    `;
+}
 
     // 4. Inject Footer (Preserving your social links and dynamic year)
-    if (footerPlaceholder) {
-        footerPlaceholder.innerHTML = `
-            <footer class="nude-footer">
-                <div class="footer-divider"></div>
-                <h2 class="footer-heading" data-i18n="hero_title">LINA HERNANDEZ</h2>
-                <div class="footer-socials">
-                    <a href="https://instagram.com/lina.hernandez02" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
-                </div>
-                <nav class="footer-nav">
-                    <a href="index.html" data-i18n="nav_portfolio">Home</a>
-                    <a href="about/about.html" data-i18n="nav_about">About</a>
-                    <a href="contact/contact.html" data-i18n="nav_contact">Contact</a>
-                </nav>
-                <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights">All rights reserved.</span></p>
-            </footer>
-        `;
-    }
+if (footerPlaceholder) {
+    // 1. CALCULATE THE BASE PATH:
+    // This looks at the URL. If it sees we are in a subfolder like /about/ or /contact/,
+    // it sets basePath to '../' to get us back to the root.
+    const path = window.location.pathname;
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
+    const basePath = isSubfolder ? '../' : '';
+
+    footerPlaceholder.innerHTML = `
+        <footer class="nude-footer">
+            <div class="footer-divider"></div>
+            <h2 class="footer-heading" data-i18n="hero_title">LINA HERNANDEZ</h2>
+            <div class="footer-socials">
+                <a href="https://instagram.com/lina.hernandez02" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
+            </div>
+            <nav class="footer-nav">
+                <a href="${basePath}index.html" data-i18n="nav_portfolio">Home</a>
+                <a href="${basePath}about/about.html" data-i18n="nav_about">About</a>
+                <a href="${basePath}contact/contact.html" data-i18n="nav_contact">Contact</a>
+            </nav>
+            <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights">All rights reserved.</span></p>
+        </footer>
+    `;
+}
 
     // 5. Initial Translation Run
     updatePageText(savedLang);
@@ -55,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function updatePageText(lang) {
     try {
-        const response = await fetch('translations.json');
+        const response = await fetch('/translations.json');
         const translations = await response.json();
         const data = translations[lang];
 

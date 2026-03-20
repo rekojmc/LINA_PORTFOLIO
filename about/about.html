@@ -174,6 +174,15 @@
     }
 
     // 4. INITIALIZATION & EVENT LISTENERS
-    document.addEventListener("DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", () => {
+        // Run both loaders independently
+        loadBio().catch(console.error);
+        loadAboutGallery().catch(console.error);
+    });
+
+    // One single listener for language changes
+    window.addEventListener('languageChanged', loadBio);
+
+</script>
 	</body>
 </html>

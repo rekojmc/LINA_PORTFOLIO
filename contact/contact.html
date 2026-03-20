@@ -17,7 +17,7 @@
 		<meta name="apple-mobile-web-app-title" content="Lina Hernandez" />
 		<link rel="manifest" href="/site.webmanifest" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-		
+		<script src="main.js"></script>
 		<script src="/components.js" defer></script>
 	</head>
 	<body class="contact-page">
@@ -61,64 +61,64 @@
 				}
 			}
 
-			// 2. FORM SUBMISSION: Handles translation of UI feedback states
-
 			document.getElementById('lina-contact-form').addEventListener('submit', async function(e) {
-				e.preventDefault();
-				
-				const btn = document.getElementById('submit-btn');
-				const feedback = document.getElementById('form-feedback');
-				const lang = localStorage.getItem('preferredLang') || 'en';
+    e.preventDefault();
+    
+    const btn = document.getElementById('submit-btn');
+    const feedback = document.getElementById('form-feedback');
+    const lang = localStorage.getItem('preferredLang') || 'en';
 
-				// 1. Fetch translation strings (Ensures the messages match the current language)
-				let trans;
-				try {
-					const responseTrans = await fetch('/translations.json');
-					const allTrans = await responseTrans.json();
-					trans = allTrans[lang];
-				} catch (err) {
-					console.error("Translation fetch failed", err);
-					// Minimal fallback if JSON fails
-					trans = { form_sending: "Sending...", form_success: "Sent!", form_error: "Error" };
-				}
+    // 1. Fetch translation strings
+    let trans;
+    try {
+        const responseTrans = await fetch('/translations.json');
+        const allTrans = await responseTrans.json();
+        trans = allTrans[lang];
+    } catch (err) {
+        trans = { form_sending: "Sending...", form_success: "Sent!", form_error: "Error", form_submit: "Send" };
+    }
 
-				// 2. Prepare the UI state
-				btn.disabled = true;
-				btn.textContent = trans['form_sending']; 
-				feedback.textContent = ""; // Clear previous messages
+    // 2. Prepare the UI state
+    btn.disabled = true;
+    btn.textContent = trans['form_sending']; 
+    feedback.textContent = ""; 
 
-				// 3. Prepare Payload (Optimized for Google Apps Script e.parameter)
-				const formData = new FormData(this);
-				// Add the current language to the payload so Lina knows which language the fan was using
-				formData.append('browser_language', lang); 
+    // 3. Prepare Payload (Switching to URLSearchParams for Google compatibility)
+    const params = new URLSearchParams();
+    for (const pair of new FormData(this)) {
+        params.append(pair[0], pair[1]);
+    }
+    params.append('browser_language', lang); 
 
-				try {
-					// REPLACE THIS URL with your Google Web App URL from the deployment step
-            		const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbxXPUZHXsomyIa0ptKcPbApkjW1eW0htgPxE3L6WRi1jycqDius8GYKRu4n_HQ7_Sg/exec';
+    try {
+        const googleScriptUrl = 'https://script.google.com/macros/s/AKfycby8BlsXmPVmFu4kFRH5LTeu8o57RZiWXKQjjkd6eonTS0RkGwaq4hJZ9d47b9jh_m7e/exec';
 
-					const response = await fetch(googleScriptUrl, {
-						method: 'POST',
-						body: formData, // Sending raw FormData is the most reliable path for Google Script
-						mode: 'no-cors' // Google Script requires no-cors for a direct POST from a static site
-					});
+		// 4. The Fetch Call
+        await fetch(googleScriptUrl, {
+            method: 'POST',
+            body: params, // Using params is more reliable for Google 'doPost'
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
 
-					// 4. Success Handling
-					// Note: With 'no-cors', we can't always read the response body, 
-					// but if the fetch doesn't throw, the data hit the script.
-					window.location.href = 'thankyou.html';
+        // 5. Success Handling
+        // Note: With 'no-cors', the promise resolves when sent. 
+        // Redirecting to 'thankyou.html' (added the hyphen back)
+        window.location.href = 'thankyou.html';
 
-				} catch (err) {
-					// 5. Error Handling
-					console.error("Form Submission Error:", err);
-					feedback.style.color = "#ff6b6b"; // Soft error red
-					feedback.textContent = trans['form_error'];
-				} finally {
-					// 6. Reset Button State
-					btn.disabled = false;
-					btn.textContent = trans['form_submit'];
-				}
-			});
-
+    } catch (err) {
+        // 6. Error Handling
+        console.error("Form Submission Error:", err);
+        feedback.style.color = "#ff6b6b";
+        feedback.textContent = trans['form_error'];
+        
+        // Only reset the button if it fails, so they can try again
+        btn.disabled = false;
+        btn.textContent = trans['form_submit'];
+    }
+});
 			// Initialize
 			loadContactIntro();
 

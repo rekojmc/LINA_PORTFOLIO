@@ -44,7 +44,7 @@
 
 		<div id="global-footer"></div>
 <script>
-    // 1. INTRO LOADER: Grabs text from the local folder
+    // 1. INTRO LOADER: Grabs localized text for the contact page
     async function loadContactIntro() {
         const introContainer = document.getElementById('contact-intro-content');
         if (!introContainer) return;
@@ -53,15 +53,20 @@
         const isSubfolder = window.location.pathname.includes('/contact/');
         const basePath = isSubfolder ? '../' : '';
 
+        // Visual Reset: Give immediate feedback that the content is updating
+        introContainer.style.opacity = '0.4';
+
         try {
-            // Fetch the Intro file from the SAME folder as this page
+            // Fetch the Intro file (local to the /contact/ folder)
             const response = await fetch(`intro-${lang}.txt?v=${Date.now()}`);
             if (!response.ok) throw new Error('Intro file missing');
+            
             const text = await response.text();
             introContainer.innerText = text;
 
         } catch (err) {
             console.error("Intro Load Error:", err);
+            // Fallback to translations.json
             try {
                 const res = await fetch(`${basePath}translations.json`);
                 const allTrans = await res.json();
@@ -70,6 +75,9 @@
             } catch (fErr) {
                 introContainer.innerText = lang === 'es' ? '¡Hablemos!' : "Let's connect!";
             }
+        } finally {
+            // Fade the text back in
+            introContainer.style.opacity = '1';
         }
     }
 
@@ -80,12 +88,10 @@
         const btn = document.getElementById('submit-btn');
         const feedback = document.getElementById('form-feedback');
         const lang = localStorage.getItem('preferredLang') || 'en';
-
-        // Detect paths for redirect and translations
         const isSubfolder = window.location.pathname.includes('/contact/');
         const basePath = isSubfolder ? '../' : '';
 
-        // 1. Fetch translation strings for the button/feedback
+        // Fetch translations for UI feedback
         let trans;
         try {
             const responseTrans = await fetch(`${basePath}translations.json`);
@@ -115,7 +121,7 @@
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
 
-            // SUCCESS: Redirect to root-level Thank You page
+            // SUCCESS: Redirect using the smart basePath
             window.location.href = `${basePath}thankyou.html`;
 
         } catch (err) {
@@ -127,8 +133,8 @@
         }
     });
 
-    // 3. INITIALIZE & LISTEN
-    loadContactIntro();
+    // 3. INITIALIZATION & LISTENERS
+    document.addEventListener("DOMContentLoaded", loadContactIntro);
     window.addEventListener('languageChanged', loadContactIntro);
 </script>
 	</body>

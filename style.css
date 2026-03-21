@@ -423,23 +423,26 @@ body {
 
 
 /* Editorial Split (About Page) */
-.about-hero-split {
+..about-hero-split {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    height: 80vh; /* Locks the hero to the height of the screen */
-    background-color: var(--nude-bg);
-    border-bottom: 1px solid var(--accent);
-    overflow: hidden; /* Prevents the image from bleeding out */
-    padding-top: 50px; /* Space for the nav */
+    /* CHANGE: min-height allows the box to expand if the signature is large */
+    min-height: 100vh; 
+    background-color: var(--bg-main);
+    border-bottom: 1px solid var(--accent-gold);
+    padding-top: 80px; /* Space for fixed nav */
+    overflow: hidden; 
 }
 .about-text-content {
-    padding: 40px 10%;
+    /* CHANGE: Increased bottom padding (100px) so the signature shadow doesn't hit the edge */
+    padding: 60px 10% 100px 10%; 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    height: 55%; /* Spans the full height of the locked container */
-    /* overflow-y: auto; Allows the bio to scroll IF it is too long */
-    
+    justify-content: center; 
+    /* CHANGE: Set to 100% so it's no longer restricted to just the top half */
+    height: 100%; 
+    overflow-y: visible;
+	
     /* Optional: Hide scrollbar for a cleaner look */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
@@ -492,8 +495,17 @@ body {
 }
 
 /* --- SIGNATURE --- */
-.signature-block { margin-top: 10px; }
-.sign-off { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+.signature-block { 
+    margin-top: 40px; 
+    /* CHANGE: Prevents the signature from being compressed or 'cut' by the flex engine */
+    flex-shrink: 0; 
+}
+
+.sign-off { 
+	font-size: 0.8rem; 
+	text-transform: uppercase; 
+	letter-spacing: 2px; margin: 0; 
+}
 
 
 /* --- GALLERY GRID --- */

@@ -423,7 +423,7 @@ body {
 
 
 /* Editorial Split (About Page) */
-..about-hero-split {
+.about-hero-split {
     display: grid;
     grid-template-columns: 1fr 1fr;
     /* CHANGE: min-height allows the box to expand if the signature is large */

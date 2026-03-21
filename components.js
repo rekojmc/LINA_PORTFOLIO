@@ -33,9 +33,9 @@ if (navPlaceholder) {
         <nav class="glass-nav">
             <div class="nav-name">Lina Hernandez</div>
             <div class="nav-links">
-                <a href="${basePath}index.html#gallery" data-i18n="nav_portfolio">Portfolio</a>
-                <a href="${basePath}about/about.html" data-i18n="nav_about">About Lina</a>
-                <a href="${basePath}contact/contact.html" data-i18n="nav_contact">Contact</a>
+                <a href="${basePath}#gallery" data-i18n="nav_portfolio">Portfolio</a>
+                <a href="${basePath}about/" data-i18n="nav_about">About Lina</a>
+                <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
                 
                 <span class="lang-switcher">
                     <button onclick="setLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
@@ -64,9 +64,9 @@ if (footerPlaceholder) {
                 <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
             </div>
             <nav class="footer-nav">
-                <a href="${basePath}index.html" data-i18n="nav_portfolio">Home</a>
-                <a href="${basePath}about/about.html" data-i18n="nav_about">About</a>
-                <a href="${basePath}contact/contact.html" data-i18n="nav_contact">Contact</a>
+                <a href="${basePath}#gallery" data-i18n="nav_portfolio">Home</a>
+                <a href="${basePath}about/" data-i18n="nav_about">About</a>
+                <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
             </nav>
             <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights">All rights reserved.</span></p>
         </footer>

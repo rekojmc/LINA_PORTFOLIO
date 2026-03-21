@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title data-i18n="site_title_about">About | Lina Hernandez</title>
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Mr+De+Haviland&display=swap" rel="stylesheet">
+		
+		<link rel="icon" type="image/png" href="../images/icons/lina-96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="../images/icons/lina-favicon.svg" />
+		<link rel="shortcut icon" href="../images/icons/lina-favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="../images/icons/lina-apple.png" />
+		<meta name="apple-mobile-web-app-title" content="Lina Hernandez" />
+		<link rel="manifest" href="../site.webmanifest" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+		<link rel="stylesheet" href="../style.css">
+		<script src="../main.js"></script>
+		<script src="../components.js" defer></script>
+
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://linahernandezv.com/about/">
+        <meta property="og:title" content="Sobre Lina | Detrás del Lente">
+        <meta property="og:description" content="Conoce la trayectoria y visión de Lina Hernandez. Modelo profesional con un enfoque en fotografía editorial y comercial.">
+        <meta property="og:image" content="https://linahernandezv.com/images/about/hero.jpg">
+        <meta property="og:locale" content="es_ES">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://linahernandezv.com/about/">
+        <meta name="twitter:title" content="Sobre Lina | Detrás del Lente">
+        <meta name="twitter:description" content="Conoce la historia y carrera profesional de Lina Hernandez.">
+        <meta name="twitter:image" content="https://linahernandezv.com/images/about/hero.jpg">
+	</head>
+	<body class="about-page">
+
+		<div id="global-nav"></div>
+
+		<main id="main-content-wrapper">
+			<header class="about-hero-split">
+				<div class="about-text-content">
+					<p class="about-heading" data-i18n="about_heading">Behind the Lens</p>
+					<div id="bio-content" class="bio-body"></div>
+					<div class="signature-block">
+						<p class="sign-off" data-i18n="sign_off">Con mucho amor,</p> 
+						<p class="signature">Lina Hernandez</p>
+					</div>
+				</div>
+				<div class="about-main-image">
+					<img src="../images/about/hero.jpg" alt="Lina Hernandez Portrait">
+				</div>
+			</header>
+
+			<section class="gallery-wrapper">
+				<div id="about-gallery" class="masonry-grid">
+					<div id="about-loader" class="gallery-loader">
+						<div class="spinner"></div>
+						<p data-i18n="loading_text">Curating Collection...</p>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+			<span class="close-lightbox">&times;</span>
+			<div id="lightbox-content-container"></div>
+		</div>
+
+		<div id="global-footer"></div>
+
+<script>
+    // 1. GALLERY LOADER: Handles the Masonry Grid and Lightbox
+    async function loadAboutGallery() {
+        const loader = document.getElementById('about-loader');
+        const gallery = document.getElementById('about-gallery');
+        if (!gallery) return;
+
+        try {
+            const response = await fetch('../images/about/about-manifest.json');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const files = await response.json();
+            files.sort(() => Math.random() - 0.5);
+
+            files.forEach((fileName, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                
+                if (index % 5 === 0) item.classList.add('tall');
+                if (index % 8 === 0) item.classList.add('wide');
+
+                const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
+                const filePath = `../images/about/${fileName}`;
+
+                if (isVideo) {
+                    item.innerHTML = `
+                        <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
+                        <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
+                    `;
+                    const video = item.querySelector('video');
+                    item.onmouseenter = () => video.play().catch(() => {});
+                    item.onmouseleave = () => {
+                        video.pause();
+                        video.currentTime = 0;
+                    };
+                } else {
+                    const img = document.createElement('img');
+                    img.src = filePath;
+                    img.loading = "lazy";
+                    item.appendChild(img);
+                }
+
+                item.onclick = () => openLightbox(filePath, isVideo);
+                gallery.appendChild(item);
+            });
+        } catch (error) {
+            console.error("Critical Gallery Failure:", error);
+        } finally {
+            if (loader) loader.classList.add('loader-hidden');
+        }
+    }
+
+    // 2. LIGHTBOX LOGIC
+    function openLightbox(src, isVideo) {
+        const lb = document.getElementById('lightbox');
+        const container = document.getElementById('lightbox-content-container');
+        container.innerHTML = ''; 
+
+        if (isVideo) {
+            const video = document.createElement('video');
+            video.src = src;
+            video.controls = true;
+            video.autoplay = true;
+            video.style.maxWidth = '90%';
+            container.appendChild(video);
+        } else {
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.maxWidth = '90%';
+            container.appendChild(img);
+        }
+        lb.classList.add('active');
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.getElementById('lightbox-content-container').innerHTML = '';
+    }
+
+    // 3. SMART BIO LOADER: The "State-Aware" Function
+    async function loadBio() {
+        const bioContainer = document.getElementById('bio-content');
+        if (!bioContainer) return;
+
+        const lang = localStorage.getItem('preferredLang') || 'en';
+        const isSubfolder = window.location.pathname.includes('/about/');
+        const basePath = isSubfolder ? '../' : '';
+
+        // Visual Feedback: Clear the container while loading the new language
+        bioContainer.style.opacity = '0.4';
+
+        try {
+            // Fetch the bio file (assuming it's in the same folder as about.html)
+            const response = await fetch(`bio-${lang}.txt?v=${Date.now()}`);
+            
+            if (!response.ok) throw new Error(`Bio file missing: ${response.status}`);
+
+            const text = await response.text();
+            bioContainer.innerText = text;
+
+        } catch (err) {
+            console.error("Bio Loader Error:", err);
+            
+            // Fallback to translations.json if the txt file is missing
+            try {
+                const res = await fetch(`${basePath}translations.json`);
+                const allTrans = await res.json();
+                bioContainer.innerText = allTrans[lang]?.['bio_fallback'] || "Biography coming soon...";
+            } catch (fallbackErr) {
+                bioContainer.innerText = lang === 'es' ? "Próximamente..." : "Coming soon...";
+            }
+        } finally {
+            // Fade the text back in once loaded
+            bioContainer.style.opacity = '1';
+        }
+    }
+
+    // 4. INITIALIZATION & EVENT LISTENERS
+    document.addEventListener("DOMContentLoaded", () => {
+        // Run both loaders independently
+        loadBio().catch(console.error);
+        loadAboutGallery().catch(console.error);
+    });
+
+        // 1. Listen for the toggle click from the Nav
+        window.addEventListener('languageChanged', () => {
+            console.log("Signal Received: Updating Bio..."); // Check your console for this!
+            loadBio();
+        });
+
+        // 2. Initial load when the page first opens
+        document.addEventListener('DOMContentLoaded', loadBio);
+
+    </script>
+	</body>
+</html>

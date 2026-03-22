@@ -1,82 +1,87 @@
-# --- Global Settings ---
 paths:
   uploads: images/
   static: /
-
-# --- Data Source (The Translation Engine) ---
-data_config:
-  translations:
-    path: data/translations.json
-    format: json
-
-# --- Collections (Lina's Sidebar) ---
 collections_config:
   pages:
-    name: Pages
     path: /
-    filter:
-      - index.html
-      - about/index.html
-      - contact/index.html
-      - thank-you/index.html
+    name: Pages
     icon: description
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
   data:
-    name: Site Content (JSON)
     path: data
+    name: Site Content (JSON)
     icon: language
-
-# --- Inputs & Interface ---
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
 _inputs:
-  # Home Page
   hero_title:
-    label: "Home: Main Title"
+    label: 'Home: Main Title'
+    cascade: true
   hero_subtitle:
-    label: "Home: Sub-headline"
-
-  # About Page (Split Layout)
+    label: 'Home: Sub-headline'
+    cascade: true
   about_heading:
-    label: "About: Headline"
+    label: 'About: Headline'
+    cascade: true
   about_bio:
     type: markdown
-    label: "About: Full Biography"
+    label: 'About: Full Biography'
+    cascade: true
   sign_off:
-    label: "About: Signature Sign-off"
+    label: 'About: Signature Sign-off'
+    cascade: true
   about_hero_image:
     type: image
-    label: "About: Main Portrait"
-
-  # Contact Page
+    label: 'About: Main Portrait'
+    cascade: true
   contact_title:
-    label: "Contact: Title"
+    label: 'Contact: Title'
+    cascade: true
   contact_subtitle:
-    label: "Contact: Subtitle"
+    label: 'Contact: Subtitle'
+    cascade: true
   contact_success:
-    label: "Contact: Quick Success Message (for form)"
-
-  # Thank You Page
+    label: 'Contact: Quick Success Message (for form)'
+    cascade: true
   thank_you_header:
-    label: "Thank You: Page Header"
+    label: 'Thank You: Page Header'
+    cascade: true
   thank_you_body:
     type: textarea
-    label: "Thank You: Message Body"
+    label: 'Thank You: Message Body'
+    cascade: true
   thank_you_redirect:
-    label: "Thank You: Redirect Link Text"
-
-  # Navigation & Footer
+    label: 'Thank You: Redirect Link Text'
+    cascade: true
   nav_portfolio:
-    label: "Nav: Portfolio Link"
+    label: 'Nav: Portfolio Link'
+    cascade: true
   nav_about:
-    label: "Nav: About Link"
+    label: 'Nav: About Link'
+    cascade: true
   nav_contact:
-    label: "Nav: Contact Link"
+    label: 'Nav: Contact Link'
+    cascade: true
   copyright_rights:
-    label: "Footer: Copyright Text"
-
-# --- Editor Groups ---
+    label: 'Footer: Copyright Text'
+    cascade: true
 _structures:
   translation_entry:
+    style: select
     values:
       - label: Spanish
         data: data.translations.es
       - label: English
         data: data.translations.en
+data_config:
+  translations:
+    path: data/translations.json
+    format: json
+editor:
+  default_path:
+timezone: Etc/UTC

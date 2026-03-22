@@ -1,60 +1,82 @@
-# Where your media lives
+# --- Global Settings ---
 paths:
   uploads: images/
   static: /
 
-# Defining the "Collections" (Your editable content)
+# --- Data Source (The Translation Engine) ---
+data_config:
+  translations:
+    path: data/translations.json
+    format: json
+
+# --- Collections (Lina's Sidebar) ---
 collections_config:
-  data:
-    path: data/ # If your translations.json is here
-    output: false
-    icon: storage
   pages:
+    name: Pages
     path: /
-    filter: 
+    filter:
       - index.html
       - about/index.html
       - contact/index.html
+      - thank-you/index.html
     icon: description
-
-# Customizing the Inputs
-_inputs:
-  bio_es:
-    type: textarea
-  bio_en:
-    type: textarea
-
-    # 1. Define the data source
-data_config:
-  translations:
-    path: data/translations.json # Ensure this path matches your repo
-    format: json
-
-# 2. Organize the interface for Lina
-collections_config:
   data:
-    name: Translations
+    name: Site Content (JSON)
     path: data
     icon: language
 
-# 3. Create user-friendly inputs
+# --- Inputs & Interface ---
 _inputs:
+  # Home Page
   hero_title:
-    type: text
-    label: Main Title (Header)
+    label: "Home: Main Title"
   hero_subtitle:
-    type: text
-    label: Sub-heading (Header)
+    label: "Home: Sub-headline"
 
-# 4. Group by language for a better UX
+  # About Page (Split Layout)
+  about_heading:
+    label: "About: Headline"
+  about_bio:
+    type: markdown
+    label: "About: Full Biography"
+  sign_off:
+    label: "About: Signature Sign-off"
+  about_hero_image:
+    type: image
+    label: "About: Main Portrait"
+
+  # Contact Page
+  contact_title:
+    label: "Contact: Title"
+  contact_subtitle:
+    label: "Contact: Subtitle"
+  contact_success:
+    label: "Contact: Quick Success Message (for form)"
+
+  # Thank You Page
+  thank_you_header:
+    label: "Thank You: Page Header"
+  thank_you_body:
+    type: textarea
+    label: "Thank You: Message Body"
+  thank_you_redirect:
+    label: "Thank You: Redirect Link Text"
+
+  # Navigation & Footer
+  nav_portfolio:
+    label: "Nav: Portfolio Link"
+  nav_about:
+    label: "Nav: About Link"
+  nav_contact:
+    label: "Nav: Contact Link"
+  copyright_rights:
+    label: "Footer: Copyright Text"
+
+# --- Editor Groups ---
 _structures:
-  language_group:
+  translation_entry:
     values:
       - label: Spanish
-        data:
-          hero_title: "Lina Hernandez"
-          hero_subtitle: "MODELO & CREADORA DE CONTENIDO"
+        data: data.translations.es
       - label: English
-        data:
-          hero_title: "Lina Hernandez"
-          hero_subtitle: "MODEL & CONTENT CREATOR"
+        data: data.translations.en

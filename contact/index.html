@@ -42,23 +42,25 @@
 
 		<div id="global-nav"></div>
 
-		<main class="contact-hero-overlay">
-			<div class="contact-glass-card">
-				<h1 class="contact-heading" data-i18n="contact_heading">Contact Lina</h1>
-				
-				<p id="contact-intro-content" class="contact-intro"></p>
+<main class="contact-container">
+    <div class="contact-header">
+        <h1 data-i18n="contact_title" 
+            data-cms-bind="data.translations.es.contact_title">Contacto</h1>
+            
+        <p class="contact-subtitle" 
+           data-i18n="contact_subtitle" 
+           data-cms-bind="data.translations.es.contact_subtitle">
+           Hablemos de tu próximo proyecto editorial o comercial.
+        </p>
+    </div>
 
-				<form id="lina-contact-form" class="lina-form">
-					<input type="text" name="name" data-i18n="form_name" placeholder="YOUR NAME" required>
-					<input type="email" name="email" data-i18n="form_email" placeholder="YOUR EMAIL ADDRESS" required>
-					<input type="text" name="reason" data-i18n="form_reason" placeholder="REASON" required>
-					<textarea name="message" data-i18n="form_message" placeholder="YOUR MESSAGE" rows="5" required></textarea>
-					
-					<button type="submit" id="submit-btn" class="send-btn" data-i18n="form_submit">SEND MESSAGE</button>
-					<div id="form-feedback" style="margin-top: 15px; font-weight: 600;"></div>
-				</form>
-			</div>
-		</main>
+    <div id="form-feedback" 
+         class="hidden" 
+         data-i18n="contact_success" 
+         data-cms-bind="data.translations.es.contact_success">
+         ¡Gracias! Me pondré en contacto pronto.
+    </div>
+</main>
 
 		<div id="global-footer"></div>
 <script>

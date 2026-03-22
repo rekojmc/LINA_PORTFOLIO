@@ -27,23 +27,28 @@
     <div class="thank-you-bg-wrap">
         <div class="content-overlay"></div>
 
-        <main class="thank-you-content">
-            <h1 class="main-title" data-i18n="thank_you_header">THANK YOU</h1>
-            
-            <p class="thank-you-body" data-i18n="thank_you_body">
-                I appreciate your email. I will responding as soon as possible. <br>
-                I look forward to colaborating with you.
-            </p>
+<main class="thank-you-content">
+    <h1 class="main-title" 
+        data-i18n="thank_you_header" 
+        data-cms-bind="data.translations.es.thank_you_header">THANK YOU</h1>
+    
+    <p class="thank-you-body" 
+       data-i18n="thank_you_body" 
+       data-cms-bind="data.translations.es.thank_you_body">
+        I appreciate your email. I will responding as soon as possible. <br>
+        I look forward to colaborating with you.
+    </p>
 
-            <p class="signature">Lina Hernandez</p>
+    <p class="signature">Lina Hernandez</p>
 
-            <p class="redirect-info">
-                <a href="../index.html" class="back-link-gold" data-i18n="thank_you_redirect">redirecting to Lina's Portfolio</a> 
-                <span id="redirect-counter">in 10 seconds...</span>
-            </p>
-            
-
-        </main>
+    <p class="redirect-info">
+        <a href="../" 
+           class="back-link-gold" 
+           data-i18n="thank_you_redirect" 
+           data-cms-bind="data.translations.es.thank_you_redirect">redirecting to Lina's Portfolio</a> 
+        <span id="redirect-counter">in 10 seconds...</span>
+    </p>
+</main>
     </div>
 
     <script>

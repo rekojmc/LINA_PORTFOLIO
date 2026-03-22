@@ -14,85 +14,74 @@ const getBasePath = () => {
     return '../';
 };
 
+d/* Lina Hernandez - Global Component & Translation Engine */
+
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Target the placeholders in your HTML
     const navPlaceholder = document.getElementById('global-nav');
     const footerPlaceholder = document.getElementById('global-footer');
 
-    // 2. Identify initial language (Check storage or default to English)
+    // 1. SMART PATH DETECTION for Pretty URLs (/about/, /contact/)
+    const path = window.location.pathname;
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
+    const basePath = isSubfolder ? '../' : '';
+
     const savedLang = localStorage.getItem('preferredLang') || 'en';
 
-    // 3. Inject Navigation (Preserving your root-relative paths and adding translation tags)
-if (navPlaceholder) {
-    // 1. DYNAMIC PATH CALCULATION (Same as footer for consistency)
-    const path = window.location.pathname;
-    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
-    const basePath = isSubfolder ? '../' : '';
-
-    navPlaceholder.innerHTML = `
-        <nav class="glass-nav">
-            <div class="nav-name">Lina Hernandez</div>
-            <div class="nav-links">
-                <a href="${basePath}#gallery" data-i18n="nav_portfolio">Portfolio</a>
-                <a href="${basePath}about/" data-i18n="nav_about">About Lina</a>
-                <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
-                
-                <span class="lang-switcher">
-                    <button onclick="setLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
-                    <button onclick="setLanguage('es')" id="btn-es" class="lang-btn">ES</button>
-                </span>
-            </div>
-        </nav>
-    `;
-}
-
-    // 4. Inject Footer (Preserving your social links and dynamic year)
-if (footerPlaceholder) {
-    // 1. CALCULATE THE BASE PATH:
-    // This looks at the URL. If it sees we are in a subfolder like /about/ or /contact/,
-    // it sets basePath to '../' to get us back to the root.
-    const path = window.location.pathname;
-    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
-    const basePath = isSubfolder ? '../' : '';
-
-    footerPlaceholder.innerHTML = `
-        <footer class="nude-footer">
-            <div class="footer-divider"></div>
-            <h2 class="footer-heading" data-i18n="hero_title">LINA HERNANDEZ</h2>
-            <div class="footer-socials">
-                <a href="https://instagram.com/lina.hernandez02" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
-            </div>
-            <nav class="footer-nav">
-                <a href="${basePath}#gallery" data-i18n="nav_portfolio">Home</a>
-                <a href="${basePath}about/" data-i18n="nav_about">About</a>
-                <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
+    // 2. INJECT NAVIGATION (With CloudCannon Bindings)
+    if (navPlaceholder) {
+        navPlaceholder.innerHTML = `
+            <nav class="glass-nav">
+                <div class="nav-name">Lina Hernandez</div>
+                <div class="nav-links">
+                    <a href="${basePath}#gallery" data-i18n="nav_portfolio" data-cms-bind="data.translations.es.nav_portfolio">Portfolio</a>
+                    <a href="${basePath}about/" data-i18n="nav_about" data-cms-bind="data.translations.es.nav_about">About Lina</a>
+                    <a href="${basePath}contact/" data-i18n="nav_contact" data-cms-bind="data.translations.es.nav_contact">Contact</a>
+                    
+                    <span class="lang-switcher">
+                        <button onclick="setLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
+                        <button onclick="setLanguage('es')" id="btn-es" class="lang-btn">ES</button>
+                    </span>
+                </div>
             </nav>
-            <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights">All rights reserved.</span></p>
-        </footer>
-    `;
-}
+        `;
+    }
 
-    // 5. Initial Translation Run
+    // 3. INJECT FOOTER (With Dynamic Year & CloudCannon Bindings)
+    if (footerPlaceholder) {
+        footerPlaceholder.innerHTML = `
+            <footer class="nude-footer">
+                <div class="footer-divider"></div>
+                <h2 class="footer-heading" data-i18n="hero_title" data-cms-bind="data.translations.es.hero_title">LINA HERNANDEZ</h2>
+                <div class="footer-socials">
+                    <a href="https://instagram.com/lina.hernandez02" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+                <nav class="footer-nav">
+                    <a href="${basePath}#gallery" data-i18n="nav_portfolio">Home</a>
+                    <a href="${basePath}about/" data-i18n="nav_about">About</a>
+                    <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
+                </nav>
+                <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights" data-cms-bind="data.translations.es.copyright_rights">All rights reserved.</span></p>
+            </footer>
+        `;
+    }
+
     updatePageText(savedLang);
 });
 
 // --- TRANSLATION CORE LOGIC ---
 
 async function updatePageText(lang) {
-    // 1. SMART PATH DETECTION
     const path = window.location.pathname;
     const isSubfolder = path.includes('/about/') || path.includes('/contact/');
     const basePath = isSubfolder ? '../' : '';
 
     try {
-        // 2. FETCH WITH DYNAMIC BASE PATH
-        // Removed the leading slash so it's relative to basePath
-        const response = await fetch(`${basePath}translations.json`);
+        // Updated path to match CloudCannon config (data/translations.json)
+        const response = await fetch(`${basePath}data/translations.json`);
         const translations = await response.json();
         const data = translations[lang];
 
-        // 3. UPDATE ELEMENTS
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (data[key]) {
@@ -104,19 +93,12 @@ async function updatePageText(lang) {
             }
         });
 
-        // 4. UPDATE TITLE
-        if (data['site_title']) {
-            document.title = data['site_title'];
-        }
-
-        // 5. VISUAL FEEDBACK & PERSISTENCE
+        // Update persistence
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.getElementById(`btn-${lang}`);
         if (activeBtn) activeBtn.classList.add('active');
 
         localStorage.setItem('preferredLang', lang);
-
-        // 6. NOTIFY OTHER SCRIPTS (Bio/Intro)
         window.dispatchEvent(new Event('languageChanged'));
 
     } catch (err) {
@@ -124,7 +106,7 @@ async function updatePageText(lang) {
     }
 }
 
-// Function called by the EN | ES buttons
-function toggleLanguage(lang) {
+// Fixed the name to match the 'onclick' calls in the HTML
+function setLanguage(lang) {
     updatePageText(lang);
 }

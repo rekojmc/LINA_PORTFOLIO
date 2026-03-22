@@ -41,19 +41,29 @@
 		<div id="global-nav"></div>
 
 		<main id="main-content-wrapper">
-			<header class="about-hero-split">
-				<div class="about-text-content">
-					<p class="about-heading" data-i18n="about_heading">Behind the Lens</p>
-					<div id="bio-content" class="bio-body"></div>
-					<div class="signature-block">
-						<p class="sign-off" data-i18n="sign_off">Con mucho amor,</p> 
-						<p class="signature">Lina Hernandez</p>
-					</div>
-				</div>
-				<div class="about-main-image">
-					<img src="../images/about/hero.jpg" alt="Lina Hernandez Portrait">
-				</div>
-			</header>
+<header class="about-hero-split">
+    <div class="about-text-content">
+        <p class="about-heading" 
+           data-i18n="about_heading" 
+           data-cms-bind="data.translations.es.about_heading">Behind the Lens</p>
+        
+        <div id="bio-content" 
+             class="bio-body" 
+             data-cms-bind="data.translations.es.about_bio"></div>
+        
+        <div class="signature-block">
+            <p class="sign-off" 
+               data-i18n="sign_off" 
+               data-cms-bind="data.translations.es.sign_off">Con mucho amor,</p> 
+            <p class="signature">Lina Hernandez</p>
+        </div>
+    </div>
+    <div class="about-main-image">
+        <img src="../images/about/hero.jpg" 
+             alt="Lina Hernandez Portrait" 
+             data-cms-bind="data.translations.es.about_hero_image">
+    </div>
+</header>
 
 			<section class="gallery-wrapper">
 				<div id="about-gallery" class="masonry-grid">

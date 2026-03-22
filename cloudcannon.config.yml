@@ -80,7 +80,7 @@ _structures:
         data: data.translations.en
 data_config:
   translations:
-    path: data/translations.json
+    path: translations.json
     format: json
 editor:
   default_path:

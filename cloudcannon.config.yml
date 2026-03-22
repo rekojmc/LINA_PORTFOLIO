@@ -1,0 +1,25 @@
+# Where your media lives
+paths:
+  uploads: images/
+  static: /
+
+# Defining the "Collections" (Your editable content)
+collections_config:
+  data:
+    path: data/ # If your translations.json is here
+    output: false
+    icon: storage
+  pages:
+    path: /
+    filter: 
+      - index.html
+      - about/index.html
+      - contact/index.html
+    icon: description
+
+# Customizing the Inputs
+_inputs:
+  bio_es:
+    type: textarea
+  bio_en:
+    type: textarea

@@ -1,5 +1,5 @@
 paths:
-  uploads: images/
+  uploads:
   static: /
 collections_config:
   pages:

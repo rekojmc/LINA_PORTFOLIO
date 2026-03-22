@@ -23,3 +23,38 @@ _inputs:
     type: textarea
   bio_en:
     type: textarea
+
+    # 1. Define the data source
+data_config:
+  translations:
+    path: data/translations.json # Ensure this path matches your repo
+    format: json
+
+# 2. Organize the interface for Lina
+collections_config:
+  data:
+    name: Translations
+    path: data
+    icon: language
+
+# 3. Create user-friendly inputs
+_inputs:
+  hero_title:
+    type: text
+    label: Main Title (Header)
+  hero_subtitle:
+    type: text
+    label: Sub-heading (Header)
+
+# 4. Group by language for a better UX
+_structures:
+  language_group:
+    values:
+      - label: Spanish
+        data:
+          hero_title: "Lina Hernandez"
+          hero_subtitle: "MODELO & CREADORA DE CONTENIDO"
+      - label: English
+        data:
+          hero_title: "Lina Hernandez"
+          hero_subtitle: "MODEL & CONTENT CREATOR"

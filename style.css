@@ -303,31 +303,6 @@ body, p {
     background: #1a1a1a;
 }
 
-/* MOBILE VERSION: We need to pull back the zoom so it doesn't look pixelated*/
-@media (max-width: 768px) {
-    .contact-hero-overlay {
-        background-size: cover;       /* Standard zoom for mobile */
-        background-position: center top; /* Keeps face at the top */
-        background-attachment: scroll;
-        padding: 120px 15px 60px 15px;
-    }
-    
-    .contact-glass-card {
-        margin-top: 20px; /* Pushes the form down further on mobile */
-    }
-}
-
-/* MOBILE FIX */
-@media (max-width: 600px) {
-    .contact-glass-card {
-        padding: 40px 20px;
-        margin-top: 40px; /* Extra space for top nav */
-    }
-    .contact-hero-overlay {
-        background-attachment: scroll; /* Better performance on mobile */
-    }
-} */
-
 /* --- RESET & BASE --- */
 * { 
     box-sizing: border-box; 
@@ -451,20 +426,23 @@ body {
 .about-hero-split {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    height: 80vh; /* Locks the hero to the height of the screen */
-    background-color: var(--nude-bg);
-    border-bottom: 1px solid var(--accent);
-    overflow: hidden; /* Prevents the image from bleeding out */
-    padding-top: 50px; /* Space for the nav */
+    /* CHANGE: min-height allows the box to expand if the signature is large */
+    min-height: 100vh; 
+    background-color: var(--bg-main);
+    border-bottom: 1px solid var(--accent-gold);
+    padding-top: 80px; /* Space for fixed nav */
+    overflow: hidden; 
 }
 .about-text-content {
-    padding: 40px 10%;
+    /* CHANGE: Increased bottom padding (100px) so the signature shadow doesn't hit the edge */
+    padding: 60px 10% 100px 10%; 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    height: 55%; /* Spans the full height of the locked container */
-    /* overflow-y: auto; Allows the bio to scroll IF it is too long */
-    
+    justify-content: center; 
+    /* CHANGE: Set to 100% so it's no longer restricted to just the top half */
+    height: 100%; 
+    overflow-y: visible;
+	
     /* Optional: Hide scrollbar for a cleaner look */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
@@ -517,8 +495,17 @@ body {
 }
 
 /* --- SIGNATURE --- */
-.signature-block { margin-top: 10px; }
-.sign-off { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+.signature-block { 
+    margin-top: 40px; 
+    /* CHANGE: Prevents the signature from being compressed or 'cut' by the flex engine */
+    flex-shrink: 0; 
+}
+
+.sign-off { 
+	font-size: 0.8rem; 
+	text-transform: uppercase; 
+	letter-spacing: 2px; margin: 0; 
+}
 
 
 /* --- GALLERY GRID --- */
@@ -842,25 +829,3 @@ body {
 }
 
 /* Responsive Tweak for mobile screens */
-@media (max-width: 600px) {
-    .thankyou-signature.large-header { font-size: 5rem; }
-    .thankyou-signature.closing-signature { font-size: 3.5rem; }
-    .thank-you-body { font-size: 1rem; padding: 0 10px; }
-}
-
-/* --- RESPONSIVE --- */
-@media (max-width: 1024px) {
-    .masonry-grid { grid-template-columns: repeat(2, 1fr); }
-    .gallery-wrapper { width: 92%; }
-}
-
-@media (max-width: 900px) {
-    .about-hero-split { grid-template-columns: 1fr; }
-    .about-main-image { height: 60vh; order: -1; }
-}
-
-@media (max-width: 600px) {
-    .masonry-grid { grid-template-columns: 1fr; }
-    .gallery-item.wide { grid-column: span 1; }
-    .main-title { font-size: 3.5rem; }
-}

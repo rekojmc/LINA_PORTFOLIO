@@ -1,83 +1,64 @@
-# 1. GLOBAL PATHS
 paths:
+  uploads: /
   static: /
-  uploads: / # Global default
-
-# 2. COLLECTIONS CONFIGURATION
 collections_config:
   pages:
     path: /
     name: Pages
     icon: description
-    filter: 
-      exclude: [images, data, node_modules, js, css] # Keep pages clean
-
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
   data:
     path: data
     name: Site Content (JSON)
     icon: language
-
-  # --- THE IMAGE COLLECTIONS (The Ninja Phone Gallery) ---
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
   main_hero:
     path: images/main
-    name: "Hero Images"
+    name: Hero Images
     icon: add_a_photo
-    display_type: grid
-    output: false
-    filter: strict
-    allow_ext: [.jpg, .jpeg, .png, .webp, .mp4, .mov]
-    config:
-      uploads:
-        default:
-          target: images/main
-
+    disable_url: false
+    _editables:
+      image:
+        expandable:
+        height: 2132
+        image_size_attributes: true
+        mime_type:
+        paths:
+        resize_style:
+        width: 12312
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
   portfolio_images:
     path: images/portfolio
-    name: "Portfolio Photos"
+    name: Portfolio Photos
     icon: collections
-    display_type: grid
-    output: false
-    filter: strict
-    allow_ext: [.jpg, .jpeg, .png, .webp, .mp4, .mov]
-    config:
-      uploads:
-        default:
-          target: images/portfolio
-
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
   about_images:
     path: images/about
-    name: "About Photos"
+    name: About Photos
     icon: person
-    display_type: grid
-    output: false
-    filter: strict
-    allow_ext: [.jpg, .jpeg, .png, .webp]
-    config:
-      uploads:
-        default:
-          target: images/about
-
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
   contact_images:
     path: images/contact
-    name: "Contact Photos"
+    name: Contact Photos
     icon: alternate_email
-    display_type: grid
-    output: false
-    filter: strict
-    allow_ext: [.jpg, .jpeg, .png, .webp]
-    config:
-      uploads:
-        default:
-          target: images/contact
-
-# 3. SIDEBAR ORGANIZATION (Makes the UI cleaner for Lina)
-_collection_groups:
-  - heading: Content
-    collections: [pages, data]
-  - heading: Visual Assets
-    collections: [main_hero, portfolio_images, about_images, contact_images]
-
-# 4. INPUT DEFINITIONS (Your existing inputs)
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
 _inputs:
   hero_title:
     label: 'Home: Main Title'
@@ -130,8 +111,6 @@ _inputs:
   copyright_rights:
     label: 'Footer: Copyright Text'
     cascade: true
-
-# 5. STRUCTURES & DATA
 _structures:
   translation_entry:
     style: select
@@ -140,8 +119,19 @@ _structures:
         data: data.translations.es
       - label: English
         data: data.translations.en
-
 data_config:
   translations:
     path: translations.json
     format: json
+timezone: Etc/UTC
+_collection_groups:
+  - heading: Content
+    collections:
+      - pages
+      - data
+  - heading: Visual Assets
+    collections:
+      - main_hero
+      - portfolio_images
+      - about_images
+      - contact_images

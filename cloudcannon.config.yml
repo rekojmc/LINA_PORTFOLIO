@@ -82,27 +82,48 @@ data_config:
   translations:
     path: translations.json
     format: json
-# Define the Portfolio as a Data Collection
 collections_config:
-  portfolio:
-    path: images/portfolio
-    output: false # We don't want it to build pages, just manage files
-    name: "Portfolio Gallery"
-    icon: image
-    # THE MAGIC: This forces the visual "Gallery" view
+  main_hero:
+    path: images/main
+    name: "Hero Images"
+    icon: add_a_photo
     display_type: grid
-    sort_options:
-      - name: "Name"
-        key: name
-        order: desc
+    output: false
+    # THE ROUTING FIX:
+    config:
+      uploads:
+        default:
+          target: images/main
 
-# Configure how the Image browser behaves
-_inputs:
-  portfolio_image:
-    type: image
-    options:
-      paths:
-        - images/portfolio/
-editor:
-  default_path:
-timezone: Etc/UTC
+  portfolio_images:
+    path: images/portfolio
+    name: "Portfolio Photos"
+    icon: collections
+    display_type: grid
+    output: false
+    config:
+      uploads:
+        default:
+          target: images/portfolio
+
+  about_images:
+    path: images/about
+    name: "About Photos"
+    icon: person
+    display_type: grid
+    output: false
+    config:
+      uploads:
+        default:
+          target: images/about
+
+  contact_images:
+    path: images/contact
+    name: "Contact Photos"
+    icon: alternate_email
+    display_type: grid
+    output: false
+    config:
+      uploads:
+        default:
+          target: images/contact

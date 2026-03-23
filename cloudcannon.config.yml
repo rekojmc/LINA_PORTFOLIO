@@ -1,9 +1,9 @@
-# --- Global Settings ---
+# --- Global Paths ---
 paths:
   uploads: images/
   static: /
 
-# --- Data Source (The Translation Engine) ---
+# --- Data Configuration (The Translation Engine) ---
 data_config:
   translations:
     path: data/translations.json
@@ -18,65 +18,41 @@ collections_config:
       - index.html
       - about/index.html
       - contact/index.html
-      - thank-you/index.html
+      - thankyou/index.html
     icon: description
   data:
-    name: Site Content (JSON)
+    name: Site Content
     path: data
     icon: language
 
-# --- Inputs & Interface ---
+# --- Inputs & Interface (The Edit Boxes) ---
 _inputs:
-  # Home Page
   hero_title:
     label: "Home: Main Title"
   hero_subtitle:
     label: "Home: Sub-headline"
-
-  # About Page (Split Layout)
   about_heading:
     label: "About: Headline"
   about_bio:
-    type: markdown
+    type: html # Enables Bold/Italic toolbar
     label: "About: Full Biography"
   sign_off:
     label: "About: Signature Sign-off"
   about_hero_image:
     type: image
     label: "About: Main Portrait"
-
-  # Contact Page
   contact_title:
     label: "Contact: Title"
   contact_subtitle:
     label: "Contact: Subtitle"
-  contact_success:
-    label: "Contact: Quick Success Message (for form)"
-
-  # Thank You Page
   thank_you_header:
     label: "Thank You: Page Header"
   thank_you_body:
-    type: textarea
+    type: html
     label: "Thank You: Message Body"
-  thank_you_redirect:
-    label: "Thank You: Redirect Link Text"
-
-  # Navigation & Footer
   nav_portfolio:
     label: "Nav: Portfolio Link"
   nav_about:
     label: "Nav: About Link"
   nav_contact:
     label: "Nav: Contact Link"
-  copyright_rights:
-    label: "Footer: Copyright Text"
-
-# --- Editor Groups ---
-_structures:
-  translation_entry:
-    values:
-      - label: Spanish
-        data: data.translations.es
-      - label: English
-        data: data.translations.en

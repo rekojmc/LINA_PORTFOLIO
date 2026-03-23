@@ -1,51 +1,84 @@
-// This runs automatically every time ANY page loads
-document.addEventListener('DOMContentLoaded', () => {
+/* Lina Hernandez - 2026 Global Engine */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const navPlaceholder = document.getElementById('global-nav');
+    const footerPlaceholder = document.getElementById('global-footer');
+
+    // 1. PATH DETECTION (Handles Pretty URLs)
+    const path = window.location.pathname;
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/thank-you/');
+    const basePath = isSubfolder ? '../' : '';
+
     const savedLang = localStorage.getItem('preferredLang') || 'en';
-    applyTranslations(savedLang);
+
+    // 2. INJECT NAV (With CloudCannon Bindings)
+    if (navPlaceholder) {
+        navPlaceholder.innerHTML = `
+            <nav class="glass-nav">
+                <div class="nav-name">Lina Hernandez</div>
+                <div class="nav-links">
+                    <a href="${basePath}#gallery" data-i18n="nav_portfolio" data-cms-bind="data.translations.es.nav_portfolio">Portfolio</a>
+                    <a href="${basePath}about/" data-i18n="nav_about" data-cms-bind="data.translations.es.nav_about">About Lina</a>
+                    <a href="${basePath}contact/" data-i18n="nav_contact" data-cms-bind="data.translations.es.nav_contact">Contact</a>
+                    <span class="lang-switcher">
+                        <button onclick="setLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
+                        <button onclick="setLanguage('es')" id="btn-es" class="lang-btn">ES</button>
+                    </span>
+                </div>
+            </nav>
+        `;
+    }
+
+    // 3. INJECT FOOTER
+    if (footerPlaceholder) {
+        footerPlaceholder.innerHTML = `
+            <footer class="nude-footer">
+                <div class="footer-divider"></div>
+                <h2 class="footer-heading" data-i18n="hero_title" data-cms-bind="data.translations.es.hero_title">LINA HERNANDEZ</h2>
+                <nav class="footer-nav">
+                    <a href="${basePath}#gallery" data-i18n="nav_portfolio">Home</a>
+                    <a href="${basePath}about/" data-i18n="nav_about">About</a>
+                    <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
+                </nav>
+                <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights" data-cms-bind="data.translations.es.copyright_rights">All rights reserved.</span></p>
+            </footer>
+        `;
+    }
+
+    updatePageText(savedLang);
 });
 
-async function setLanguage(lang) {
-    localStorage.setItem('preferredLang', lang);
-    await applyTranslations(lang);
-}
+async function updatePageText(lang) {
+    const path = window.location.pathname;
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/thank-you/');
+    const basePath = isSubfolder ? '../' : '';
 
-async function applyTranslations(lang) {
     try {
-        // 1. SMART PATH CALCULATION
-        const path = window.location.pathname;
-        const isSubfolder = path.includes('/about/') || path.includes('/contact/');
-        const basePath = isSubfolder ? '../' : '';
+        const response = await fetch(`${basePath}data/translations.json`);
+        const translations = await response.json();
+        const data = translations[lang];
 
-        // 2. FETCH THE JSON
-        const response = await fetch(`${basePath}translations.json`);
-        if (!response.ok) throw new Error("Translation file not found.");
-        
-        const allTrans = await response.json();
-        const trans = allTrans[lang];
-
-        // 3. SWAP TEXT
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (trans[key]) {
-                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = trans[key];
+            if (data[key]) {
+                // IMPORTANT: Use innerHTML for bios/bodies to allow styling
+                if (key.includes('bio') || key.includes('body')) {
+                    el.innerHTML = data[key];
+                } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    el.placeholder = data[key];
                 } else {
-                    el.innerHTML = trans[key];
+                    el.innerText = data[key];
                 }
             }
         });
 
-        // 4. SYNC ACTIVE BUTTONS
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.id === `btn-${lang}`);
-        });
+        localStorage.setItem('preferredLang', lang);
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById(`btn-${lang}`);
+        if (activeBtn) activeBtn.classList.add('active');
 
-        // --- THE MISSING LINK ---
-        // 5. BROADCAST THE CHANGE
-        // This sends a signal that loadBio() and loadContactIntro() are listening for.
         window.dispatchEvent(new Event('languageChanged'));
-
-    } catch (err) {
-        console.error("Translation Error:", err);
-    }
+    } catch (err) { console.error("Translation Error:", err); }
 }
+
+function setLanguage(lang) { updatePageText(lang); }

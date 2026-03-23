@@ -77,8 +77,8 @@ async function updatePageText(lang) {
     const basePath = isSubfolder ? '../' : '';
 
     try {
-        // Updated path to match CloudCannon config (data/translations.json)
-        const response = await fetch(`${basePath}data/translations.json`);
+        // Updated path to match CloudCannon config (translations.json)
+        const response = await fetch(`${basePath}translations.json`);
         const translations = await response.json();
         const data = translations[lang];
 

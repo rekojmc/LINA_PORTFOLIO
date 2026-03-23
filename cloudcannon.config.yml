@@ -82,6 +82,27 @@ data_config:
   translations:
     path: translations.json
     format: json
+# Define the Portfolio as a Data Collection
+collections_config:
+  portfolio:
+    path: images/portfolio
+    output: false # We don't want it to build pages, just manage files
+    name: "Portfolio Gallery"
+    icon: image
+    # THE MAGIC: This forces the visual "Gallery" view
+    display_type: grid
+    sort_options:
+      - name: "Name"
+        key: name
+        order: desc
+
+# Configure how the Image browser behaves
+_inputs:
+  portfolio_image:
+    type: image
+    options:
+      paths:
+        - images/portfolio/
 editor:
   default_path:
 timezone: Etc/UTC

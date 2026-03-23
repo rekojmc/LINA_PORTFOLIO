@@ -1,64 +1,83 @@
+# 1. GLOBAL PATHS
 paths:
-  uploads:
   static: /
+  uploads: / # Global default
+
+# 2. COLLECTIONS CONFIGURATION
 collections_config:
   pages:
     path: /
     name: Pages
     icon: description
-    disable_url: false
-    disable_add: false
-    disable_add_folder: false
-    disable_file_actions: false
+    filter: 
+      exclude: [images, data, node_modules, js, css] # Keep pages clean
+
   data:
     path: data
     name: Site Content (JSON)
     icon: language
-    disable_url: false
-    disable_add: false
-    disable_add_folder: false
-    disable_file_actions: false
-main_hero:
+
+  # --- THE IMAGE COLLECTIONS (The Ninja Phone Gallery) ---
+  main_hero:
     path: images/main
     name: "Hero Images"
     icon: add_a_photo
     display_type: grid
     output: false
-    # THE ROUTING FIX:
+    filter: strict
+    allow_ext: [.jpg, .jpeg, .png, .webp, .mp4, .mov]
     config:
       uploads:
         default:
           target: images/main
+
   portfolio_images:
     path: images/portfolio
     name: "Portfolio Photos"
     icon: collections
     display_type: grid
     output: false
+    filter: strict
+    allow_ext: [.jpg, .jpeg, .png, .webp, .mp4, .mov]
     config:
       uploads:
         default:
           target: images/portfolio
+
   about_images:
     path: images/about
     name: "About Photos"
     icon: person
     display_type: grid
     output: false
+    filter: strict
+    allow_ext: [.jpg, .jpeg, .png, .webp]
     config:
       uploads:
         default:
           target: images/about
+
   contact_images:
     path: images/contact
     name: "Contact Photos"
     icon: alternate_email
     display_type: grid
     output: false
+    filter: strict
+    allow_ext: [.jpg, .jpeg, .png, .webp]
     config:
       uploads:
         default:
           target: images/contact
+
+# 3. SIDEBAR ORGANIZATION (Makes the UI cleaner for Lina)
+_collection_groups:
+  - heading: Content
+    collections: [pages, data]
+  - heading: Visual Assets
+    collections: [main_hero, portfolio_images, about_images, contact_images]
+
+# 4. INPUT DEFINITIONS (Your existing inputs)
 _inputs:
   hero_title:
     label: 'Home: Main Title'
@@ -111,6 +130,8 @@ _inputs:
   copyright_rights:
     label: 'Footer: Copyright Text'
     cascade: true
+
+# 5. STRUCTURES & DATA
 _structures:
   translation_entry:
     style: select
@@ -119,8 +140,8 @@ _structures:
         data: data.translations.es
       - label: English
         data: data.translations.en
+
 data_config:
   translations:
     path: translations.json
     format: json
-      

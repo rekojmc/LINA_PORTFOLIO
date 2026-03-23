@@ -18,6 +18,47 @@ collections_config:
     disable_add: false
     disable_add_folder: false
     disable_file_actions: false
+main_hero:
+    path: images/main
+    name: "Hero Images"
+    icon: add_a_photo
+    display_type: grid
+    output: false
+    # THE ROUTING FIX:
+    config:
+      uploads:
+        default:
+          target: images/main
+  portfolio_images:
+    path: images/portfolio
+    name: "Portfolio Photos"
+    icon: collections
+    display_type: grid
+    output: false
+    config:
+      uploads:
+        default:
+          target: images/portfolio
+  about_images:
+    path: images/about
+    name: "About Photos"
+    icon: person
+    display_type: grid
+    output: false
+    config:
+      uploads:
+        default:
+          target: images/about
+  contact_images:
+    path: images/contact
+    name: "Contact Photos"
+    icon: alternate_email
+    display_type: grid
+    output: false
+    config:
+      uploads:
+        default:
+          target: images/contact
 _inputs:
   hero_title:
     label: 'Home: Main Title'
@@ -82,48 +123,4 @@ data_config:
   translations:
     path: translations.json
     format: json
-collections_config:
-  main_hero:
-    path: images/main
-    name: "Hero Images"
-    icon: add_a_photo
-    display_type: grid
-    output: false
-    # THE ROUTING FIX:
-    config:
-      uploads:
-        default:
-          target: images/main
-
-  portfolio_images:
-    path: images/portfolio
-    name: "Portfolio Photos"
-    icon: collections
-    display_type: grid
-    output: false
-    config:
-      uploads:
-        default:
-          target: images/portfolio
-
-  about_images:
-    path: images/about
-    name: "About Photos"
-    icon: person
-    display_type: grid
-    output: false
-    config:
-      uploads:
-        default:
-          target: images/about
-
-  contact_images:
-    path: images/contact
-    name: "Contact Photos"
-    icon: alternate_email
-    display_type: grid
-    output: false
-    config:
-      uploads:
-        default:
-          target: images/contact
+      

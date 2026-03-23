@@ -101,8 +101,27 @@ async function loadDynamicGallery() {
     const item = document.createElement('div');
     item.className = 'gallery-item';
     
-    if (index % 5 === 0) item.classList.add('tall');
-    if (index % 8 === 0) item.classList.add('wide');
+	// Inside your gallery generation loop:
+	const col = index % 4; // 0=Col1, 1=Col2, 2=Col3, 3=Col4
+
+	let isTall = (index + 1) % 4 === 0;
+	let isWide = (index + 1) % 6 === 0;
+
+	// SAFETY GUARD: "Force Regular" Logic
+	// If it's in the 4th column, it CANNOT be wide. 
+	if (isWide && col === 3) {
+		isWide = false; // Forcing regular size
+	}
+
+	// If it's Wide, we should also ensure it's not Tall 
+	// (avoiding the 'Giant Square' which causes the most gaps)
+	if (isWide && isTall) {
+		isTall = false; 
+	}
+
+	if (isTall || index === 0) item.classList.add('tall');
+	if (isWide || index === 0) item.classList.add('wide');
+
 
     const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
     const filePath = `images/portfolio/${fileName}`;

@@ -13,11 +13,11 @@ body {
 
 :root {
     --nude-bg: #f5f2ee;      /* Main Background */
-    --nude-dark: #e8e3dc;    /* Footer & Accent Background */
+    --nude-dark: #F5E6D3;    /* Footer & Accent Background */
     --white: #ffffff;
     --black: #000000;
-    --links-main: #ffffff;
-    --text-main: #333333;
+    --links-main: #242633;
+    --text-main: #242633;
     --cobalt: #2E5AFF;
     --gold: #d4af37;       /* Gold Accent */
     --transition-slow: 1.2s cubic-bezier(0.25, 1, 0.5, 1);
@@ -380,7 +380,7 @@ body {
     font-weight: 700;
     font-style: normal;
     text-decoration: none;
-    color: var(--black);
+    color: var(--text-main);
     font-size: 1.5rem;
     letter-spacing: 2px;
     margin-right: 10px;
@@ -392,7 +392,7 @@ body {
     font-optical-sizing: auto;
     text-transform: uppercase;
     text-decoration: none;
-    color: var(--black);
+    color: var(--text-main);
     text-transform: uppercase;
     font-size: 1rem;
     font-weight: 400;
@@ -422,6 +422,187 @@ body {
     background-attachment: fixed; /* Keeps the parallax feel */
 }
 
+.hero-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- THE HERO VIEWPORT --- */
+.diagonal-hero {
+    position: relative;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    background-color: var(--white); 
+    overflow: hidden;
+}
+
+/* --- THE PANELS --- */
+.diagonal-hero-panel {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    transform: skewX(-15deg);
+    border-left: 10px solid var(--white); 
+    border-top: 10px solid var(--white); 
+    margin-left: -120px; 
+    transition: flex 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- THE 60/20/20 FLEX RATIO --- */
+.panel-1 { flex: 1; z-index: 1; border-left: none; }
+.panel-2 { flex: 2; z-index: 2; } /* THE 60% CENTER */
+.panel-3 { flex: 1; z-index: 3; }
+
+/* --- OUTER EDGE FIXES --- */
+.diagonal-hero-panel:first-child {
+    margin-left: -250px; 
+}
+
+.diagonal-hero-panel:last-child {
+    margin-right: -300px; 
+}
+
+/* --- THE IMAGES (Un-Skew + 120% Zoom) --- */
+.diagonal-hero-panel img {
+    width: 90%; 
+    height: 100%;
+    object-fit: cover;
+
+    /* 1. THE ANCHOR: 50% 50% keeps the middle of the photo in the middle of the panel */
+    object-position: 70% 50%; 
+
+    /* 2. THE TRANSFORMATION */
+    /* Scale 1.3 provides enough "overflow" so you can move the image around without seeing white edges */
+    transform: skewX(15deg) scale(1.3); 
+    
+    /* 3. THE HUB: Ensures the zoom happens from the exact center */
+    transform-origin: center center; 
+}
+
+.panel-2 img {
+    /* Adjust the first percentage:
+       40% = Moves the image to the LEFT
+       60% = Moves the image to the RIGHT
+    */
+    width: 90%; 
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 10%; 
+    
+    /* Alternative: Use translateX in the transform for pixel-perfect precision 
+       Uncomment the line below if object-position isn't enough:
+    */
+    /* transform: skewX(15deg) scale(1.3) translateX(-5%); */
+}
+
+/* --- TOP ALIGNMENT LOGIC --- */
+.diagonal-hero-text.top-aligned {
+    position: absolute;
+    top: 300px; /* Adjust this to move the box higher or lower from the top */
+    left: 50%;
+    transform: translateX(-50%); /* Only center horizontally now */
+    z-index: 100;
+    width: auto;
+    pointer-events: none;
+}
+
+/* --- THE CARD STYLE --- */
+.diagonal-hero-card {
+    /* Transparency + Border */
+    background-color: rgba(232, 227, 220, 0.2); /* Much more transparent (0.4) */
+    backdrop-filter: blur(12px);               /* Blurs the hero image behind it */
+    border: 1px solid var(--nude-dark);        /* Thin slate border */
+    
+    padding: 10px 30px;
+    text-align: center;
+    pointer-events: auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    min-width: 700px; /* Wide enough for the name on one line */
+}
+
+/* --- THE NAME (Single Line) --- */
+.diagonal-hero-card h1 {
+    /* Calling the font we loaded in HTML
+	font-family: "Mr De Haviland", cursive;
+	font-style: normal;
+    font-size: 15rem; */
+
+    font-family: "Cormorant Garamond", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 5rem;
+   
+    /* Scale: Cursive needs to be HUGE to be readable */
+    color: var(--black);
+    
+    /* Signature styling */
+    text-transform: none; /* Keeps it natural, not ALL CAPS */
+    line-height: 0.6;     /* Pulls "Lina" and "Hernandez" closer together */
+    letter-spacing: 10px; 
+    font-weight: 400;
+    margin-top: 20px;
+	margin-bottom: 20px;
+
+	
+    /* The "Fun" Tilt 
+    display: inline-block;
+    transform: rotate(-5deg) translateY(-40px);*/
+    
+    /* Soft glow to ensure it's readable over any photo */
+    text-shadow: 0 50px 50px rgba(0,0,0,0.15);
+    
+    /* Smooth entrance */
+    /* animation: signatureFade 1.5s ease forwards; */
+
+}
+
+.diagonal-hero-sub {
+    color: var(--black);
+    font-size: 1.5rem;
+    font-family: "Cormorant Garamond", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin: 10px 0 10px 0;
+}
+
+/* --- BUTTON ROW --- */
+.hero-btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.diagonal-hero-btn {
+    flex: 1;
+    min-width: 160px;
+    background-color: var(--text-main); /* Slate background */
+    color: var(--white);
+    padding: 5px 0;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-family: "Cormorant Garamond", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.diagonal-hero-btn:hover {
+    background-color: var(--cobalt);
+    transform: translateY(-2px);
+}
 
 /* Editorial Split (About Page) */
 .about-hero-split {
@@ -456,6 +637,55 @@ body {
     line-height: 0.9;
     margin-top: 30px;
     margin-bottom: 20px;
+}
+
+.bio-editorial-body {
+    margin: 2px 0;
+    max-width: 600px;
+}
+
+.bio-line {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+/* Make the first line a bit more impactful */
+.line-1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    line-height: 1.4;
+    border-left: 3px solid var(--text-main);
+    padding-left: 20px;
+}
+
+.line-1::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.5rem; /* The "Extra Large" part */
+    float: left;
+    line-height: 0.8; /* Pulls the letter up so it doesn't create a huge gap below */
+    margin-right: 15px;
+    margin-top: 5px;
+    color: var(--cobalt);
+    font-style: italic;
+    font-weight: 400;
+    
+    /* Subtle Design Touch: A slight fade so it doesn't overpower the text */
+    opacity: 0.9;
+}
+
+/* Add a slight indentation to the second line for rhythm */
+.line-2, .line-3{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    /* font-style: italic; */
+    line-height: 1.4;
+    border-left: 3px solid var(--nude-dark);
+    padding-left: 20px;
 }
 
 .contact-heading {
@@ -553,6 +783,12 @@ body {
     object-fit: cover;
     display: block;
     transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1); /* Smoother high-end transition */
+
+    /* Change from 'center' to 'center 20%' */
+    /* This anchors the crop to the top 20% of the image */
+    object-position: center 35%; 
+    
+    transition: transform 0.5s ease;
 }
 
 /* Unified Hover Zoom */
@@ -699,10 +935,14 @@ body {
 }
 
 .footer-socials {
-    margin-bottom: 10px;
-    display: flex;
+    position: relative;
+    z-index: 9999 !important;
+    display: flex !important;
+    gap: 50px;
     justify-content: center;
-    gap: 25px;
+    margin: 20px 0;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .footer-socials a {
@@ -714,6 +954,10 @@ body {
 .footer-socials a:hover {
     color: var(--cobalt); /* Your gold color */
     transform: translateY(-3px); /* Subtle float effect */
+}
+.footer-socials i {
+    font-size: 1.5rem;
+    color: var(--white); /* Ensure they aren't white-on-white */
 }
 
 .copyright {

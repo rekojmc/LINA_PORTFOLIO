@@ -50,35 +50,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function updatePageText(lang) {
     const path = window.location.pathname;
-    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/thank-you/');
+    // 1. PATH LOGIC: Looking for translations.json in the ROOT
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/thank-you/') || path.includes('/thankyou/');
     const basePath = isSubfolder ? '../' : '';
 
     try {
-        const response = await fetch(`${basePath}data/translations.json`);
+        // Fetch from root (removed /data/ as requested)
+        const response = await fetch(`${basePath}translations.json`);
         const translations = await response.json();
         const data = translations[lang];
 
+        if (!data) return;
+
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (data[key]) {
-                // IMPORTANT: Use innerHTML for bios/bodies to allow styling
-                if (key.includes('bio') || key.includes('body')) {
-                    el.innerHTML = data[key];
-                } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = data[key];
-                } else {
-                    el.innerText = data[key];
+            const translation = data[key];
+
+            // 2. THE NINJA ICON PROTECTOR
+            // We only want to hide "Structural" text elements if they are empty.
+            // We NEVER hide icons (<i>), images (<img>), or links (<a>).
+            const isTextElement = ['P', 'H1', 'H2', 'H3', 'DIV', 'SPAN'].includes(el.tagName);
+
+            // 3. CONDITIONAL HIDING
+            if (!translation || translation.trim() === "") {
+                if (isTextElement) {
+                    el.style.display = 'none'; // Hide empty text blocks
                 }
+                // If it's an icon or a link with no translation, 
+                // we STOP here so we don't wipe out the inner HTML (the icon).
+                return; 
+            }
+
+            // 4. RESTORE VISIBILITY & APPLY CONTENT
+            el.style.display = ''; // Re-show if it was hidden
+
+            if (key.includes('bio') || key.includes('body') || key.includes('intro')) {
+                el.innerHTML = translation;
+            } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = translation;
+            } else {
+                // IMPORTANT: We only update innerText if the translation isn't empty.
+                // This prevents icons inside <a> tags from being overwritten by 'undefined'.
+                el.innerText = translation;
             }
         });
 
+        // 5. PERSISTENCE & UI
         localStorage.setItem('preferredLang', lang);
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.getElementById(`btn-${lang}`);
         if (activeBtn) activeBtn.classList.add('active');
 
-        window.dispatchEvent(new Event('languageChanged'));
-    } catch (err) { console.error("Translation Error:", err); }
+        // 6. THE SIGNAL (Uses CustomEvent for data passing)
+        window.dispatchEvent(new CustomEvent('languageChanged', { 
+            detail: { language: lang } 
+        }));
+
+    } catch (err) { 
+        console.error("Translation Error:", err); 
+    }
 }
 
 function setLanguage(lang) { updatePageText(lang); }

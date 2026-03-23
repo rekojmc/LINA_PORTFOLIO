@@ -3,6 +3,7 @@ const path = require('path');
 
 // 1. Configuration: Add any folders you want to scan
 const folders = [
+    { dir: 'images/main', output: 'images/main/main-manifest.json' },
     { dir: 'images/portfolio', output: 'images/portfolio/portfolio-manifest.json' },
     { dir: 'images/about', output: 'images/about/about-manifest.json' }
 ];

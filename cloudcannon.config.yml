@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 # --- Global Paths ---
+=======
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
 paths:
-  uploads: images/
+  uploads:
   static: /
+<<<<<<< HEAD
 
 # --- Data Configuration (The Translation Engine) ---
 data_config:
@@ -10,49 +14,132 @@ data_config:
     format: json
 
 # --- Collections (Lina's Sidebar) ---
+=======
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
 collections_config:
   pages:
-    name: Pages
     path: /
+<<<<<<< HEAD
     filter:
       - index.html
       - about/index.html
       - contact/index.html
       - thankyou/index.html
+=======
+    name: Pages
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
     icon: description
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
   data:
+<<<<<<< HEAD
     name: Site Content
+=======
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
     path: data
+    name: Site Content (JSON)
     icon: language
+<<<<<<< HEAD
 
 # --- Inputs & Interface (The Edit Boxes) ---
+=======
+    disable_url: false
+    disable_add: false
+    disable_add_folder: false
+    disable_file_actions: false
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
 _inputs:
   hero_title:
-    label: "Home: Main Title"
+    label: 'Home: Main Title'
+    cascade: true
   hero_subtitle:
+<<<<<<< HEAD
     label: "Home: Sub-headline"
+=======
+    label: 'Home: Sub-headline'
+    cascade: true
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
   about_heading:
-    label: "About: Headline"
+    label: 'About: Headline'
+    cascade: true
   about_bio:
+<<<<<<< HEAD
     type: html # Enables Bold/Italic toolbar
     label: "About: Full Biography"
+=======
+    type: markdown
+    label: 'About: Full Biography'
+    cascade: true
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
   sign_off:
-    label: "About: Signature Sign-off"
+    label: 'About: Signature Sign-off'
+    cascade: true
   about_hero_image:
     type: image
+<<<<<<< HEAD
     label: "About: Main Portrait"
+=======
+    label: 'About: Main Portrait'
+    cascade: true
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
   contact_title:
-    label: "Contact: Title"
+    label: 'Contact: Title'
+    cascade: true
   contact_subtitle:
+<<<<<<< HEAD
     label: "Contact: Subtitle"
+=======
+    label: 'Contact: Subtitle'
+    cascade: true
+  contact_success:
+    label: 'Contact: Quick Success Message (for form)'
+    cascade: true
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
   thank_you_header:
-    label: "Thank You: Page Header"
+    label: 'Thank You: Page Header'
+    cascade: true
   thank_you_body:
+<<<<<<< HEAD
     type: html
     label: "Thank You: Message Body"
+=======
+    type: textarea
+    label: 'Thank You: Message Body'
+    cascade: true
+  thank_you_redirect:
+    label: 'Thank You: Redirect Link Text'
+    cascade: true
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02
   nav_portfolio:
-    label: "Nav: Portfolio Link"
+    label: 'Nav: Portfolio Link'
+    cascade: true
   nav_about:
-    label: "Nav: About Link"
+    label: 'Nav: About Link'
+    cascade: true
   nav_contact:
+<<<<<<< HEAD
     label: "Nav: Contact Link"
+=======
+    label: 'Nav: Contact Link'
+    cascade: true
+  copyright_rights:
+    label: 'Footer: Copyright Text'
+    cascade: true
+_structures:
+  translation_entry:
+    style: select
+    values:
+      - label: Spanish
+        data: data.translations.es
+      - label: English
+        data: data.translations.en
+data_config:
+  translations:
+    path: translations.json
+    format: json
+editor:
+  default_path:
+timezone: Etc/UTC
+>>>>>>> 75f9f13c75d71eac292f5f0ac4672e5708908d02

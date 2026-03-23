@@ -14,7 +14,7 @@ const getBasePath = () => {
     return '../';
 };
 
-d/* Lina Hernandez - Global Component & Translation Engine */
+/* Lina Hernandez - Global Component & Translation Engine */
 
 document.addEventListener("DOMContentLoaded", () => {
     const navPlaceholder = document.getElementById('global-nav');

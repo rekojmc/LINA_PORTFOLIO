@@ -366,11 +366,20 @@ body {
     position: fixed;
     top: 0; left: 0; right: 0;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 5%;
+    padding: 10px 5%;
     background: var(--white);
     backdrop-filter: blur(10px);
     z-index: 1000;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid var(--nude);
+
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+/* The class we will add/remove via JavaScript */
+.nav-hidden {
+    transform: translateY(-110%); /* Slides it completely up and out of view */
+    opacity: 0;
+    pointer-events: none; /* Prevents clicking links while hidden */
 }
 
 .nav-name { 
@@ -392,10 +401,11 @@ body {
     font-optical-sizing: auto;
     text-transform: uppercase;
     text-decoration: none;
+    font-style: normal;
     color: var(--text-main);
     text-transform: uppercase;
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: 600;
     letter-spacing: 2px;
     margin-right: 10px;
     transition: var(--transition-fast);
@@ -447,35 +457,29 @@ body {
     height: 100%;
     overflow: hidden;
     transform: skewX(-15deg);
-    border-left: 10px solid var(--white); 
-    border-top: 10px solid var(--white); 
-    margin-left: -120px; 
+    border-left: 5px solid var(--white); 
+    border-top: 5px solid var(--white); 
+    border-bottom: 5px solid var(--white);
+    margin-left: -50px; 
     transition: flex 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* --- THE 60/20/20 FLEX RATIO --- */
 .panel-1 { flex: 1; z-index: 1; border-left: none; }
-.panel-2 { flex: 2; z-index: 2; } /* THE 60% CENTER */
+.panel-2 { flex: 2.5; z-index: 2; } /* THE 60% CENTER */
 .panel-3 { flex: 1; z-index: 3; }
 
 /* --- OUTER EDGE FIXES --- */
 .diagonal-hero-panel:first-child {
-    margin-left: -250px; 
+    margin-left: -100px; 
 }
 
 .diagonal-hero-panel:last-child {
-    margin-right: -300px; 
+    margin-right: -100px; 
 }
 
 /* --- THE IMAGES (Un-Skew + 120% Zoom) --- */
 .diagonal-hero-panel img {
-    width: 90%; 
-    height: 100%;
-    object-fit: cover;
-
-    /* 1. THE ANCHOR: 50% 50% keeps the middle of the photo in the middle of the panel */
-    object-position: 70% 50%; 
-
     /* 2. THE TRANSFORMATION */
     /* Scale 1.3 provides enough "overflow" so you can move the image around without seeing white edges */
     transform: skewX(15deg) scale(1.3); 
@@ -484,15 +488,32 @@ body {
     transform-origin: center center; 
 }
 
+.panel-1 img{
+    width: 100%; 
+    height: 100%;
+    /* object-fit: cover; */
+    object-position: left top; 
+    margin-left: 100px;
+}
+
+.panel-3 img{
+    width: 100%; 
+    height: 100%;
+    /* object-fit: cover; */
+    object-position: center top; 
+    margin-left: -50px;
+
+}
+
 .panel-2 img {
     /* Adjust the first percentage:
        40% = Moves the image to the LEFT
        60% = Moves the image to the RIGHT
     */
-    width: 90%; 
+    width: 100%; 
     height: 100%;
     object-fit: cover;
-    object-position: 70% 10%; 
+    object-position: center top; 
     
     /* Alternative: Use translateX in the transform for pixel-perfect precision 
        Uncomment the line below if object-position isn't enough:
@@ -726,6 +747,8 @@ body {
     width: 100%;
     height: 70%;
     object-fit: cover; /* Ensures the photo fills its half perfectly */
+    object-position: center top; 
+
 }
 
 /* --- SIGNATURE --- */

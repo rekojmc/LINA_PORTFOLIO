@@ -30,161 +30,88 @@
         <meta property="og:url" content="https://linahernandezv.com/">
         <meta property="og:title" content="Lina Hernandez | Portafolio Editorial">
         <meta property="og:description" content="Portafolio oficial de Lina Hernandez.">
-        <meta property="og:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
+        <meta property="og:image" content="https://linahernandezv.com/images/main/main-hero.jpg">
         <meta property="og:locale" content="es_ES">
 
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:url" content="https://linahernandezv.com/">
         <meta name="twitter:title" content="Lina Hernandez | Portafolio Editorial">
         <meta name="twitter:description" content="Explora el trabajo editorial y comercial de Lina Hernandez.">
-        <meta name="twitter:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
+        <meta name="twitter:image" content="https://linahernandezv.com/images/main/main-hero.jpg">
 
 	</head>
 	<body>
 
-		<header class="hero-header">
-			<div class="hero-overlay">
-				<h1 class="main-title" 
-					data-i18n="hero_title" 
-					data-cms-bind="data.translations.es.hero_title">Lina Hernandez</h1>
-					
-				<h2 class="main-subheading" 
-					data-i18n="hero_subtitle" 
-					data-cms-bind="data.translations.es.hero_subtitle">MODELO & CREADORA DE CONTENIDO</h2>
-					
-				<nav class="hero-nav">
-					<a href="#gallery" data-i18n="nav_portfolio">Portfolio</a>&emsp;
-					<a href="about/" data-i18n="nav_about">About Lina</a>&emsp;
-					<a href="contact/" data-i18n="nav_contact">Contact</a>&emsp;
-				</nav>
-			</div>
-		</header>
+<section class="diagonal-hero">
+    <div class="diagonal-hero-panel panel-1"><img src="" alt=""></div>
+    <div class="diagonal-hero-panel panel-2"><img src="" alt=""></div>
+    <div class="diagonal-hero-panel panel-3"><img src="" alt=""></div>
+</section>
 
-		<main class="gallery-wrapper" id="gallery">
-			<div id="portfolio-gallery" class="masonry-grid">
-				<div id="gallery-loader" class="gallery-loader">
-					<div class="spinner"></div>
-					<p data-i18n="loading_text">Curating Collection...</p>
-				</div>
-			</div>
-		</main>
+    <div class="diagonal-hero-text top-aligned">
+        <div class="diagonal-hero-card">
+            <h1 data-i18n="hero_title">Lina Hernandez</h1>
+            <p class="diagonal-hero-sub" data-i18n="hero_subtitle">Editorial & Commercial Model</p>
+            
+            <div class="hero-btn-group">
+                <a href="portfolio/" class="diagonal-hero-btn" data-i18n="nav_portfolio">Portfolio</a>
+                <a href="about/" class="diagonal-hero-btn" data-i18n="nav_about">About</a>
+                <a href="contact/" class="diagonal-hero-btn" data-i18n="nav_contact">Contact</a>
+            </div>
+        </div>
+    </div>
 
-		<div id="lightbox" class="lightbox" onclick="closeLightbox()">
-			<span class="close-lightbox">&times;</span>
-			<div id="lightbox-content-container"></div>
-		</div>
-
-		<div id="global-footer"></div>
 
 		<script>
-			const gallery = document.getElementById('portfolio-gallery');
+    async function loadDynamicHero() {
+        const p1Img = document.querySelector('.panel-1 img');
+        const p2Img = document.querySelector('.panel-2 img');
+        const p3Img = document.querySelector('.panel-3 img');
 
-async function loadDynamicGallery() {
-    const loader = document.getElementById('gallery-loader');
-    
-    // FAIL-SAFE: If anything hangs, hide the loader after 5 seconds
-    const failSafe = setTimeout(() => {
-        if (loader) loader.classList.add('loader-hidden');
-    }, 5000);
+        // Hardcode the paths since these are your permanent anchors
+    if (p1Img) p1Img.src = `images/main/about-hero.jpg`;
+    if (p2Img) p2Img.src = `images/main/home-hero.jpg`;
+    if (p3Img) p3Img.src = `images/main/contact-hero.jpg`;
 
-    try {
-        const response = await fetch('images/portfolio/portfolio-manifest.json');
-        let files = await response.json();
+        /*try {
+            const response = await fetch('images/main/main-manifest.json');
+            if (!response.ok) throw new Error("Manifest not found");
+            
+            const files = await response.json();
 
-		files.reverse();
+            // 1. Lock the center image
+            const centerImage = 'hero.jpg';
+            if (p2Img) p2Img.src = `images/main/${centerImage}`;
 
-   files.forEach((fileName, index) => {
-    const item = document.createElement('div');
-    item.className = 'gallery-item';
-    
-	// Inside your gallery generation loop:
-		const col = index % 4; // 0=Col1, 1=Col2, 2=Col3, 3=Col4
+            // 2. Pool the remaining images (exclude hero.jpg)
+            const sidePool = files.filter(file => file.toLowerCase() !== centerImage.toLowerCase());
+            
+            // 3. Shuffle the pool
+         sidePool.sort(() => Math.random() - 0.5);
 
-	let isTall = (index + 1) % 3 === 0;
-	let isWide = (index + 1) % 3 === 0;
+            // 4. Assign to side panels
+            if (p1Img && sidePool[0]) {
+                p1Img.src = `images/main/${sidePool[0]}`;
+            }
+            if (p3Img && sidePool[1]) {
+                p3Img.src = `images/main/${sidePool[1]}`;
+            }
 
-	// SAFETY GUARD: "Force Regular" Logic
-	// If it's in the 4th column, it CANNOT be wide. 
-	 if (isWide && col === 3) {
-	 	isWide = false;
-        isTall = false; // Forcing regular size
-	}
-
-	// // If it's Wide, we should also ensure it's not Tall 
-	// // (avoiding the 'Giant Square' which causes the most gaps)
-	// if (isWide && isTall) {
-	// 	isTall = false; 
-	// }
-
-	if (isTall || index === 0) item.classList.add('tall');
-	if (isWide || index === 0) item.classList.add('wide');
-
-    const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
-    const filePath = `images/portfolio/${fileName}`;
-
-    if (isVideo) {
-        // We inject the video AND the play icon div
-        item.innerHTML = `
-            <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
-            <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
-        `;
-        const video = item.querySelector('video');
-
-        item.onmouseenter = () => video.play().catch(() => {});
-        item.onmouseleave = () => {
-            video.pause();
-            video.currentTime = 0;
-        };
-    } else {
-        const img = document.createElement('img');
-        img.src = filePath;
-        img.loading = "lazy";
-        item.appendChild(img);
+        }
+             catch (err) {
+            console.error("Hero Loader Error:", err);
+            // Fallback if hero.jpg is missing
+            if (p2Img) p2Img.src = 'images/main/default.jpg';
+        }*/
     }
 
-    // CLICK TO OPEN (Fixes your "click not working" issue)
-    item.onclick = () => openLightbox(filePath, isVideo);
+    // Run on load
+    document.addEventListener('DOMContentLoaded', loadDynamicHero);
 
-    gallery.appendChild(item);
-});
-
-        // SUCCESS: Remove the loader and clear the failsafe
-        clearTimeout(failSafe);
-        if (loader) loader.classList.add('loader-hidden');
-
-    } catch (error) {
-        console.error("Gallery failed:", error);
-        // ERROR: Hide loader even on failure so page isn't broken
-        if (loader) loader.classList.add('loader-hidden');
-    }
-}
-			function openLightbox(src, isVideo) {
-				const lb = document.getElementById('lightbox');
-				const container = document.getElementById('lightbox-content-container');
-				container.innerHTML = ''; 
-
-				if (isVideo) {
-					const video = document.createElement('video');
-					video.src = src;
-					video.controls = true;
-					video.autoplay = true;
-					video.style.maxWidth = '90%';
-					container.appendChild(video);
-				} else {
-					const img = document.createElement('img');
-					img.src = src;
-					img.style.maxWidth = '90%';
-					container.appendChild(img);
-				}
-				lb.classList.add('active');
-			}
-
-			function closeLightbox() {
-				document.getElementById('lightbox').classList.remove('active');
-                document.getElementById('lightbox-content-container').innerHTML = '';
-			}
-
-			loadDynamicGallery();
+			document.addEventListener('DOMContentLoaded', () => {
+            // Kick off the dynamic hero engine
+            loadDynamicHero();
+        });
 		</script>
 	</body>
 </html>

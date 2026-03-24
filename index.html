@@ -41,8 +41,7 @@
 
 	</head>
 	<body>
-
-		<header class="hero-header">
+		<!-- <header class="hero-header">
 			<div class="hero-overlay">
 				<h1 class="main-title" 
 					data-i18n="hero_title" 
@@ -58,8 +57,26 @@
 					<a href="contact/" data-i18n="nav_contact">Contact</a>&emsp;
 				</nav>
 			</div>
-		</header>
+		</header> -->
 
+<section class="diagonal-hero">
+    <div class="diagonal-hero-panel panel-1"><img src="" alt=""></div>
+    <div class="diagonal-hero-panel panel-2"><img src="" alt=""></div>
+    <div class="diagonal-hero-panel panel-3"><img src="" alt=""></div>
+</section>
+
+    <div class="diagonal-hero-text top-aligned">
+        <div class="diagonal-hero-card">
+            <h1 data-i18n="hero_title">Lina Hernandez</h1>
+            <p class="diagonal-hero-sub" data-i18n="hero_subtitle">Editorial & Commercial Model</p>
+            
+            <div class="hero-btn-group">
+                <a href="#gallery" class="diagonal-hero-btn" data-i18n="nav_portfolio">Portfolio</a>
+                <a href="about/" class="diagonal-hero-btn" data-i18n="nav_about">About</a>
+                <a href="contact/" class="diagonal-hero-btn" data-i18n="nav_contact">Contact</a>
+            </div>
+        </div>
+    </div>
 		<main class="gallery-wrapper" id="gallery">
 			<div id="portfolio-gallery" class="masonry-grid">
 				<div id="gallery-loader" class="gallery-loader">
@@ -78,6 +95,45 @@
 
 		<script>
 			const gallery = document.getElementById('portfolio-gallery');
+
+async function loadDynamicHero() {
+    const p1Img = document.querySelector('.panel-1 img');
+    const p2Img = document.querySelector('.panel-2 img');
+    const p3Img = document.querySelector('.panel-3 img');
+
+    try {
+        const response = await fetch('images/main/main-manifest.json');
+        if (!response.ok) throw new Error("Manifest not found");
+        
+        const files = await response.json();
+
+        // 1. Lock the center image
+        const centerImage = 'hero.jpg';
+        if (p2Img) p2Img.src = `images/main/${centerImage}`;
+
+        // 2. Pool the remaining images (exclude hero.jpg)
+        const sidePool = files.filter(file => file.toLowerCase() !== centerImage.toLowerCase());
+        
+        // 3. Shuffle the pool
+        sidePool.sort(() => Math.random() - 0.5);
+
+        // 4. Assign to side panels
+        if (p1Img && sidePool[0]) {
+            p1Img.src = `images/main/${sidePool[0]}`;
+        }
+        if (p3Img && sidePool[1]) {
+            p3Img.src = `images/main/${sidePool[1]}`;
+        }
+
+    } catch (err) {
+        console.error("Hero Loader Error:", err);
+        // Fallback if hero.jpg is missing
+        if (p2Img) p2Img.src = 'images/main/default.jpg';
+    }
+}
+
+// Run on load
+document.addEventListener('DOMContentLoaded', loadDynamicHero);
 
 async function loadDynamicGallery() {
     const loader = document.getElementById('gallery-loader');
@@ -188,7 +244,14 @@ async function loadDynamicGallery() {
                 document.getElementById('lightbox-content-container').innerHTML = '';
 			}
 
+
+			
+
+			document.addEventListener('DOMContentLoaded', () => {
+            // Kick off the dynamic hero engine
+            loadDynamicHero();
 			loadDynamicGallery();
+        });
 		</script>
 	</body>
 </html>

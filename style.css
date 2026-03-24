@@ -147,7 +147,7 @@ body, p {
     font-size: .85rem;
     line-height: 2; /* Increased for a "letter" feel */
     color: var(--text-main);
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     letter-spacing: 2px; /* Subtle spread for readability */
 }
 
@@ -156,7 +156,7 @@ body, p {
     font-family: 'Inter', sans-serif;
     line-height: 1.2;
     font-size: 1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 10px;
     color: var(--black);
 }
 
@@ -632,11 +632,11 @@ body {
 }
 
 .about-heading {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-family: 'Cormorant Garamond', serif;    
+    font-size: clamp(1.2rem, 5vw, 2rem);
     line-height: 0.9;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .bio-editorial-body {
@@ -645,9 +645,9 @@ body {
 }
 
 .bio-line {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Cormorant Garamond', serif;    
     font-weight: 300;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     line-height: 1;
     color: var(--text-main);
     margin-bottom: 5px;
@@ -656,11 +656,11 @@ body {
 /* Make the first line a bit more impactful */
 .line-1 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
+    font-weight: 500;
+    font-size: 1.3rem;
     font-style: italic;
-    line-height: 1.4;
-    border-left: 3px solid var(--text-main);
-    padding-left: 20px;
+    line-height: 1.2;
+    padding-left: 10px;
 }
 
 .line-1::first-letter {
@@ -681,7 +681,7 @@ body {
 /* Add a slight indentation to the second line for rhythm */
 .line-2, .line-3{
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     /* font-style: italic; */
     line-height: 1.4;
     border-left: 3px solid var(--nude-dark);
@@ -689,14 +689,14 @@ body {
 }
 
 .contact-heading {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(3rem, 6vw, 5rem);
+    font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(3rem, 6vw, 5rem);
     line-height: 0.9;
     margin-bottom: 20px;
 }
 
 .footer-heading {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;    
     font-size: clamp(3rem, 6vw, 5rem);
     line-height: 0.9;
     margin-bottom: 20px;
@@ -730,7 +730,7 @@ body {
 
 /* --- SIGNATURE --- */
 .signature-block { 
-    margin-top: 40px; 
+    margin-top: 20px; 
     /* CHANGE: Prevents the signature from being compressed or 'cut' by the flex engine */
     flex-shrink: 0; 
 }

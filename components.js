@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 1. SMART PATH DETECTION for Pretty URLs (/about/, /contact/)
     const path = window.location.pathname;
-    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/portfolio/');
     const basePath = isSubfolder ? '../' : '';
 
     const savedLang = localStorage.getItem('preferredLang') || 'en';
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <nav class="glass-nav">
                 <div class="nav-name">Lina Hernandez</div>
                 <div class="nav-links">
-                    <a href="${basePath}#gallery" data-i18n="nav_portfolio" data-cms-bind="data.translations.es.nav_portfolio">Portfolio</a>
+                    <a href="${basePath}portfolio/" data-i18n="nav_portfolio" data-cms-bind="data.translations.es.nav_portfolio">Portfolio</a>
                     <a href="${basePath}about/" data-i18n="nav_about" data-cms-bind="data.translations.es.nav_about">About Lina</a>
                     <a href="${basePath}contact/" data-i18n="nav_contact" data-cms-bind="data.translations.es.nav_contact">Contact</a>
                     
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
                 </div>
                 <nav class="footer-nav">
-                    <a href="${basePath}#gallery" data-i18n="nav_portfolio">Home</a>
+                    <a href="${basePath}portfolio/" data-i18n="nav_portfolio">Home</a>
                     <a href="${basePath}about/" data-i18n="nav_about">About</a>
                     <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
                 </nav>

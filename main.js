@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 1. PATH DETECTION (Handles Pretty URLs)
     const path = window.location.pathname;
-    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/thank-you/');
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/thankyou/') || path.includes('/portfolio/');
     const basePath = isSubfolder ? '../' : '';
 
     const savedLang = localStorage.getItem('preferredLang') || 'en';
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <nav class="glass-nav">
                 <div class="nav-name">Lina Hernandez</div>
                 <div class="nav-links">
-                    <a href="${basePath}#gallery" data-i18n="nav_portfolio" data-cms-bind="data.translations.es.nav_portfolio">Portfolio</a>
+                    <a href="${basePath}portfolio/" data-i18n="nav_portfolio" data-cms-bind="data.translations.es.nav_portfolio">Portfolio</a>
                     <a href="${basePath}about/" data-i18n="nav_about" data-cms-bind="data.translations.es.nav_about">About Lina</a>
                     <a href="${basePath}contact/" data-i18n="nav_contact" data-cms-bind="data.translations.es.nav_contact">Contact</a>
                     <span class="lang-switcher">
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="footer-divider"></div>
                 <h2 class="footer-heading" data-i18n="hero_title" data-cms-bind="data.translations.es.hero_title">LINA HERNANDEZ</h2>
                 <nav class="footer-nav">
-                    <a href="${basePath}#gallery" data-i18n="nav_portfolio">Home</a>
+                    <a href="${basePath}portfolio/" data-i18n="nav_portfolio">Home</a>
                     <a href="${basePath}about/" data-i18n="nav_about">About</a>
                     <a href="${basePath}contact/" data-i18n="nav_contact">Contact</a>
                 </nav>
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function updatePageText(lang) {
     const path = window.location.pathname;
     // 1. PATH LOGIC: Looking for translations.json in the ROOT
-    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/thank-you/') || path.includes('/thankyou/');
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/portfolio/') || path.includes('/thankyou/');
     const basePath = isSubfolder ? '../' : '';
 
     try {

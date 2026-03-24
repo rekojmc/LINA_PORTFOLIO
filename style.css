@@ -246,7 +246,7 @@ body, p {
     
     background-color: var(--nude-dark); /* Fallback color */
     background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
-                      url('images/contact/hero.jpg');
+                      url('images/main/contact-hero.jpg');
 
     /* ZOOM & POSITION LOGIC */
     background-size: 100%;      /* This zooms the image in past the edges */
@@ -414,7 +414,7 @@ body {
     
     background-color: var(--nude-dark); /* Fallback color */
     background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), 
-                url('images/main/hero.jpg') center/cover no-repeat;
+                url('images/main/main-hero.jpg') center/cover no-repeat;
     /* ZOOM & POSITION LOGIC */
     background-size: 100%;      /* This zooms the image in past the edges */
     background-position: center 10%; /* Starts the "view" 10% from the top of the photo */

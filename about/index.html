@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="about-main-image">
-                    <img src="../images/about/hero.jpg" alt="Lina Hernandez">
+                    <img src="../images/main/about-hero.jpg" alt="Lina Hernandez">
                 </div>
             </header>
 
@@ -75,9 +75,7 @@
                     const response = await fetch('../images/about/about-manifest.json');
                     const files = await response.json();
                     
-                    // Shuffle for fresh feel
-                    files.sort(() => Math.random() - 0.5);
-
+                    files.reverse();
                     files.forEach((fileName, index) => {
                         const item = document.createElement('div');
                         item.className = 'gallery-item';

@@ -1,5 +1,4 @@
 /* Lina Hernandez - 2026 Global Engine */
-
 document.addEventListener("DOMContentLoaded", () => {
     const navPlaceholder = document.getElementById('global-nav');
     const footerPlaceholder = document.getElementById('global-footer');
@@ -111,42 +110,67 @@ async function updatePageText(lang) {
     }
 }
 
+function setLanguage(lang) { 
+    updatePageText(lang); 
+}
+
 function initSmartNav() {
-    const nav = document.querySelector('.glass-nav');
-    if (!nav) return;
+    // Target the placeholder ID instead of the injected class
+    const nav = document.getElementById('global-nav');
+    
+    if (!nav) {
+        console.error("❌ [SmartNav] Could not find #global-nav wrapper.");
+        return;
+    }
+
+    console.log("✅ [SmartNav] Found global-nav wrapper. Scroll listener active.");
+
+    // ... rest of your scroll logic stays exactly the same ...
 
     let lastScrollTop = 0;
     let scrollDistanceDown = 0;
     let scrollDistanceUp = 0;
-    const threshold = 500; // This is your "5 wheels" (100px per wheel approx)
+    const threshold = 300; // Adjusted for testing
 
     window.addEventListener('scroll', () => {
-        let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-        let delta = currentScroll - lastScrollTop;
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        const delta = currentScroll - lastScrollTop;
+        
+        // Get the real-time position and transform before we try to change it
+        const computedStyle = window.getComputedStyle(nav);
+        const currentTransform = computedStyle.getPropertyValue('transform');
+        const currentTop = nav.getBoundingClientRect().top;
 
-        // 1. ALWAYS show nav if we are at the very top
         if (currentScroll <= 10) {
-            nav.classList.remove('nav-hidden');
+            if (nav.classList.contains('nav-hidden')) {
+                console.log(`🏠 [Top of Page] Removing hide class. Current Top: ${currentTop}px`);
+                nav.classList.remove('nav-hidden');
+            }
             scrollDistanceDown = 0;
-            scrollDistanceUp = 0;
         } 
         
-        // 2. SCROLLING DOWN
         else if (delta > 0) {
-            scrollDistanceUp = 0; // Reset up-tracker
+            scrollDistanceUp = 0;
             scrollDistanceDown += delta;
             
-            if (scrollDistanceDown > threshold) {
+            if (scrollDistanceDown > threshold && !nav.classList.contains('nav-hidden')) {
+                console.log(`🙈 [Hide Triggered] Dist: ${scrollDistanceDown}px | Current Transform: ${currentTransform}`);
                 nav.classList.add('nav-hidden');
+                
+                // Immediate check: Did it actually move?
+                setTimeout(() => {
+                    const newTop = nav.getBoundingClientRect().top;
+                    console.log(`📊 [Post-Hide Check] New Top: ${newTop}px. (If 0, CSS is being ignored)`);
+                }, 100);
             }
         } 
         
-        // 3. SCROLLING UP
         else {
-            scrollDistanceDown = 0; // Reset down-tracker
+            scrollDistanceDown = 0;
             scrollDistanceUp += Math.abs(delta);
             
-            if (scrollDistanceUp > threshold) {
+            if (scrollDistanceUp > threshold && nav.classList.contains('nav-hidden')) {
+                console.log(`🙉 [Show Triggered] Dist: ${scrollDistanceUp}px | Current Transform: ${currentTransform}`);
                 nav.classList.remove('nav-hidden');
             }
         }
@@ -155,6 +179,9 @@ function initSmartNav() {
     }, { passive: true });
 }
 
-// Launch it
-document.addEventListener('DOMContentLoaded', initSmartNav);
-function setLanguage(lang) { updatePageText(lang); }
+// Kickstart
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSmartNav);
+} else {
+    initSmartNav();
+}

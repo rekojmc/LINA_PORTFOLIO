@@ -375,11 +375,28 @@ body {
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
 }
 
-/* The class we will add/remove via JavaScript */
-.nav-hidden {
-    transform: translateY(-110%); /* Slides it completely up and out of view */
-    opacity: 0;
-    pointer-events: none; /* Prevents clicking links while hidden */
+/* We target the class directly on the nav to ensure max weight */
+nav.glass-nav.nav-hidden {
+    transform: translateY(-110%) !important; /* Force move */
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Target the ID that's already in the HTML */
+#global-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    /* Move the transition here */
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease !important;
+}
+
+/* The Hide Class now hits the wrapper */
+#global-nav.nav-hidden {
+    transform: translateY(-110%) !important;
+    opacity: 0 !important;
 }
 
 .nav-name { 

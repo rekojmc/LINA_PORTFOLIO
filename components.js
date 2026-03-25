@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function updatePageText(lang) {
     const path = window.location.pathname;
-    const isSubfolder = path.includes('/about/') || path.includes('/contact/');
+    const isSubfolder = path.includes('/about/') || path.includes('/contact/') || path.includes('/portfolio/');
     const basePath = isSubfolder ? '../' : '';
 
     try {

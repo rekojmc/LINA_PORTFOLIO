@@ -30,14 +30,14 @@
         <meta property="og:url" content="https://linahernandezv.com/">
         <meta property="og:title" content="Lina Hernandez | Portafolio Editorial">
         <meta property="og:description" content="Portafolio oficial de Lina Hernandez.">
-        <meta property="og:image" content="https://linahernandezv.com/images/main/hero.jpg">
+        <meta property="og:image" content="https://linahernandezv.com/images/main/main-hero.jpg">
         <meta property="og:locale" content="es_ES">
 
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:url" content="https://linahernandezv.com/">
         <meta name="twitter:title" content="Lina Hernandez | Portafolio Editorial">
         <meta name="twitter:description" content="Explora el trabajo editorial y comercial de Lina Hernandez.">
-        <meta name="twitter:image" content="https://linahernandezv.com/images/main/hero.jpg">
+        <meta name="twitter:image" content="https://linahernandezv.com/images/main/main-hero.jpg">
 
 	</head>
 	<body>
@@ -68,7 +68,12 @@
         const p2Img = document.querySelector('.panel-2 img');
         const p3Img = document.querySelector('.panel-3 img');
 
-        try {
+        // Hardcode the paths since these are your permanent anchors
+    if (p1Img) p1Img.src = `images/main/about-hero.jpg`;
+    if (p2Img) p2Img.src = `images/main/home-hero.jpg`;
+    if (p3Img) p3Img.src = `images/main/contact-hero.jpg`;
+
+        /*try {
             const response = await fetch('images/main/main-manifest.json');
             if (!response.ok) throw new Error("Manifest not found");
             
@@ -82,7 +87,7 @@
             const sidePool = files.filter(file => file.toLowerCase() !== centerImage.toLowerCase());
             
             // 3. Shuffle the pool
-            sidePool.sort(() => Math.random() - 0.5);
+         sidePool.sort(() => Math.random() - 0.5);
 
             // 4. Assign to side panels
             if (p1Img && sidePool[0]) {
@@ -92,11 +97,12 @@
                 p3Img.src = `images/main/${sidePool[1]}`;
             }
 
-        } catch (err) {
+        }
+             catch (err) {
             console.error("Hero Loader Error:", err);
             // Fallback if hero.jpg is missing
             if (p2Img) p2Img.src = 'images/main/default.jpg';
-        }
+        }*/
     }
 
     // Run on load

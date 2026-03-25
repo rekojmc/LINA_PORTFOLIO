@@ -18,9 +18,25 @@
         <link rel="icon" type="image/svg+xml" href="../images/icons/lina-favicon.svg" />
         <link rel="shortcut icon" href="../images/icons/lina-favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="../images/icons/lina-apple.png" />
+
+<meta name="title" content="Sobre Lina Hernandez | La Historia Detrás de la Lente">
+<meta name="description" content="Descubre la trayectoria de Lina Hernandez. Desde la alta costura editorial hasta la excelencia comercial, conoce la pasión y experiencia profesional que impulsa su carrera.">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://linahernandez.com/es/about/">
+<meta property="og:title" content="Conoce a Lina Hernandez | Modelo Profesional">
+<meta property="og:description" content="Una mirada profunda a la carrera y filosofía profesional de Lina Hernandez. Explora su experiencia en la industria editorial y comercial.">
+<meta property="og:image" content="https://linahernandez.com/images/main/about-hero.jpg">
+
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://linahernandez.com/es/about/">
+<meta property="twitter:title" content="Sobre Lina Hernandez | Modelo Editorial y Comercial">
+<meta property="twitter:description" content="Descubre la trayectoria profesional y el trasfondo editorial de Lina Hernandez.">
+<meta property="twitter:image" content="https://linahernandez.com/images/main/about-hero.jpg">
         
-        <script src="../main.js"></script>
         <script src="../components.js" defer></script>
+                <script src="../main.js"></script>
+
     </head>
     <body class="about-page">
 
@@ -29,7 +45,9 @@
         <main id="main-content-wrapper">
             <header class="about-hero-split">
                 <div class="about-text-content">
-                        <div class="bio-editorial-body">
+                    <h1 class="about-heading" data-i18n="about_heading">Behind the Lens</h1>
+                    
+                    <div class="bio-editorial-body">
                         <p class="bio-line line-1" data-i18n="about_bio_1"></p>
                         <p class="bio-line line-2" data-i18n="about_bio_2"></p>
                         <p class="bio-line line-3" data-i18n="about_bio_3"></p>
@@ -41,10 +59,18 @@
                     </div>
                 </div>
                 <div class="about-main-image">
-                    <img src="../images/about/hero.jpg" alt="Lina Hernandez">
+                    <img src="../images/main/about-hero.jpg" alt="Lina Hernandez">
                 </div>
             </header>
 
+            <section class="gallery-wrapper">
+                <div id="about-gallery" class="masonry-grid">
+                    <div id="about-loader" class="gallery-loader">
+                        <div class="spinner"></div>
+                        <p data-i18n="loading_text">Curating Collection...</p>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <div id="lightbox" class="lightbox" onclick="closeLightbox()">
@@ -55,7 +81,82 @@
         <div id="global-footer"></div>
 
         <script>
-  
+            // 1. GALLERY ENGINE (Remains the same, just simplified paths)
+            async function loadAboutGallery() {
+                const loader = document.getElementById('about-loader');
+                const gallery = document.getElementById('about-gallery');
+                if (!gallery) return;
+
+                try {
+                    const response = await fetch('../images/about/about-manifest.json');
+                    const files = await response.json();
+                    
+                    files.reverse();
+                    files.forEach((fileName, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'gallery-item';
+                        
+                        // Masonry Logic
+	const col = index % 4; // 0=Col1, 1=Col2, 2=Col3, 3=Col4
+
+	let isTall = (index + 1) % 5 === 0;
+	let isWide = (index + 1) % 5 === 0;
+
+	// SAFETY GUARD: "Force Regular" Logic
+	// If it's in the 4th column, it CANNOT be wide. 
+	 if (isWide && col === 3) {
+	 	isWide = false;
+        isTall = false; // Forcing regular size
+	}
+
+	// // If it's Wide, we should also ensure it's not Tall 
+	// // (avoiding the 'Giant Square' which causes the most gaps)
+	// if (isWide && isTall) {
+	// 	isTall = false; 
+	// }
+
+	if (isTall || index === 0) item.classList.add('tall');
+	if (isWide || index === 0) item.classList.add('wide');
+
+                        const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
+                        const filePath = `../images/about/${fileName}`;
+
+                        if (isVideo) {
+                            item.innerHTML = `
+                                <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
+                                <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
+                            `;
+                            const video = item.querySelector('video');
+                            item.onmouseenter = () => video.play().catch(() => {});
+                            item.onmouseleave = () => { video.pause(); video.currentTime = 0; };
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = filePath;
+                            img.loading = "lazy";
+                            item.appendChild(img);
+                        }
+
+                        item.onclick = () => openLightbox(filePath, isVideo);
+                        gallery.appendChild(item);
+                    });
+                } catch (e) { console.error("Gallery Error:", e); }
+                finally { if (loader) loader.classList.add('loader-hidden'); }
+            }
+
+            // 2. LIGHTBOX (Remains consistent)
+            function openLightbox(src, isVideo) {
+                const lb = document.getElementById('lightbox');
+                const container = document.getElementById('lightbox-content-container');
+                container.innerHTML = isVideo ? 
+                    `<video src="${src}" controls autoplay style="max-width:90%"></video>` : 
+                    `<img src="${src}" style="max-width:90%">`;
+                lb.classList.add('active');
+            }
+
+            function closeLightbox() {
+                document.getElementById('lightbox').classList.remove('active');
+            }
+
             // 3. INITIALIZATION
 document.addEventListener("DOMContentLoaded", async () => {
     const lang = localStorage.getItem('preferredLang') || 'en';
@@ -65,6 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (window.updatePageText) updatePageText(lang);
     }, 100); 
 
+    loadAboutGallery();
 });
 
         </script>

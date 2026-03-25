@@ -26,17 +26,18 @@
         <script src="../components.js" defer></script>
 
         <meta property="og:type" content="website">
-        <meta property="og:url" content="https://linahernandezv.com/contact/">
-        <meta property="og:title" content="Contacto | Lina Hernandez">
-        <meta property="og:description" content="Ponte en contacto con Lina Hernandez para proyectos editoriales, comerciales y colaboraciones internacionales.">
-        <meta property="og:image" content="https://linahernandezv.com/images/contact/hero.jpg">
+        <meta property="og:url" content="https://linahernandezv.com/portfolio/">
+        <meta property="og:title" content="Portafolio | Lina Hernandez">
+        <meta property="og:description" content="Explora el trabajo editorial y comercial más reciente de Lina Hernandez. Disponible para contrataciones globales.">        
+        <meta property="og:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
         <meta property="og:locale" content="es_ES">
 
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:url" content="https://linahernandezv.com/contact/">
-        <meta name="twitter:title" content="Contacto | Lina Hernandez">
-        <meta name="twitter:description" content="Disponible para reservas y colaboraciones profesionales. Hablemos de tu próximo proyecto.">
-        <meta name="twitter:image" content="https://linahernandezv.com/images/contact/hero.jpg">
+        <meta name="twitter:url" content="https://linahernandezv.com/portfolio/">
+        <meta name="twitter:title" content="Portafolio | Lina Hernandez">
+        <meta property="twitter:description" content="Modelaje editorial y comercial de alto nivel. Mira el portafolio completo y la galería.">
+        <meta name="twitter:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
+
     </head>
 	<body>
         <div id="global-nav"></div>
@@ -79,11 +80,8 @@ async function loadDynamicGallery() {
         const response = await fetch('../images/portfolio/portfolio-manifest.json');
         let files = await response.json();
 
-        // Shuffle logic (Fisher-Yates)
-        for (let i = files.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [files[i], files[j]] = [files[j], files[i]];
-        }
+		files.reverse();
+
 
    files.forEach((fileName, index) => {
     const item = document.createElement('div');

@@ -113,13 +113,12 @@ h1, h2 {
     line-height: 0.6;     /* Pulls "Lina" and "Hernandez" closer together */
     letter-spacing: -2px; 
     font-weight: 400;
-    margin-top: 80px;
-	margin-bottom: 50px;
-
+    margin-top: 40px;
+	margin-bottom: 20px;
 	
     /* The "Fun" Tilt */
     /*display: inline-block;
-    transform: rotate(-4deg) translateY(-20px);*/
+    transform: translateY(-20px);*/
     
     /* Soft glow to ensure it's readable over any photo */
     text-shadow: 0 10px 10px rgba(0,0,0,0.15);
@@ -647,8 +646,8 @@ nav.glass-nav.nav-hidden {
     display: grid;
     grid-template-columns: 1fr 1fr;
     /* CHANGE: min-height allows the box to expand if the signature is large */
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 50vh;
+    max-height: 90vh;
     background-color: var(--nude);
     border-bottom: 1px solid var(--cobalt-gold);
     padding-top: 50px; /* Space for fixed nav */
@@ -667,6 +666,7 @@ nav.glass-nav.nav-hidden {
     /* Optional: Hide scrollbar for a cleaner look */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
+    max-height: 120vh;
 }
 
 .about-heading {
@@ -758,6 +758,7 @@ nav.glass-nav.nav-hidden {
 .about-main-image {
     height: 100%;
     width: 100%;
+    max-height: 120vh;
 }
 
 .about-main-image img {
@@ -770,7 +771,7 @@ nav.glass-nav.nav-hidden {
 
 /* --- SIGNATURE --- */
 .signature-block { 
-    margin-top: 20px; 
+    margin-top: 10px; 
     /* CHANGE: Prevents the signature from being compressed or 'cut' by the flex engine */
     flex-shrink: 0; 
 }
@@ -786,7 +787,9 @@ nav.glass-nav.nav-hidden {
 .gallery-wrapper {
     width: 90%; /* Increased slightly for a more 'editorial' feel */
     max-width: 1400px;
+    
     margin: 60px auto;
+    margin-top: 10px;
 }
 
 .masonry-grid {
@@ -1012,10 +1015,15 @@ nav.glass-nav.nav-hidden {
 /* Appreciation Header */
 .appreciation-header {
     text-align: center;
-    padding: 60px 20px 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 5px 5px 5px;
     font-family: 'Cormorant Garamond', serif;
+    background-color: var(--white);
+    border: var(--gold) double;
+
 }
-.appreciation-header p { font-style: italic; color: #666; margin-bottom: 8px; }
+.appreciation-header p { color: var(--text-main); }
 .total-likes-display { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; }
 .total-likes-display i { color: var(--gold); margin-right: 10px; }
 .total-likes-display {

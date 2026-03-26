@@ -4,55 +4,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title data-i18n="site_title_about">About | Lina Hernandez</title>
-        <link rel="alternate" hreflang="es" href="https://linahernandezv.com/" />
-        <link rel="alternate" hreflang="en" href="https://linahernandezv.com/" />
-        <link rel="alternate" hreflang="x-default" href="https://linahernandezv.com/" />
-        <link rel="canonical" href="https://linahernandezv.com/about/" />
-        
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Inter:wght@300;400;600&family=Mr+De+Haviland&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <link rel="stylesheet" href="../style.css">
-        <link rel="icon" type="image/png" href="../images/icons/lina-96.png" sizes="96x96" />
-        <link rel="icon" type="image/svg+xml" href="../images/icons/lina-favicon.svg" />
-        <link rel="shortcut icon" href="../images/icons/lina-favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="../images/icons/lina-apple.png" />
-
-<meta name="title" content="Sobre Lina Hernandez | La Historia Detrás de la Lente">
-<meta name="description" content="Descubre la trayectoria de Lina Hernandez. Desde la alta costura editorial hasta la excelencia comercial, conoce la pasión y experiencia profesional que impulsa su carrera.">
-
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://linahernandez.com/es/about/">
-<meta property="og:title" content="Conoce a Lina Hernandez | Modelo Profesional">
-<meta property="og:description" content="Una mirada profunda a la carrera y filosofía profesional de Lina Hernandez. Explora su experiencia en la industria editorial y comercial.">
-<meta property="og:image" content="https://linahernandez.com/images/main/about-hero.jpg">
-
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://linahernandez.com/es/about/">
-<meta property="twitter:title" content="Sobre Lina Hernandez | Modelo Editorial y Comercial">
-<meta property="twitter:description" content="Descubre la trayectoria profesional y el trasfondo editorial de Lina Hernandez.">
-<meta property="twitter:image" content="https://linahernandez.com/images/main/about-hero.jpg">
-        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <script src="../components.js" defer></script>
-                <script src="../main.js"></script>
-
+        <script src="../main.js"></script>
     </head>
-    <body class="about-page">
 
+    <body class="about-page">
         <div id="global-nav"></div>
 
         <main id="main-content-wrapper">
             <header class="about-hero-split">
                 <div class="about-text-content">
                     <h1 class="about-heading" data-i18n="about_heading">Behind the Lens</h1>
-                    
                     <div class="bio-editorial-body">
                         <p class="bio-line line-1" data-i18n="about_bio_1"></p>
                         <p class="bio-line line-2" data-i18n="about_bio_2"></p>
                         <p class="bio-line line-3" data-i18n="about_bio_3"></p>
                     </div>
-                    
                     <div class="signature-block">
                         <p class="sign-off" data-i18n="sign_off">Con mucho amor,</p> 
                         <p class="signature">Lina Hernandez</p>
@@ -62,6 +31,13 @@
                     <img src="../images/main/about-hero.jpg" alt="Lina Hernandez">
                 </div>
             </header>
+
+            <div class="appreciation-header">
+                <p data-i18n="appreciation_text">See a picture you like? Tell me with a heart.</p>
+                <div class="total-likes-display">
+                    <i class="fas fa-heart"></i> <span id="global-like-counter">0</span> Appreciations
+                </div>
+            </div>
 
             <section class="gallery-wrapper">
                 <div id="about-gallery" class="masonry-grid">
@@ -73,60 +49,114 @@
             </section>
         </main>
 
-        <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-            <span class="close-lightbox">&times;</span>
+        <div id="lightbox" class="lightbox">
+            <div class="lb-like-container" onclick="handleLikeClick(event)">
+                <i id="lb-heart" class="far fa-heart"></i>
+            </div>
+
+            <div class="lb-nav-zone left" onclick="changeLightbox(-1)">
+                <div class="lb-arrow prev"></div>
+            </div>
+            
+            <div class="lb-nav-zone right" onclick="changeLightbox(1)">
+                <div class="lb-arrow next"></div>
+            </div>
+
             <div id="lightbox-content-container"></div>
+            
+            <div id="lb-counter">01 / 00</div>
+
+            <span class="close-lightbox" onclick="closeLightbox(event)">&times;</span>
         </div>
 
         <div id="global-footer"></div>
 
         <script>
-            // 1. GALLERY ENGINE (Remains the same, just simplified paths)
+            // 1. GLOBAL STATE
+            let allGalleryFiles = []; 
+            let currentLightboxIndex = 0;
+            let counterTimeout;
+            let userLikes = JSON.parse(localStorage.getItem('lina_about_likes')) || {};
+            let baseLikes = 1240;
+
+            function updateGlobalCounter() {
+                const userTotal = Object.keys(userLikes).length;
+                const display = document.getElementById('global-like-counter');
+                if (display) display.innerText = (baseLikes + userTotal).toLocaleString();
+            }
+
+            // 2. LIKE LOGIC
+            function toggleLike(fileName, event) {
+                if (event) event.stopPropagation();
+
+                if (userLikes[fileName]) {
+                    delete userLikes[fileName];
+                } else {
+                    userLikes[fileName] = true;
+                }
+
+                localStorage.setItem('lina_about_likes', JSON.stringify(userLikes));
+                updateGlobalCounter();
+                refreshLikeUI(fileName);
+            }
+
+            function refreshLikeUI(fileName) {
+                const isLiked = userLikes[fileName];
+                const lbHeart = document.getElementById('lb-heart');
+                if (lbHeart) lbHeart.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+
+                const gridHearts = document.querySelectorAll(`[data-filename="${fileName}"]`);
+                gridHearts.forEach(heart => {
+                    heart.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+                });
+            }
+
+            function handleLikeClick(event) {
+                const fileName = allGalleryFiles[currentLightboxIndex];
+                toggleLike(fileName, event);
+            }
+
+            // 3. GALLERY ENGINE
             async function loadAboutGallery() {
                 const loader = document.getElementById('about-loader');
                 const gallery = document.getElementById('about-gallery');
-                if (!gallery) return;
 
                 try {
                     const response = await fetch('../images/about/about-manifest.json');
-                    const files = await response.json();
-                    
-                    files.reverse();
-                    files.forEach((fileName, index) => {
+                    allGalleryFiles = await response.json(); 
+                    allGalleryFiles.reverse(); 
+
+                    allGalleryFiles.forEach((fileName, index) => {
                         const item = document.createElement('div');
                         item.className = 'gallery-item';
                         
-                        // Masonry Logic
-	const col = index % 4; // 0=Col1, 1=Col2, 2=Col3, 3=Col4
+                        const col = index % 4; 
+                        let isTall = (index + 1) % 5 === 0;
+                        let isWide = (index + 1) % 5 === 0;
+                        if (isWide && col === 3) { isWide = false; isTall = false; }
+                        if (isTall || index === 0) item.classList.add('tall');
+                        if (isWide || index === 0) item.classList.add('wide');
 
-	let isTall = (index + 1) % 5 === 0;
-	let isWide = (index + 1) % 5 === 0;
-
-	// SAFETY GUARD: "Force Regular" Logic
-	// If it's in the 4th column, it CANNOT be wide. 
-	 if (isWide && col === 3) {
-	 	isWide = false;
-        isTall = false; // Forcing regular size
-	}
-
-	// // If it's Wide, we should also ensure it's not Tall 
-	// // (avoiding the 'Giant Square' which causes the most gaps)
-	// if (isWide && isTall) {
-	// 	isTall = false; 
-	// }
-
-	if (isTall || index === 0) item.classList.add('tall');
-	if (isWide || index === 0) item.classList.add('wide');
+                        // Hover Like Overlay
+                        const likeOverlay = document.createElement('div');
+                        likeOverlay.className = 'grid-like-overlay';
+                        const isLikedClass = userLikes[fileName] ? 'fas' : 'far';
+                        likeOverlay.innerHTML = `<i class="${isLikedClass} fa-heart" data-filename="${fileName}"></i>`;
+                        likeOverlay.onclick = (e) => toggleLike(fileName, e);
+                        item.appendChild(likeOverlay);
 
                         const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
                         const filePath = `../images/about/${fileName}`;
 
                         if (isVideo) {
-                            item.innerHTML = `
+                            const vtn = document.createElement('div');
+                            vtn.className = 'video-container-grid'; // Use your CSS for grid videos
+                            vtn.innerHTML = `
                                 <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
                                 <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
                             `;
-                            const video = item.querySelector('video');
+                            item.appendChild(vtn);
+                            const video = vtn.querySelector('video');
                             item.onmouseenter = () => video.play().catch(() => {});
                             item.onmouseleave = () => { video.pause(); video.currentTime = 0; };
                         } else {
@@ -136,39 +166,81 @@
                             item.appendChild(img);
                         }
 
-                        item.onclick = () => openLightbox(filePath, isVideo);
+                        item.onclick = (e) => {
+                            // Only open if they didn't click the heart
+                            if (!e.target.classList.contains('fa-heart')) openLightbox(index);
+                        };
                         gallery.appendChild(item);
                     });
-                } catch (e) { console.error("Gallery Error:", e); }
-                finally { if (loader) loader.classList.add('loader-hidden'); }
+
+                    if (loader) loader.classList.add('loader-hidden');
+                } catch (error) { console.error("Gallery failed:", error); }
             }
 
-            // 2. LIGHTBOX (Remains consistent)
-            function openLightbox(src, isVideo) {
+            // 4. LIGHTBOX LOGIC
+            function openLightbox(index) {
+                currentLightboxIndex = index;
                 const lb = document.getElementById('lightbox');
                 const container = document.getElementById('lightbox-content-container');
+                const counter = document.getElementById('lb-counter');
+                
+                const fileName = allGalleryFiles[currentLightboxIndex];
+                const filePath = `../images/about/${fileName}`;
+                const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
+
                 container.innerHTML = isVideo ? 
-                    `<video src="${src}" controls autoplay style="max-width:90%"></video>` : 
-                    `<img src="${src}" style="max-width:90%">`;
+                    `<video src="${filePath}" controls autoplay style="max-width:90%"></video>` : 
+                    `<img src="${filePath}" class="lb-fade-in" style="max-width:90%">`;
+
+                if (counter) {
+                    counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${allGalleryFiles.length.toString().padStart(2, '0')}`;
+                }
+
+                refreshLikeUI(fileName);
                 lb.classList.add('active');
+                document.body.style.overflow = 'hidden'; 
+                flashCounter();
             }
 
-            function closeLightbox() {
-                document.getElementById('lightbox').classList.remove('active');
+            function changeLightbox(step) {
+                currentLightboxIndex += step;
+                if (currentLightboxIndex >= allGalleryFiles.length) currentLightboxIndex = 0;
+                else if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryFiles.length - 1;
+                openLightbox(currentLightboxIndex);
+            }
+        
+            function closeLightbox(event) {
+                if (event) event.stopPropagation();
+                const lb = document.getElementById('lightbox');
+                const container = document.getElementById('lightbox-content-container');
+                lb.classList.remove('active');
+                if (container) container.innerHTML = '';
+                document.body.style.overflow = ''; 
             }
 
-            // 3. INITIALIZATION
-document.addEventListener("DOMContentLoaded", async () => {
-    const lang = localStorage.getItem('preferredLang') || 'en';
-    
-    // 1. Wait a tiny bit for components.js to inject the footer
-    setTimeout(() => {
-        if (window.updatePageText) updatePageText(lang);
-    }, 100); 
+            function flashCounter() {
+                const counter = document.getElementById('lb-counter');
+                if (!counter) return;
+                counter.classList.add('visible');
+                clearTimeout(counterTimeout);
+                counterTimeout = setTimeout(() => { counter.classList.remove('visible'); }, 2000);
+            }
 
-    loadAboutGallery();
-});
+            // 5. KEYBOARD & INIT
+            document.addEventListener('keydown', (e) => {
+                const lb = document.getElementById('lightbox');
+                if (!lb || !lb.classList.contains('active')) return;
+                if (e.key === "ArrowRight") changeLightbox(1);
+                if (e.key === "ArrowLeft") changeLightbox(-1);
+                if (e.key === "Escape") closeLightbox();
+            });
 
+            document.addEventListener('DOMContentLoaded', () => {
+                updateGlobalCounter();
+                const lang = localStorage.getItem('preferredLang') || 'en';
+                setTimeout(() => { if (window.updatePageText) updatePageText(lang); }, 100); 
+                loadAboutGallery();
+            });
         </script>
     </body>
 </html>

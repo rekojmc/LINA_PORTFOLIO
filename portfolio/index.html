@@ -6,9 +6,9 @@
         <link rel="alternate" hreflang="es" href="https://linahernandezv.com/" />
         <link rel="alternate" hreflang="en" href="https://linahernandezv.com/" />
         <link rel="alternate" hreflang="x-default" href="https://linahernandezv.com/" />
-        <link rel="canonical" href="https://linahernandezv.com/contact/" />
+        <link rel="canonical" href="https://linahernandezv.com/portfolio/" />
 
-        <title data-i18n="site_title_contact">Contact | Lina Hernandez</title>
+        <title data-i18n="site_title">Portfolio | Lina Hernandez</title>
         
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,164 +24,186 @@
         
         <script src="../main.js"></script>
         <script src="../components.js" defer></script>
-
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://linahernandezv.com/portfolio/">
-        <meta property="og:title" content="Portafolio | Lina Hernandez">
-        <meta property="og:description" content="Explora el trabajo editorial y comercial más reciente de Lina Hernandez. Disponible para contrataciones globales.">        
-        <meta property="og:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
-        <meta property="og:locale" content="es_ES">
-
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:url" content="https://linahernandezv.com/portfolio/">
-        <meta name="twitter:title" content="Portafolio | Lina Hernandez">
-        <meta property="twitter:description" content="Modelaje editorial y comercial de alto nivel. Mira el portafolio completo y la galería.">
-        <meta name="twitter:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
-
     </head>
-	<body>
+    <body>
         <div id="global-nav"></div>
-        <div>
-            <p></p>
-            <p></p>
+        
+        <main class="gallery-wrapper" id="gallery">
+            <div id="portfolio-gallery" class="masonry-grid">
+                <div id="gallery-loader" class="gallery-loader">
+                    <div class="spinner"></div>
+                    <p data-i18n="loading_text">Curating Collection...</p>
+                </div>
+            </div>
+        </main>
+
+        <div id="lightbox" class="lightbox">
+            <div class="lb-nav-zone left" onclick="changeLightbox(-1)">
+                <div class="lb-arrow prev"></div>
+            </div>
+            
+            <div class="lb-nav-zone right" onclick="changeLightbox(1)">
+                <div class="lb-arrow next"></div>
+            </div>
+
+            <div id="lightbox-content-container"></div>
+            
+            <div id="lb-counter">01 / 00</div>
+            <span class="close-lightbox" onclick="closeLightbox(event)">&times;</span>
         </div>
-		<main class="gallery-wrapper" id="gallery">
-			<div id="portfolio-gallery" class="masonry-grid">
-				<div id="gallery-loader" class="gallery-loader">
-					<div class="spinner"></div>
-					<p data-i18n="loading_text">Curating Collection...</p>
-				</div>
-			</div>
-		</main>
 
-		<div id="lightbox" class="lightbox" onclick="closeLightbox()">
-			<span class="close-lightbox">&times;</span>
-			<div id="lightbox-content-container"></div>
-		</div>
+        <div id="global-footer"></div>
 
-		<div id="global-footer"></div>
+        <script>
+            // 1. GLOBAL VARIABLES
+            let allGalleryFiles = []; 
+            let currentLightboxIndex = 0;
+            let counterTimeout; // For the auto-hide timer
 
-		<script>
-			const gallery = document.getElementById('portfolio-gallery');
+            async function loadDynamicGallery() {
+                const loader = document.getElementById('gallery-loader');
+                const gallery = document.getElementById('portfolio-gallery');
 
-    const p1Img = document.querySelector('.panel-1 img');
-    const p2Img = document.querySelector('.panel-2 img');
-    const p3Img = document.querySelector('.panel-3 img');
+                try {
+                    const response = await fetch('../images/portfolio/portfolio-manifest.json');
+                    allGalleryFiles = await response.json(); 
+                    allGalleryFiles.reverse(); 
 
-async function loadDynamicGallery() {
-    const loader = document.getElementById('gallery-loader');
-    
-    // FAIL-SAFE: If anything hangs, hide the loader after 5 seconds
-    const failSafe = setTimeout(() => {
-        if (loader) loader.classList.add('loader-hidden');
-    }, 5000);
+                    allGalleryFiles.forEach((fileName, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'gallery-item';
+                        
+                        // Masonry Logic
+                        const col = index % 4; 
+                        let isTall = (index + 1) % 3 === 0;
+                        let isWide = (index + 1) % 3 === 0;
 
-    try {
-        const response = await fetch('../images/portfolio/portfolio-manifest.json');
-        let files = await response.json();
+                        if (isWide && col === 3) { isWide = false; isTall = false; }
+                        if (isTall || index === 0) item.classList.add('tall');
+                        if (isWide || index === 0) item.classList.add('wide');
 
-		files.reverse();
+                        const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
+                        const filePath = `../images/portfolio/${fileName}`;
 
+                        if (isVideo) {
+                            item.innerHTML = `
+                                <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
+                                <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
+                            `;
+                            const video = item.querySelector('video');
+                            item.onmouseenter = () => video.play().catch(() => {});
+                            item.onmouseleave = () => { video.pause(); video.currentTime = 0; };
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = filePath;
+                            img.loading = "lazy";
+                            item.appendChild(img);
+                        }
 
-   files.forEach((fileName, index) => {
-    const item = document.createElement('div');
-    item.className = 'gallery-item';
-    
-	// Inside your gallery generation loop:
-	const col = index % 4; // 0=Col1, 1=Col2, 2=Col3, 3=Col4
+                        item.onclick = () => openLightbox(index);
+                        gallery.appendChild(item);
+                    });
 
-	let isTall = (index + 1) % 3 === 0;
-	let isWide = (index + 1) % 3 === 0;
+                    if (loader) loader.classList.add('loader-hidden');
 
-	// SAFETY GUARD: "Force Regular" Logic
-	// If it's in the 4th column, it CANNOT be wide. 
-	 if (isWide && col === 3) {
-	 	isWide = false;
-        isTall = false; // Forcing regular size
-	}
+                } catch (error) {
+                    console.error("Gallery failed:", error);
+                    if (loader) loader.classList.add('loader-hidden');
+                }
+            }
 
-	// // If it's Wide, we should also ensure it's not Tall 
-	// // (avoiding the 'Giant Square' which causes the most gaps)
-	// if (isWide && isTall) {
-	// 	isTall = false; 
-	// }
+            // 2. COUNTER AUTO-HIDE HELPER
+            function flashCounter() {
+                const counter = document.getElementById('lb-counter');
+                if (!counter) return;
 
-	if (isTall || index === 0) item.classList.add('tall');
-	if (isWide || index === 0) item.classList.add('wide');
+                // Show it
+                counter.classList.add('visible');
 
+                // Reset existing timer
+                clearTimeout(counterTimeout);
 
-    const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
-    const filePath = `../images/portfolio/${fileName}`;
+                // Hide after 3 seconds
+                counterTimeout = setTimeout(() => {
+                    counter.classList.remove('visible');
+                }, 1000);
+            }
 
-    if (isVideo) {
-        // We inject the video AND the play icon div
-        item.innerHTML = `
-            <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
-            <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
-        `;
-        const video = item.querySelector('video');
+            // 3. PRO LIGHTBOX LOGIC
+            function openLightbox(index) {
+                currentLightboxIndex = index;
+                const lb = document.getElementById('lightbox');
+                const container = document.getElementById('lightbox-content-container');
+                const counter = document.getElementById('lb-counter');
+                
+                const fileName = allGalleryFiles[currentLightboxIndex];
+                const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
+                const filePath = `../images/portfolio/${fileName}`;
 
-        item.onmouseenter = () => video.play().catch(() => {});
-        item.onmouseleave = () => {
-            video.pause();
-            video.currentTime = 0;
-        };
-    } else {
-        const img = document.createElement('img');
-        img.src = filePath;
-        img.loading = "lazy";
-        item.appendChild(img);
-    }
+                container.innerHTML = ''; 
 
-    // CLICK TO OPEN (Fixes your "click not working" issue)
-    item.onclick = () => openLightbox(filePath, isVideo);
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = filePath;
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.style.maxWidth = '90%';
+                    container.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = filePath;
+                    img.style.maxWidth = '90%';
+                    img.className = 'lb-fade-in'; 
+                    container.appendChild(img);
+                }
 
-    gallery.appendChild(item);
-});
+                if (counter) {
+                    const total = allGalleryFiles.length;
+                    counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${total.toString().padStart(2, '0')}`;
+                }
 
-        // SUCCESS: Remove the loader and clear the failsafe
-        clearTimeout(failSafe);
-        if (loader) loader.classList.add('loader-hidden');
+                lb.classList.add('active');
+                document.body.style.overflow = 'hidden'; 
+                
+                flashCounter(); // Trigger visibility
+            }
 
-    } catch (error) {
-        console.error("Gallery failed:", error);
-        // ERROR: Hide loader even on failure so page isn't broken
-        if (loader) loader.classList.add('loader-hidden');
-    }
-}
-			function openLightbox(src, isVideo) {
-				const lb = document.getElementById('lightbox');
-				const container = document.getElementById('lightbox-content-container');
-				container.innerHTML = ''; 
+            function changeLightbox(step) {
+                currentLightboxIndex += step;
+                
+                if (currentLightboxIndex >= allGalleryFiles.length) {
+                    currentLightboxIndex = 0; 
+                } else if (currentLightboxIndex < 0) {
+                    currentLightboxIndex = allGalleryFiles.length - 1; 
+                }
+                
+                openLightbox(currentLightboxIndex);
+            }
 
-				if (isVideo) {
-					const video = document.createElement('video');
-					video.src = src;
-					video.controls = true;
-					video.autoplay = true;
-					video.style.maxWidth = '90%';
-					container.appendChild(video);
-				} else {
-					const img = document.createElement('img');
-					img.src = src;
-					img.style.maxWidth = '90%';
-					container.appendChild(img);
-				}
-				lb.classList.add('active');
-			}
+            function closeLightbox(event) {
+                if (event) event.stopPropagation();
+                
+                const lb = document.getElementById('lightbox');
+                const container = document.getElementById('lightbox-content-container');
+                
+                lb.classList.remove('active');
+                if (container) container.innerHTML = '';
+                document.body.style.overflow = ''; 
+            }
 
-			function closeLightbox() {
-				document.getElementById('lightbox').classList.remove('active');
-                document.getElementById('lightbox-content-container').innerHTML = '';
-			}
+            // 4. KEYBOARD & INIT
+            document.addEventListener('keydown', (e) => {
+                const lb = document.getElementById('lightbox');
+                if (!lb || !lb.classList.contains('active')) return;
 
+                if (e.key === "ArrowRight") changeLightbox(1);
+                if (e.key === "ArrowLeft") changeLightbox(-1);
+                if (e.key === "Escape") closeLightbox();
+            });
 
-			
-
-			document.addEventListener('DOMContentLoaded', () => {
-            // Kick off the dynamic hero engine
-			loadDynamicGallery();
-        });
-		</script>
-	</body>
+            document.addEventListener('DOMContentLoaded', () => {
+                loadDynamicGallery();
+            });
+        </script>
+    </body>
 </html>

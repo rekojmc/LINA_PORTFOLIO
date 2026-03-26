@@ -907,21 +907,26 @@ nav.glass-nav.nav-hidden {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(245, 242, 238, 0.96);
+    background: rgba(245, 242, 238, 0.80);
     z-index: 5000;
     display: flex;
     align-items: center;
     justify-content: center;
     visibility: hidden;
     opacity: 0;
+    backdrop-filter: blur(15px);
     transition: var(--transition-fast);
 }
 
-.lightbox.active { visibility: visible; opacity: 1; }
+.lightbox.active { 
+    display: flex;
+    visibility: visible; 
+    opacity: 1; 
+}
 
 .lightbox img {
-    max-width: 85%;
-    max-height: 85%;
+    max-width: 100%;
+    max-height: 100%;
     box-shadow: 0 30px 60px rgba(0,0,0,0.1);
 }
 
@@ -936,10 +941,126 @@ nav.glass-nav.nav-hidden {
 
 .close-lightbox {
     position: absolute;
-    top: 40px; right: 40px;
-    font-size: 50px;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: var(--black);
     cursor: pointer;
+    z-index: 9999 !important; /* Higher than nav zones */
+    pointer-events: all !important; /* Force it to accept clicks */
+    display: block;
+    line-height: 1;
 }
+
+.close-lightbox:hover{
+    transform: scale(1.5);
+    color: var(--white);
+
+}
+
+/* Navigation Zones (Huge hit areas for better UX) */
+.lb-nav-zone {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5000;
+}
+.lb-nav-zone.left { left: 0; }
+.lb-nav-zone.right { right: 0; }
+
+/* The Arrows (Minimalist Lines) */
+.lb-arrow {
+    width: 90px;
+    height: 90px;
+    border-top: 6px solid var(--nude-dark);
+    border-left: 6px solid var(--nude-dark);
+}
+.lb-arrow.prev { transform: rotate(-45deg); margin-left: 40px; }
+.lb-arrow.next { transform: rotate(135deg); margin-right: 40px; }
+
+.lb-nav-zone:hover {
+    opacity: 1;
+    transform: scale(1.2); /* We'll set the rotation specifically */
+}
+
+/* Counter Style */
+#lb-counter {
+    position: absolute;
+     opacity: 0;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--nude-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    transition: opacity 0.8s ease-in-out;
+    pointer-events: none; /* Ensures the counter doesn't block clicks */
+    z-index: 8000 !important;
+
+}
+
+#lb-counter.visible {
+    opacity: 1; /* Shown when this class is added */
+}
+
+/* Appreciation Header */
+.appreciation-header {
+    text-align: center;
+    padding: 60px 20px 30px;
+    font-family: 'Cormorant Garamond', serif;
+}
+.appreciation-header p { font-style: italic; color: #666; margin-bottom: 8px; }
+.total-likes-display { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; }
+.total-likes-display i { color: var(--gold); margin-right: 10px; }
+.total-likes-display {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+.total-likes-display i { color: var(--gold); margin-right: 5px; }
+
+/* Grid Hover Heart */
+.grid-like-overlay {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+    pointer-events: all;
+}
+
+.gallery-item:hover .grid-like-overlay { opacity: 1; }
+.grid-like-overlay i {
+    color: var(--white);
+    font-size: 1.4rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    cursor: pointer;
+    padding: 5px;
+}
+.grid-like-overlay i.fas { color: var(--gold); }
+
+/* Lightbox Heart */
+.lb-like-container {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 10001; /* Above nav zones */
+    cursor: pointer;
+    padding: 10px;
+}
+#lb-heart {
+    font-size: 2rem;
+    color: white;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+#lb-heart.fas { color: var(--gold); transform: scale(1.1); }
 
 /* --- FOOTER --- */
 .nude-footer {

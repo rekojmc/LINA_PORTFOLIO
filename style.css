@@ -784,14 +784,20 @@ nav.glass-nav.nav-hidden {
 
 
 /* --- GALLERY GRID --- */
-.gallery-wrapper {
+.gallery-wrapper-portfolio {
+    width: 90%; /* Increased slightly for a more 'editorial' feel */
+    max-width: 1400px;
+    
+    margin: 60px auto;
+}
+
+.gallery-wrapper-about {
     width: 90%; /* Increased slightly for a more 'editorial' feel */
     max-width: 1400px;
     
     margin: 60px auto;
     margin-top: 10px;
 }
-
 .masonry-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Better for tablet responsiveness */

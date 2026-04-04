@@ -1,0 +1,20 @@
+name: Midnight Sync
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at 12:00 AM every night
+  workflow_dispatch: # Allows you to run it manually to test
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python # Or Node.js
+        uses: actions/setup-python@v4
+      - name: Install Dependencies
+        run: pip install google-api-python-client cloudinary
+      - name: Run Sync Script
+        env:
+          GDRIVE_KEY: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_KEY }}
+          CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+        run: python scripts/sync_images.py

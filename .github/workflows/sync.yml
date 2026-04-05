@@ -1,20 +1,23 @@
 name: Midnight Sync
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at 12:00 AM every night
-  workflow_dispatch: # Allows you to run it manually to test
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python # Or Node.js
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4 # Fixes deprecation warning
+      - name: Set up Python
+        uses: actions/setup-python@v5 # Fixes deprecation warning
+        with:
+          python-version: '3.11'
       - name: Install Dependencies
-        run: pip install google-api-python-client cloudinary
+        run: pip install google-api-python-client google-auth cloudinary
       - name: Run Sync Script
         env:
           GDRIVE_KEY: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_KEY }}
           CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: python scripts/sync_images.py

@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXSLX0F052"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XXSLX0F052');
+</script>
+</script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="alternate" hreflang="es" href="https://linahernandezv.com/" />
@@ -35,7 +45,7 @@
         <meta name="twitter:title" content="Portafolio | Lina Hernandez">
         <meta property="twitter:description" content="Modelaje editorial y comercial de alto nivel. Mira el portafolio completo y la galería.">
         <meta name="twitter:image" content="https://linahernandezv.com/images/main/home-hero.jpg">     
-           
+
         <script src="../main.js"></script>
         <script src="../components.js" defer></script>
     </head>
@@ -73,13 +83,18 @@
             let currentLightboxIndex = 0;
             let counterTimeout;
 
-            function getOptimizedUrl(url, isVideo = false) {
-                // thumbnail: 800px width, auto-format, auto-quality
-                const transform = isVideo 
-                    ? 'vc_auto,q_auto,w_800' 
-                    : 'f_auto,q_auto,w_800';
-                return url.replace('/upload/', `/upload/${transform}/`);
-            }
+function getOptimizedUrl(url, isVideo = false) {
+    // l_lina_logo: refers to an image named 'lina_logo' uploaded to your Cloudinary
+    // o_30: 30% opacity
+    // g_south_east: bottom right corner
+    const watermark = 'l_lina_logo,o_30,w_200,g_south_east,x_20,y_20/';
+    
+    const transform = isVideo 
+        ? 'vc_auto,q_auto,w_800' 
+        : `f_auto,q_auto,w_800,${watermark}`; // Slap it on!
+        
+    return url.replace('/upload/', `/upload/${transform}/`);
+}
 
             async function loadDynamicGallery() {
                 const loader = document.getElementById('gallery-loader');

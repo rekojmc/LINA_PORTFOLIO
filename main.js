@@ -47,6 +47,28 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePageText(savedLang);
 });
 
+// --- INTELLECTUAL PROPERTY PROTECTION ---
+document.addEventListener('contextmenu', (e) => {
+    // Only block right-click if the user is clicking on an image or video
+    if (e.target.nodeName === 'IMG' || e.target.nodeName === 'VIDEO' || e.target.closest('.gallery-item')) {
+        e.preventDefault();
+        console.log("🛡️ Right-click disabled to protect artist's work.");
+        return false;
+    }
+});
+
+// Optional: Block common "Save As" keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    // Blocks Ctrl+S, Ctrl+U (View Source), and F12 (Inspect)
+    if (
+        (e.ctrlKey && (e.key === 's' || e.key === 'u')) || 
+        e.key === 'F12'
+    ) {
+        e.preventDefault();
+        return false;
+    }
+});
+
 async function updatePageText(lang) {
     const path = window.location.pathname;
     // 1. PATH LOGIC: Looking for translations.json in the ROOT

@@ -757,8 +757,39 @@ nav.glass-nav.nav-hidden {
 }
 
 .bio-editorial-body {
-    margin: 2px 0;
-    max-width: 600px;
+    /* 1. THE BLOCK SHAPE */
+    text-align: justify;
+    text-justify: inter-word; /* Distributes space evenly between words */
+    
+    /* 2. THE TEXTURE */
+    font-family: 'Cormorant Garamond', serif; /* Use that elegant serif you have */
+    font-size: 1.25rem;
+    line-height: 1.7; /* Breathing room is key for editorial style */
+    color: #f0f0f0;
+    
+    /* 3. THE HYPHENATION (Crucial for Justified text) */
+    /* This prevents huge gaps between words by breaking long words at the end of lines */
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    
+    max-width: 600px; /* Don't let lines get too long, or it's hard to read */
+}
+
+.bio-editorial-body p.line-1::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    float: left;
+    font-size: 4.5rem; /* Make it huge */
+    line-height: 1;
+    padding-top: 4px;
+    padding-right: 12px;
+    padding-left: 3px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--white);
+}
+
+.bio-editorial-body p {
+    margin-bottom: 1.5rem;
 }
 
 .bio-line {
@@ -1345,47 +1376,44 @@ nav.glass-nav.nav-hidden {
 
 .bio-stable-container {
     width: 100%;
-    min-height: 60vh; /* Takes up most of the screen */
+    max-height: 60vh; /* Takes up most of the screen */
     display: flex;
     justify-content: center; 
     align-items: center;
-    padding: 5vh 3vw; 
-    background-color: var(--black)
+    padding:10vh 10vw; 
+    background-color: var(--nude-dark);
+    margin-top: 1vh;
+    margin-bottom: 1vh;
 }
 
 .bio-wrapper {
+    background-color: var(--black); /* Deep black */
+    max-width: 1200px; /* Constrains the width */
+    max-height: 60vh;
+    margin: 0 auto;    /* Centers the block on the page */
     display: flex;
-    flex-direction: row; 
-    align-items: flex-start; 
-    gap: 10px; 
-    max-width: 1200px; /* Locks the whole section so it doesn't drift */
-    width: 100%;
+    align-items: center;
+    padding: 20px 20px; /* Breathing room inside the black box */
+    box-shadow: 0 20px 20px rgba(0,0,0,0.1); /* Optional: subtle lift */
+    margin-top: 8vh;
+    margin-bottom: 1vh;
 }
 
 /* THE IMAGE SIDE (The Frame) */
+/* 5. IMAGE TWEAK */
 .bio-image-side {
-    flex: 0 0 45%; 
-    max-width: 450px; 
+    display: grid;
+    max-width: 50%;
+    max-height: 50vh;
+    /* Optional: add a very thin grey border to define image against black */
 }
 
 .bio-image-side img {
-    width: 100%;
-    /* 1. LOCK THE FRAME SIZE */
-    aspect-ratio: 4 / 5; /* This creates a professional portrait 'box' */
-    
-    /* 2. FILL THE FRAME */
-    object-fit: cover; 
-
-    /* 3. THE MANUAL CROP (The Fix) */
-    /* 50% is horizontal (center). 
-       15% is the vertical offset. 
-       - 0% = Top (Forehead)
-       - 15% to 25% = Eyes/Shoulders (The Sweet Spot)
-       - 50% = Middle (Chest/Stomach)
-    */
-    object-position: 50% 20%; 
-    
-    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    display: grid;
+    max-width: 100%;
+    max-height: 50vh;
+    /* Optional: add a very thin grey border to define image against black */
+    border: 2px solid #ffffff; 
 }
 
 /* THE TEXT SIDE */
@@ -1396,14 +1424,14 @@ nav.glass-nav.nav-hidden {
 
 .bio-text-side .about-heading {
     font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: 20px;
-    line-height: 1.1;
+    margin-bottom: 10px;
+    line-height: 1;
     color: var(--white);
 }
 
 .bio-text-side .bio-line {
     font-size: 1.2rem;
-    line-height: 1.8;
+    line-height: 1.5;
     margin-bottom: 15px;
     max-width: 600px; /* Keeps lines easy to read */
     color: var(--white);
@@ -1496,4 +1524,227 @@ nav.glass-nav.nav-hidden {
     font-optical-sizing: auto;
     font-size: clamp(5rem, 8vw, 7rem);
     margin-top: 1.5vh;
+}
+
+/* ================================================================
+   RESPONSIVE OVERHAUL: MOBILE & TABLET
+   Target: Everything below 768px (Phones and vertical tablets)
+================================================================ */
+
+@media (max-width: 768px) {
+
+    /* 1. TYPOGRAPHY SCALING */
+    /* Shrinking those massive headings so they don't overflow the screen */
+    .main-title {
+        font-size: 4.5rem !important; 
+        margin-top: 60px;
+        letter-spacing: -1px;
+        line-height: 0.8;
+    }
+
+    .main-subheading {
+        font-size: 1.5rem !important;
+        letter-spacing: 4px !important;
+        line-height: 1.2;
+    }
+
+    .signature, .bio-signature, .thankyou-signature.large-header {
+        font-size: 4rem !important;
+        line-height: 1;
+        margin-top: 20px;
+    }
+
+    /* 2. THE DIAGONAL HERO (Simplified for Mobile) */
+    /* Three skewed panels on mobile look like vertical slivers. 
+       We reset them to a stacked or simplified view. */
+    .diagonal-hero {
+        flex-direction: column !important; /* Stack them vertically */
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .diagonal-hero-panel {
+        flex: none !important;
+        width: 100% !important;
+        height: 33vh !important; /* Each panel takes 1/3 of the screen */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border: none !important;
+        border-bottom: 2px solid var(--white) !important;
+    }
+
+    .diagonal-hero-panel img {
+        object-position: center center !important;
+        margin-left: 0 !important;
+        transform: none !important; /* Remove any skew/tilt for clean mobile edges */
+    }
+
+    .diagonal-hero-text.top-aligned {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        padding: 40px 20px;
+        background-color: var(--nude-dark);
+    }
+
+    .diagonal-hero-card {
+        background-color: transparent !important;
+        backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    .diagonal-hero-card h1 {
+        font-size: 3rem !important;
+        letter-spacing: 5px !important;
+    }
+
+    /* 3. BIO / ABOUT SECTION (The Black Block) */
+    .bio-stable-container {
+        padding: 40px 15px !important;
+        max-height: none !important;
+        height: auto !important;
+    }
+
+    .bio-wrapper {
+        flex-direction: column !important; /* Image on top, text below */
+        max-height: none !important;
+        padding: 40px 20px !important;
+        margin-top: 40px !important;
+    }
+
+    .bio-image-side {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-bottom: 30px;
+    }
+
+    .bio-image-side img {
+        max-height: none !important;
+        width: 100% !important;
+    }
+
+    .bio-text-side {
+        width: 100% !important;
+        text-align: center;
+    }
+
+    /* Reset Newspaper Justification for readability on small screens */
+    .bio-editorial-body {
+        text-align: left !important;
+        font-size: 1.1rem !important;
+    }
+
+    .bio-editorial-body p.line-1::first-letter {
+        font-size: 3.5rem !important; /* Smaller drop cap for mobile */
+    }
+
+    /* 4. MASONRY GRID */
+    .gallery-wrapper-portfolio, .gallery-wrapper-about {
+        width: 95vw !important;
+        margin: 20px auto !important;
+    }
+
+    .masonry-grid {
+        grid-template-columns: repeat(2, 1fr) !important; /* 2 columns is the sweet spot */
+        grid-auto-rows: 40vw !important; /* Square-ish blocks */
+        gap: 8px !important;
+    }
+
+    /* Important: Resetting Wide/Tall spans so they don't break the small grid */
+    .gallery-item.wide {
+        grid-column: span 2 !important; /* Stays wide */
+    }
+    .gallery-item.tall {
+        grid-row: span 1 !important; /* Talls are usually too much for mobile; keep them standard */
+    }
+
+    /* 5. CONTACT & THANK YOU CARDS */
+    .contact-glass-card, .thank-you-content {
+        width: 90% !important;
+        padding: 40px 20px !important;
+        margin: 20px;
+    }
+
+    .contact-hero-overlay, .thank-you-bg-wrap {
+        background-attachment: scroll !important; /* Parallax is heavy on mobile batteries */
+        background-size: cover !important;
+    }
+
+    /* 6. LIGHTBOX CONTROLS */
+    .lb-arrow {
+        width: 45px !important;
+        height: 45px !important;
+        border-width: 3px !important;
+    }
+
+    .lb-nav-zone {
+        width: 30% !important; /* Larger hit areas for thumbs */
+    }
+
+    .close-lightbox {
+        top: 15px !important;
+        right: 15px !important;
+        font-size: 30px !important;
+    }
+
+    /* 7. NAVIGATION */
+    .glass-nav {
+        padding: 10px 15px !important;
+    }
+
+    .nav-name {
+        font-size: 1.1rem !important;
+    }
+
+    .nav-links a {
+        font-size: 0.8rem !important;
+        margin-right: 8px !important;
+        letter-spacing: 1px !important;
+    }
+
+    /* 8. FOOTER */
+    .footer-nav {
+        flex-wrap: wrap; /* Wrap links so they don't go off-screen */
+        gap: 15px;
+    }
+
+    .footer-heading {
+        font-size: 2.5rem !important;
+    }
+}
+
+/* --- EXTRA TIGHT SCREENS (iPhone SE, etc) --- */
+@media (max-width: 400px) {
+    .masonry-grid {
+        grid-template-columns: 1fr !important; /* Single column for very small phones */
+    }
+    
+    .main-title {
+        font-size: 3.5rem !important;
+    }
+}
+
+/* On Desktop: Hide the mobile version */
+.mobile-only-hero {
+    display: none;
+}
+
+/* On Mobile: Hide the broken diagonal box and show the simple version */
+@media (max-width: 768px) {
+    .diagonal-hero {
+        display: none !important;
+    }
+    
+    .mobile-only-hero {
+        display: flex;
+        height: 100vh;
+        background: var(--nude-bg);
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
 }

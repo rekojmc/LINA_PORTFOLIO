@@ -15,13 +15,27 @@
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Inter:wght@300;400;600&family=Mr+De+Haviland&display=swap" rel="stylesheet">
         
         <link rel="stylesheet" href="../style.css">
-        <link rel="icon" type="image/png" href="../images/icons/lina-96.png" sizes="96x96" />
-        <link rel="icon" type="image/svg+xml" href="../images/icons/lina-favicon.svg" />
-        <link rel="shortcut icon" href="../images/icons/lina-favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="../images/icons/lina-apple.png" />
+
+        <link rel="icon" type="image/png" href="https://res.cloudinary.com/linahernandezv/image/upload//Lina_Portfolio/icons/lina-96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="https://res.cloudinary.com/linahernandezv/image/upload//Lina_Portfolio/icons/lina-favicon.svg" />
+        <link rel="shortcut icon" href="https://res.cloudinary.com/linahernandezv/image/upload//Lina_Portfolio/icons/lina-favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/linahernandezv/image/upload//Lina_Portfolio/icons/lina-apple.png" />
         <meta name="apple-mobile-web-app-title" content="Lina Hernandez" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        
+
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://linahernandezv.com/portfolio/">
+        <meta property="og:title" content="Portafolio | Lina Hernandez">
+        <meta property="og:description" content="Explora el trabajo editorial y comercial más reciente de Lina Hernandez. Disponible para contrataciones globales.">        
+        <meta property="og:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
+        <meta property="og:locale" content="es_ES">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://linahernandezv.com/portfolio/">
+        <meta name="twitter:title" content="Portafolio | Lina Hernandez">
+        <meta property="twitter:description" content="Modelaje editorial y comercial de alto nivel. Mira el portafolio completo y la galería.">
+        <meta name="twitter:image" content="https://linahernandezv.com/images/main/home-hero.jpg">     
+           
         <script src="../main.js"></script>
         <script src="../components.js" defer></script>
     </head>
@@ -55,25 +69,36 @@
         <div id="global-footer"></div>
 
         <script>
-            // 1. GLOBAL VARIABLES
             let allGalleryFiles = []; 
             let currentLightboxIndex = 0;
-            let counterTimeout; // For the auto-hide timer
+            let counterTimeout;
+
+            function getOptimizedUrl(url, isVideo = false) {
+                // thumbnail: 800px width, auto-format, auto-quality
+                const transform = isVideo 
+                    ? 'vc_auto,q_auto,w_800' 
+                    : 'f_auto,q_auto,w_800';
+                return url.replace('/upload/', `/upload/${transform}/`);
+            }
 
             async function loadDynamicGallery() {
                 const loader = document.getElementById('gallery-loader');
                 const gallery = document.getElementById('portfolio-gallery');
 
                 try {
-                    const response = await fetch('../images/portfolio/portfolio-manifest.json');
-                    allGalleryFiles = await response.json(); 
-                    allGalleryFiles.reverse(); 
+                    // Fetch the local JSON created by the Python script
+                    const response = await fetch('portfolio-gallery.json');
+                    const data = await response.json();
+                    
+                    // Since the split manifest only contains portfolio items, 'data' is the array
+                    allGalleryFiles = data || []; 
+                    allGalleryFiles.reverse(); // Newest first
 
-                    allGalleryFiles.forEach((fileName, index) => {
+                    allGalleryFiles.forEach((fileObj, index) => {
                         const item = document.createElement('div');
                         item.className = 'gallery-item';
                         
-                        // Masonry Logic
+                        // Masonry Rhythm Logic
                         const col = index % 4; 
                         let isTall = (index + 1) % 3 === 0;
                         let isWide = (index + 1) % 3 === 0;
@@ -82,12 +107,12 @@
                         if (isTall || index === 0) item.classList.add('tall');
                         if (isWide || index === 0) item.classList.add('wide');
 
-                        const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
-                        const filePath = `../images/portfolio/${fileName}`;
+                        const isVideo = fileObj.type === 'video';
+                        const thumbnailPath = getOptimizedUrl(fileObj.url, isVideo);
 
                         if (isVideo) {
                             item.innerHTML = `
-                                <video src="${filePath}" muted loop playsinline class="gallery-video"></video>
+                                <video src="${thumbnailPath}" muted loop playsinline class="gallery-video"></video>
                                 <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
                             `;
                             const video = item.querySelector('video');
@@ -95,8 +120,9 @@
                             item.onmouseleave = () => { video.pause(); video.currentTime = 0; };
                         } else {
                             const img = document.createElement('img');
-                            img.src = filePath;
+                            img.src = thumbnailPath;
                             img.loading = "lazy";
+                            img.alt = "Lina Hernandez Photography";
                             item.appendChild(img);
                         }
 
@@ -107,103 +133,85 @@
                     if (loader) loader.classList.add('loader-hidden');
 
                 } catch (error) {
-                    console.error("Gallery failed:", error);
+                    console.error("Manifest load error:", error);
                     if (loader) loader.classList.add('loader-hidden');
                 }
             }
 
-            // 2. COUNTER AUTO-HIDE HELPER
             function flashCounter() {
                 const counter = document.getElementById('lb-counter');
                 if (!counter) return;
-
-                // Show it
                 counter.classList.add('visible');
-
-                // Reset existing timer
                 clearTimeout(counterTimeout);
-
-                // Hide after 3 seconds
-                counterTimeout = setTimeout(() => {
-                    counter.classList.remove('visible');
-                }, 1000);
+                counterTimeout = setTimeout(() => counter.classList.remove('visible'), 1500);
             }
 
-            // 3. PRO LIGHTBOX LOGIC
             function openLightbox(index) {
                 currentLightboxIndex = index;
                 const lb = document.getElementById('lightbox');
                 const container = document.getElementById('lightbox-content-container');
                 const counter = document.getElementById('lb-counter');
                 
-                const fileName = allGalleryFiles[currentLightboxIndex];
-                const isVideo = fileName.toLowerCase().endsWith('.mp4') || fileName.toLowerCase().endsWith('.mov');
-                const filePath = `../images/portfolio/${fileName}`;
+                const fileObj = allGalleryFiles[currentLightboxIndex];
+                const isVideo = fileObj.type === 'video';
+                
+                // Lightbox quality: 1600px width
+                const lbTransform = isVideo ? 'vc_auto,q_auto,w_1600' : 'f_auto,q_auto,w_1600';
+                const lbPath = fileObj.url.replace('/upload/', `/upload/${lbTransform}/`);
 
                 container.innerHTML = ''; 
 
                 if (isVideo) {
                     const video = document.createElement('video');
-                    video.src = filePath;
+                    video.src = lbPath;
                     video.controls = true;
                     video.autoplay = true;
                     video.style.maxWidth = '90%';
+                    video.style.maxHeight = '85vh';
                     container.appendChild(video);
                 } else {
                     const img = document.createElement('img');
-                    img.src = filePath;
+                    img.src = lbPath;
+                    img.className = 'lb-fade-in';
                     img.style.maxWidth = '90%';
-                    img.className = 'lb-fade-in'; 
+                    img.style.maxHeight = '85vh';
                     container.appendChild(img);
                 }
 
                 if (counter) {
-                    const total = allGalleryFiles.length;
-                    counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${total.toString().padStart(2, '0')}`;
+                    counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${allGalleryFiles.length.toString().padStart(2, '0')}`;
                 }
 
                 lb.classList.add('active');
                 document.body.style.overflow = 'hidden'; 
-                
-                flashCounter(); // Trigger visibility
+                flashCounter(); 
             }
 
             function changeLightbox(step) {
                 currentLightboxIndex += step;
-                
-                if (currentLightboxIndex >= allGalleryFiles.length) {
-                    currentLightboxIndex = 0; 
-                } else if (currentLightboxIndex < 0) {
-                    currentLightboxIndex = allGalleryFiles.length - 1; 
-                }
-                
+                if (currentLightboxIndex >= allGalleryFiles.length) currentLightboxIndex = 0; 
+                else if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryFiles.length - 1; 
                 openLightbox(currentLightboxIndex);
             }
 
             function closeLightbox(event) {
                 if (event) event.stopPropagation();
-                
                 const lb = document.getElementById('lightbox');
                 const container = document.getElementById('lightbox-content-container');
-                
                 lb.classList.remove('active');
                 if (container) container.innerHTML = '';
                 document.body.style.overflow = ''; 
             }
 
-            // 4. KEYBOARD & INIT
             document.addEventListener('keydown', (e) => {
                 const lb = document.getElementById('lightbox');
                 if (!lb || !lb.classList.contains('active')) return;
-
                 if (e.key === "ArrowRight") changeLightbox(1);
                 if (e.key === "ArrowLeft") changeLightbox(-1);
                 if (e.key === "Escape") closeLightbox();
             });
 
-            document.addEventListener('DOMContentLoaded', () => {
-                loadDynamicGallery();
-            });
+            document.addEventListener('DOMContentLoaded', loadDynamicGallery);
         </script>
     </body>
 </html>

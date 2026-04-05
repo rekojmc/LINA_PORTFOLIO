@@ -17,28 +17,36 @@ creds = service_account.Credentials.from_service_account_info(gdrive_key)
 drive_service = build('drive', 'v3', credentials=creds)
 
 def sync():
-    print("Checking Google Drive...")
-    # Get files from GDrive
+    print("🚀 Starting Media Sync...")
+    
+    # --- THE FILTER: Grab anything that is an image OR a video ---
+    query = f"'{folder_id}' in parents and trashed = false and (mimeType contains 'image/' or mimeType contains 'video/')"
+    
     results = drive_service.files().list(
-        q=f"'{folder_id}' in parents and trashed = false",
+        q=query,
         fields="files(id, name, mimeType)"
     ).execute()
     drive_files = results.get('files', [])
-    drive_names = [f['name'] for f in drive_files]
+    drive_names = [os.path.splitext(f['name'])[0] for f in drive_files]
 
-    print(f"Found {len(drive_names)} files in Drive.")
+    print(f"📦 Found {len(drive_files)} media files in Drive.")
 
-    # Get files from Cloudinary
-    # We use the tag 'about_page' to identify gallery images
-    cloudinary_resources = cloudinary.api.resources_by_tag('about_page')['resources']
-    cloudinary_names = [r['public_id'] for r in cloudinary_resources]
+    # Get existing items from Cloudinary (both images and videos)
+    # We check both types because Cloudinary keeps them in separate buckets
+    cloudinary_resources = []
+    for r_type in ['image', 'video']:
+        res = cloudinary.api.resources_by_tag('about_page', resource_type=r_type)
+        cloudinary_resources.extend(res.get('resources', []))
+    
+    cloudinary_ids = [r['public_id'] for r in cloudinary_resources]
 
-    # 2. ADD NEW FILES
+    # 2. ADD NEW MEDIA
     for f in drive_files:
-        # We strip extension for the public_id comparison
         public_id = os.path.splitext(f['name'])[0]
-        if public_id not in cloudinary_names:
-            print(f"Uploading new image: {f['name']}")
+        
+        if public_id not in cloudinary_ids:
+            print(f"➕ Uploading: {f['name']} ({f['mimeType']})")
+            
             request = drive_service.files().get_media(fileId=f['id'])
             fh = io.BytesIO()
             downloader = MediaIoBaseDownload(fh, request)
@@ -47,20 +55,22 @@ def sync():
                 status, done = downloader.next_chunk()
             
             fh.seek(0)
+            # 'resource_type="auto"' is the magic that handles videos vs images
             cloudinary.uploader.upload(fh, 
                 public_id=public_id,
                 tags=['about_page'],
+                resource_type="auto", 
                 overwrite=True
             )
 
-    # 3. DELETE REMOVED FILES
-    for public_id in cloudinary_names:
-        # Check if this public_id (filename) still exists in Drive
-        if not any(os.path.splitext(n)[0] == public_id for n in drive_names):
-            print(f"Deleting removed image: {public_id}")
-            cloudinary.uploader.destroy(public_id)
+    # 3. DELETE REMOVED MEDIA
+    for res in cloudinary_resources:
+        p_id = res['public_id']
+        if p_id not in drive_names:
+            print(f"🗑️ Deleting from Cloudinary: {p_id}")
+            cloudinary.uploader.destroy(p_id, resource_type=res['resource_type'])
 
-    print("Sync Complete!")
+    print("✅ Sync Complete!")
 
 if __name__ == "__main__":
     sync()

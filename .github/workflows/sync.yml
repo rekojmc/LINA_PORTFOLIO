@@ -2,19 +2,19 @@ name: Midnight Media Sync
 on:
   schedule:
     - cron: '0 0 * * *' # Midnight UTC
-  workflow_dispatch: # Allows you to force a run manually
+  workflow_dispatch: # The manual "Run" button
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Essential for the bot to push JSON back to your repo
+      contents: write # Crucial: Allows the bot to write the JSON to your repo
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Latest v4 for Node 24 compatibility
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5 # Latest v5
         with:
           python-version: '3.11'
 
@@ -33,7 +33,14 @@ jobs:
         run: |
           git config --global user.name 'Lina Sync Bot'
           git config --global user.email 'actions@github.com'
-          # Explicitly add both JSON files
-          git add portfolio/portfolio-gallery.json about/about-gallery.json
-          git commit -m "🤖 Update gallery manifests [skip ci]" || echo "No changes to commit"
-          git push
+          
+          # 'git add .' stage everything new (avoids the "pathspec" error)
+          git add .
+          
+          # This 'if' check prevents the script from failing if nothing actually changed
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "🤖 Update gallery manifests [skip ci]"
+            git push
+          else
+            echo "No changes found. Nothing to commit."
+          fi

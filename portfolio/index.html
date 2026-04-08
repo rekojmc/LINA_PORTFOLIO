@@ -79,154 +79,205 @@
         <div id="global-footer"></div>
 
         <script>
-            let allGalleryFiles = []; 
-            let currentLightboxIndex = 0;
-            let counterTimeout;
+/* ================================================================
+   LINA HERNANDEZ - UNIFIED GALLERY ENGINE (V3.0 - FACE AI + SYNCED WATERMARK)
+================================================================ */
 
-function getOptimizedUrl(url, isVideo = false) {
-    // l_lina_logo: refers to an image named 'lina_logo' uploaded to your Cloudinary
-    // o_30: 30% opacity
-    // g_south_east: bottom right corner
-    const watermark = 'l_lina_logo,o_30,w_200,g_south_east,x_20,y_20/';
+// 1. GLOBAL STATE
+let allGalleryFiles = []; 
+let currentLightboxIndex = 0;
+let counterTimeout;
+
+/**
+ * SMART OPTIMIZER: Handles Face-Centering, Watermarking, and Quality
+ * @param {string} url - Original Cloudinary URL
+ * @param {boolean} isVideo - Flag for video content
+ * @param {boolean} isLightbox - Flag for high-res lightbox view
+ */
+function getOptimizedUrl(url, isVideo = false, isLightbox = false) {
+    const width = isLightbox ? 1600 : 800;
     
-    const transform = isVideo 
-        ? 'vc_auto,q_auto,w_800' 
-        : `f_auto,q_auto,w_800,${watermark}`; // Slap it on!
+    // FACE DETECTION & SMART CROP
+    // c_fill: forces the crop to fill the masonry box
+    // g_face: uses AI to center the crop on the subject's face
+    const smartCrop = `c_fill,g_face,w_${width}`;
+
+    // WATERMARK LOGIC (Double Size: w_800)
+    // l_lina_logo: Your logo asset ID in Cloudinary
+    // o_30: 30% opacity
+    // x_20, y_20: offset from the corner
+    const watermark = 'l_lina_logo,o_30,w_400,g_south_east,x_20,y_20/';
+    
+    let transform = "";
+    if (isVideo) {
+        // AI Face-centering works for videos too
+        transform = `vc_auto,q_auto,${smartCrop}`;
+    } else {
+        // Slap the watermark and face-centering on images
+        transform = `f_auto,q_auto,${smartCrop},${watermark}`;
+    }
         
     return url.replace('/upload/', `/upload/${transform}/`);
 }
 
-            async function loadDynamicGallery() {
-                const loader = document.getElementById('gallery-loader');
-                const gallery = document.getElementById('portfolio-gallery');
+/**
+ * GALLERY LOADER: Builds the Masonry Grid
+ */
+async function loadDynamicGallery() {
+    const loader = document.getElementById('gallery-loader');
+    const gallery = document.getElementById('portfolio-gallery');
 
-                try {
-                    // Fetch the local JSON created by the Python script
-                    const response = await fetch('portfolio-gallery.json');
-                    const data = await response.json();
-                    
-                    // Since the split manifest only contains portfolio items, 'data' is the array
-                    allGalleryFiles = data || []; 
-                    allGalleryFiles.reverse(); // Newest first
+    try {
+        const response = await fetch('portfolio-gallery.json');
+        const data = await response.json();
+        
+        allGalleryFiles = data || []; 
+        allGalleryFiles.reverse(); // Newest photos first
 
-                    allGalleryFiles.forEach((fileObj, index) => {
-                        const item = document.createElement('div');
-                        item.className = 'gallery-item';
-                        
-                        // Masonry Rhythm Logic
-                        const col = index % 4; 
-                        let isTall = (index + 1) % 3 === 0;
-                        let isWide = (index + 1) % 3 === 0;
+        allGalleryFiles.forEach((fileObj, index) => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            
+            // MASONRY RHYTHM LOGIC
+            const col = index % 4; 
+            let isTall = (index + 1) % 3 === 0;
+            let isWide = (index + 1) % 3 === 0;
 
-                        if (isWide && col === 3) { isWide = false; isTall = false; }
-                        if (isTall || index === 0) item.classList.add('tall');
-                        if (isWide || index === 0) item.classList.add('wide');
+            if (isWide && col === 3) { isWide = false; isTall = false; }
+            if (isTall || index === 0) item.classList.add('tall');
+            if (isWide || index === 0) item.classList.add('wide');
 
-                        const isVideo = fileObj.type === 'video';
-                        const thumbnailPath = getOptimizedUrl(fileObj.url, isVideo);
+            const isVideo = fileObj.type === 'video';
+            const thumbnailPath = getOptimizedUrl(fileObj.url, isVideo, false); // Small + Watermark
 
-                        if (isVideo) {
-                            item.innerHTML = `
-                                <video src="${thumbnailPath}" muted loop playsinline class="gallery-video"></video>
-                                <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
-                            `;
-                            const video = item.querySelector('video');
-                            item.onmouseenter = () => video.play().catch(() => {});
-                            item.onmouseleave = () => { video.pause(); video.currentTime = 0; };
-                        } else {
-                            const img = document.createElement('img');
-                            img.src = thumbnailPath;
-                            img.loading = "lazy";
-                            img.alt = "Lina Hernandez Photography";
-                            item.appendChild(img);
-                        }
-
-                        item.onclick = () => openLightbox(index);
-                        gallery.appendChild(item);
-                    });
-
-                    if (loader) loader.classList.add('loader-hidden');
-
-                } catch (error) {
-                    console.error("Manifest load error:", error);
-                    if (loader) loader.classList.add('loader-hidden');
-                }
+            if (isVideo) {
+                item.innerHTML = `
+                    <video src="${thumbnailPath}" muted loop playsinline class="gallery-video"></video>
+                    <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
+                `;
+                const video = item.querySelector('video');
+                item.onmouseenter = () => video.play().catch(() => {});
+                item.onmouseleave = () => { video.pause(); video.currentTime = 0; };
+            } else {
+                const img = document.createElement('img');
+                img.src = thumbnailPath;
+                img.loading = "lazy";
+                img.alt = "Lina Hernandez Photography";
+                item.appendChild(img);
             }
 
-            function flashCounter() {
-                const counter = document.getElementById('lb-counter');
-                if (!counter) return;
-                counter.classList.add('visible');
-                clearTimeout(counterTimeout);
-                counterTimeout = setTimeout(() => counter.classList.remove('visible'), 1500);
-            }
+            // Click to open high-res lightbox
+            item.onclick = () => openLightbox(index);
+            gallery.appendChild(item);
+        });
 
-            function openLightbox(index) {
-                currentLightboxIndex = index;
-                const lb = document.getElementById('lightbox');
-                const container = document.getElementById('lightbox-content-container');
-                const counter = document.getElementById('lb-counter');
-                
-                const fileObj = allGalleryFiles[currentLightboxIndex];
-                const isVideo = fileObj.type === 'video';
-                
-                // Lightbox quality: 1600px width
-                const lbTransform = isVideo ? 'vc_auto,q_auto,w_1600' : 'f_auto,q_auto,w_1600';
-                const lbPath = fileObj.url.replace('/upload/', `/upload/${lbTransform}/`);
+        if (loader) loader.classList.add('loader-hidden');
 
-                container.innerHTML = ''; 
+    } catch (error) {
+        console.error("Gallery Sync Error:", error);
+        if (loader) loader.classList.add('loader-hidden');
+    }
+}
 
-                if (isVideo) {
-                    const video = document.createElement('video');
-                    video.src = lbPath;
-                    video.controls = true;
-                    video.autoplay = true;
-                    video.style.maxWidth = '90%';
-                    video.style.maxHeight = '85vh';
-                    container.appendChild(video);
-                } else {
-                    const img = document.createElement('img');
-                    img.src = lbPath;
-                    img.className = 'lb-fade-in';
-                    img.style.maxWidth = '90%';
-                    img.style.maxHeight = '85vh';
-                    container.appendChild(img);
-                }
+/**
+ * LIGHTBOX SYSTEM: High-Res view with Synced Watermark
+ */
+function openLightbox(index) {
+    currentLightboxIndex = index;
+    const lb = document.getElementById('lightbox');
+    const container = document.getElementById('lightbox-content-container');
+    const counter = document.getElementById('lb-counter');
+    
+    const fileObj = allGalleryFiles[currentLightboxIndex];
+    const isVideo = fileObj.type === 'video';
+    
+    // Use the unified optimizer for the 1600px view
+    const lbPath = getOptimizedUrl(fileObj.url, isVideo, true);
 
-                if (counter) {
-                    counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${allGalleryFiles.length.toString().padStart(2, '0')}`;
-                }
+    container.innerHTML = ''; 
 
-                lb.classList.add('active');
-                document.body.style.overflow = 'hidden'; 
-                flashCounter(); 
-            }
+    if (isVideo) {
+        const video = document.createElement('video');
+        video.src = lbPath;
+        video.controls = true;
+        video.autoplay = true;
+        video.style.maxWidth = '90%';
+        video.style.maxHeight = '85vh';
+        container.appendChild(video);
+    } else {
+        const img = document.createElement('img');
+        img.src = lbPath;
+        img.className = 'lb-fade-in';
+        img.style.maxWidth = '90%';
+        img.style.maxHeight = '85vh';
+        container.appendChild(img);
+    }
 
-            function changeLightbox(step) {
-                currentLightboxIndex += step;
-                if (currentLightboxIndex >= allGalleryFiles.length) currentLightboxIndex = 0; 
-                else if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryFiles.length - 1; 
-                openLightbox(currentLightboxIndex);
-            }
+    if (counter) {
+        counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${allGalleryFiles.length.toString().padStart(2, '0')}`;
+    }
 
-            function closeLightbox(event) {
-                if (event) event.stopPropagation();
-                const lb = document.getElementById('lightbox');
-                const container = document.getElementById('lightbox-content-container');
-                lb.classList.remove('active');
-                if (container) container.innerHTML = '';
-                document.body.style.overflow = ''; 
-            }
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden'; 
+    flashCounter(); 
+}
 
-            document.addEventListener('keydown', (e) => {
-                const lb = document.getElementById('lightbox');
-                if (!lb || !lb.classList.contains('active')) return;
-                if (e.key === "ArrowRight") changeLightbox(1);
-                if (e.key === "ArrowLeft") changeLightbox(-1);
-                if (e.key === "Escape") closeLightbox();
-            });
+function changeLightbox(step) {
+    currentLightboxIndex += step;
+    if (currentLightboxIndex >= allGalleryFiles.length) currentLightboxIndex = 0; 
+    else if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryFiles.length - 1; 
+    openLightbox(currentLightboxIndex);
+}
 
-            document.addEventListener('DOMContentLoaded', loadDynamicGallery);
+function closeLightbox(event) {
+    if (event) event.stopPropagation();
+    const lb = document.getElementById('lightbox');
+    const container = document.getElementById('lightbox-content-container');
+    lb.classList.remove('active');
+    if (container) container.innerHTML = '';
+    document.body.style.overflow = ''; 
+}
+
+function flashCounter() {
+    const counter = document.getElementById('lb-counter');
+    if (!counter) return;
+    counter.classList.add('visible');
+    clearTimeout(counterTimeout);
+    counterTimeout = setTimeout(() => counter.classList.remove('visible'), 1500);
+}
+
+/**
+ * EASTER EGG: Secret "Chloe" Word
+ */
+let typedBuffer = "";
+document.addEventListener('keydown', (e) => {
+    typedBuffer += e.key.toLowerCase();
+    if (typedBuffer.length > 10) typedBuffer = typedBuffer.substring(typedBuffer.length - 10);
+    if (typedBuffer.includes("chloe")) {
+        const ee = document.getElementById('easter-egg-overlay');
+        if (ee) {
+            ee.classList.add('ee-active');
+            setTimeout(() => ee.classList.remove('ee-active'), 5000);
+        }
+        typedBuffer = "";
+    }
+});
+
+// KEYBOARD NAVIGATION
+document.addEventListener('keydown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb || !lb.classList.contains('active')) return;
+    if (e.key === "ArrowRight") changeLightbox(1);
+    if (e.key === "ArrowLeft") changeLightbox(-1);
+    if (e.key === "Escape") closeLightbox();
+});
+
+// INITIALIZE
+document.addEventListener('DOMContentLoaded', () => {
+    loadDynamicGallery();
+    // Set random background for the mobile menu from components.js
+    if (window.setRandomMenuBackground) setRandomMenuBackground();
+});
         </script>
     </body>
 </html>

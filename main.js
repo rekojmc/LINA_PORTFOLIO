@@ -11,22 +11,56 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('preferredLang') || 'en';
 
     // 2. INJECT NAV (With CloudCannon Bindings)
-    if (navPlaceholder) {
-        navPlaceholder.innerHTML = `
-            <nav class="glass-nav">
-                <div class="nav-name">Lina Hernandez</div>
-                <div class="nav-links">
-                    <a href="${basePath}portfolio/" data-i18n="nav_portfolio" data-cms-bind="data.translations.es.nav_portfolio">Portfolio</a>
-                    <a href="${basePath}about/" data-i18n="nav_about" data-cms-bind="data.translations.es.nav_about">About Lina</a>
-                    <a href="${basePath}contact/" data-i18n="nav_contact" data-cms-bind="data.translations.es.nav_contact">Contact</a>
-                    <span class="lang-switcher">
-                        <button onclick="setLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
-                        <button onclick="setLanguage('es')" id="btn-es" class="lang-btn">ES</button>
-                    </span>
+if (navPlaceholder) {
+    navPlaceholder.innerHTML = `
+        <nav class="glass-nav">
+            <div class="nav-name">Lina Hernandez</div>
+            
+            <div class="nav-links desktop-only">
+                <a href="${basePath}portfolio/">Portfolio</a>
+                <a href="${basePath}about/">About Lina</a>
+                <a href="${basePath}contact/">Contact</a>
+                <span class="lang-switcher">
+                    <button onclick="setLanguage('en')" id="btn-en" class="lang-btn">EN</button> | 
+                    <button onclick="setLanguage('es')" id="btn-es" class="lang-btn">ES</button>
+                </span>
+            </div>
+
+            <div class="menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+
+        <div id="mobile-menu-overlay" class="mobile-menu">
+            <div class="menu-exit" onclick="toggleMobileMenu()">&times;</div>
+            
+            <div class="menu-links">
+                <a href="${basePath}portfolio/" onclick="toggleMobileMenu()">Portfolio</a>
+                <a href="${basePath}about/" onclick="toggleMobileMenu()">About</a>
+                <a href="${basePath}contact/" onclick="toggleMobileMenu()">Contact</a>
+                
+                <div class="mobile-lang-switcher">
+                    <button onclick="setLanguage('en')">EN</button>
+                    <span>/</span>
+                    <button onclick="setLanguage('es')">ES</button>
                 </div>
-            </nav>
-        `;
+            </div>
+        </div>
+    `;
+}
+
+// Logic to open/close the menu
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu-overlay');
+    menu.classList.toggle('active');
+    
+    // Lock scrolling when menu is open
+    if (menu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
     }
+}
 
     // 3. INJECT FOOTER
     if (footerPlaceholder) {

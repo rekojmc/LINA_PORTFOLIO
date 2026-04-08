@@ -12,12 +12,12 @@ body {
 }
 
 :root {
-    --nude-bg: #f5f2ee;      /* Main Background */
-    --nude-dark: #F5E6D3;    /* Footer & Accent Background */
+    --nude-bg: #F7D9BC;      /* Main Background */
+    --nude-dark: #CDB39C;    /* Footer & Accent Background */
     --white: #ffffff;
     --black: #000000;
     --links-main: #242633;
-    --text-main: #242633;
+    --text-main: #000000;
     --cobalt: #2E5AFF;
     --gold: #d4af37;       /* Gold Accent */
     --transition-slow: 1.2s cubic-bezier(0.25, 1, 0.5, 1);
@@ -198,7 +198,8 @@ body, p {
     padding-top: 0px;
     padding-bottom: 0px;
     font-family: 'Playfair Display', serif;
-    color: var(--white);
+    color: var(--black);
+    font-weight: 700;
     font-style: oblique;
     text-transform: uppercase;
 }
@@ -752,8 +753,9 @@ nav.glass-nav.nav-hidden {
     font-family: 'Cormorant Garamond', serif;    
     font-size: clamp(1.1rem, 5vw, 1.5rem);
     line-height: 0.9;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-bottom: 10px;
+    margin-left: 1vh;
 }
 
 .bio-editorial-body {
@@ -764,7 +766,7 @@ nav.glass-nav.nav-hidden {
     /* 2. THE TEXTURE */
     font-family: 'Cormorant Garamond', serif; /* Use that elegant serif you have */
     font-size: 1.25rem;
-    line-height: 1.7; /* Breathing room is key for editorial style */
+    line-height: 1.5; /* Breathing room is key for editorial style */
     color: #f0f0f0;
     
     /* 3. THE HYPHENATION (Crucial for Justified text) */
@@ -783,18 +785,18 @@ nav.glass-nav.nav-hidden {
     padding-top: 4px;
     padding-right: 12px;
     padding-left: 3px;
-    font-weight: 400;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--white);
+    color: var(--black);
 }
 
 .bio-editorial-body p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .bio-line {
     font-family: 'Cormorant Garamond', serif;    
-    font-weight: 300;
+    font-weight: 500;
     font-size: 1.3rem;
     line-height: 1;
     color: var(--text-main);
@@ -804,10 +806,10 @@ nav.glass-nav.nav-hidden {
 /* Make the first line a bit more impactful */
 .line-1 {
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
+    font-weight: 700;
     font-size: 1.3rem;
     font-style: normal;
-    line-height: 1.2;
+    line-height: 1;
     padding-left: 10px;
 }
 
@@ -818,7 +820,7 @@ nav.glass-nav.nav-hidden {
     line-height: 0.8; /* Pulls the letter up so it doesn't create a huge gap below */
     margin-right: 15px;
     margin-top: 5px;
-    color: var(--white);
+    color: var(--black);
     font-style: oblique;
     font-weight: 700;
     
@@ -829,10 +831,11 @@ nav.glass-nav.nav-hidden {
 /* Add a slight indentation to the second line for rhythm */
 .line-2, .line-3{
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-style: normal;
-    line-height: 1.2;
+    line-height: 1.3;
     padding-left: 10px;
+    font-weight: 700;
 }
 
 .contact-heading {
@@ -1387,16 +1390,17 @@ nav.glass-nav.nav-hidden {
 }
 
 .bio-wrapper {
-    background-color: var(--black); /* Deep black */
+    background-color: var(--nude-bg); /* Deep black */
     max-width: 1200px; /* Constrains the width */
     max-height: 60vh;
     margin: 0 auto;    /* Centers the block on the page */
     display: flex;
     align-items: center;
-    padding: 20px 20px; /* Breathing room inside the black box */
+    padding: .5em; /* Breathing room inside the black box */
     box-shadow: 0 20px 20px rgba(0,0,0,0.1); /* Optional: subtle lift */
     margin-top: 8vh;
-    margin-bottom: 1vh;
+    margin-bottom: 2vh;
+    border: 4px solid var(--gold); 
 }
 
 /* THE IMAGE SIDE (The Frame) */
@@ -1413,20 +1417,20 @@ nav.glass-nav.nav-hidden {
     max-width: 100%;
     max-height: 50vh;
     /* Optional: add a very thin grey border to define image against black */
-    border: 2px solid #ffffff; 
+    border: 2px solid var(--white); 
 }
 
 /* THE TEXT SIDE */
 .bio-text-side {
     flex: 1; 
-    padding-top: 10px; /* Aligns first line of text with top of photo */
+    padding-top: 1em; /* Aligns first line of text with top of photo */
 }
 
 .bio-text-side .about-heading {
     font-size: clamp(2rem, 4vw, 3rem);
     margin-bottom: 10px;
     line-height: 1;
-    color: var(--white);
+    color: var(--black);
 }
 
 .bio-text-side .bio-line {
@@ -1434,7 +1438,7 @@ nav.glass-nav.nav-hidden {
     line-height: 1.5;
     margin-bottom: 15px;
     max-width: 600px; /* Keeps lines easy to read */
-    color: var(--white);
+    color: var(--black);
 }
 
 /*/* ==========================================
@@ -1502,7 +1506,7 @@ nav.glass-nav.nav-hidden {
     font-style: oblique;
     font-weight: 600;
     font-optical-sizing: auto;
-    margin-bottom: 2vh;
+    margin-bottom: 1.4vh;
     text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
@@ -1514,7 +1518,7 @@ nav.glass-nav.nav-hidden {
 }
 
 .bio-centered .line-1::first-letter {
-    color: var(--white); /* Gold drop cap for that extra "Principal" flair */
+    color: var(--black); /* Gold drop cap for that extra "Principal" flair */
     font-weight: 700;
     font-style: oblique;
 }
@@ -1640,6 +1644,7 @@ nav.glass-nav.nav-hidden {
 
     .bio-editorial-body p.line-1::first-letter {
         font-size: 3.5rem !important; /* Smaller drop cap for mobile */
+        color: var(--black);
     }
 
     /* 4. MASONRY GRID */
@@ -1747,4 +1752,38 @@ nav.glass-nav.nav-hidden {
         justify-content: center;
         text-align: center;
     }
+}
+
+/* --- EASTER EGG STYLING --- */
+#easter-egg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9); /* Darken the site behind her */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000; /* Over everything */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease;
+}
+
+#easter-egg-overlay.ee-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ee-content img {
+    max-width: 80vw;
+    max-height: 80vh;
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+    transform: scale(1.5);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#easter-egg-overlay.ee-active img {
+    transform: scale(1.3);
 }

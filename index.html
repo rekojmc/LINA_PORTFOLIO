@@ -11,12 +11,6 @@
   gtag('config', 'G-XXSLX0F052');
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<script>
-    // If the screen is mobile-sized, redirect immediately
-    if (window.innerWidth <= 768) {
-        window.location.href = "portfolio"; 
-    }
-</script>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title data-i18n="site_title">Lina Hernandez | Official</title>
@@ -58,13 +52,7 @@
 	</head>
 	<body>
 
-<section class="hero-header">
-    <!-- <div class="diagonal-hero-panel panel-1"><img src="" alt=""></div>
-    <div class="diagonal-hero-panel panel-2"><img src="" alt=""></div>
-    <div class="diagonal-hero-panel panel-3"><img src="" alt=""></div> -->
-
-</section>
-
+<section class="hero-header desktop-only ">
     <div class="diagonal-hero-text top-aligned">
         <div class="diagonal-hero-card">
             <h1 data-i18n="hero_title">Lina Hernandez</h1>
@@ -77,6 +65,19 @@
             </div>
         </div>
     </div>
+</section>
+<section class="mobile-stack-hero mobile-only">
+    <div class="mobile-stack-content">
+        <h1 class="mobile-stack-name">Lina Hernandez</h1>
+        <p class="mobile-stack-sub" data-i18n="hero_subtitle">Visual Storyteller</p>
+        
+        <nav class="mobile-stack-nav">
+            <a href="portfolio/" data-i18n="nav_portfolio">Portfolio</a>
+            <a href="about/" data-i18n="nav_about">About Me</a>
+            <a href="contact/" data-i18n="nav_contact">Contact</a>
+        </nav>
+    </div>
+</section>
 
 		<script>
     async function loadDynamicHero() {

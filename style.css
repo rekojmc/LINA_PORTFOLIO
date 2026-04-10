@@ -6,9 +6,26 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Mr+De+Haviland&family=Playfair+Display:ital@0;1&display=swap');
 
+/* --- GLOBAL HEADER CLEARANCE --- */
 body {
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
+    /* Default: Pushes everything down to clear the fixed nav */
+    padding-top: 80px; 
+}
+
+/* THE EXCEPTION CLASS */
+/* Use this on pages where you want the content to start at the very top */
+body.no-header-clearance {
+    padding-top: 0 !important;
+}
+
+/* Ensure desktop and mobile both respect the exception */
+@media (max-width: 768px) {
+    body {
+        padding-top: 60px; /* Usually a bit smaller on mobile */
+    }
+    body.no-header-clearance {
+        padding-top: 0 !important;
+    }
 }
 
 :root {
@@ -288,9 +305,9 @@ body, p {
 
 .contact-glass-card {
     background: rgba(255, 255, 255, 0.55); /* Semi-transparent white */
-    backdrop-filter: blur(5px);          /* Frosted glass effect */
+    backdrop-filter: blur(2px);          /* Frosted glass effect */
     -webkit-backdrop-filter: blur(10px);
-    padding: 60px 60px;
+    padding: 20px 20px;
     width: 100%;
     max-width: 550px;                     /* Form width */
     text-align: center;
@@ -397,7 +414,7 @@ body {
     position: fixed;
     top: 0; left: 0; right: 0;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 5%;
+    padding: 10px;
     background: var(--white);
     backdrop-filter: blur(10px);
     z-index: 1000;
@@ -899,17 +916,17 @@ nav.glass-nav.nav-hidden {
 /* --- GALLERY GRID --- */
 .gallery-wrapper-portfolio {
     width: 90vw; /* Increased slightly for a more 'editorial' feel */
-        
-    margin: 60px auto;
-    margin-top: 70px;
+    margin-left: auto;
+    margin-right: auto;
+
 }
 
 .gallery-wrapper-about {
     width: 90vw; /* Increased slightly for a more 'editorial' feel */
     
     
-    margin: 60px auto;
-    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .masonry-grid {
     display: grid;
@@ -2011,7 +2028,7 @@ nav.glass-nav.nav-hidden {
     background: rgba(0, 0, 0, 0.25); /* Semi-transparent white */
     /* border: 1px solid var(--white); */
     /* border-radius: 10px; Subtle rounding for a premium feel */
-    padding: 20px 20px;
+    padding: 10px 10px;
     width: 100%;
     text-align: center;
 
@@ -2050,12 +2067,176 @@ nav.glass-nav.nav-hidden {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Mobile Tweaks */
+/* ================================================================
+   LINA HERNANDEZ - THE EDITORIAL SPLIT DESIGN
+   Scope: .about-combined-design
+================================================================ */
+
+/* 1. THE MAIN WRAPPER */
+.about-combined-design {
+    display: flex;
+    width: 70vw;
+    height: 70vh;
+    background-color: (var(--nude-dark));
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    
+    border: 2px solid var(--white);
+}
+
+/* ================================================================
+   LINA HERNANDEZ - THE EDITORIAL SPLIT (DESKTOP HEADER CLEARANCE)
+   Scope: .about-combined-design
+================================================================ */
+
+.about-combined-design {
+    display: flex;
+    width: 75vw; /* Slightly wider for better desktop presence */
+    height: 70vh;
+    background-color: #9B6E4C;
+    overflow: hidden; 
+    
+    /* THE DESKTOP FIX: Use pixels instead of vh to clear the header */
+    /* This ensures it starts AFTER the menu, not at y=0 */
+    margin-left: auto;
+    margin-right: auto ;
+
+    padding: 0;
+    border: 5px solid var(--white);
+    border-radius: 10px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1; /* Keeps it below the header's z-index */
+}
+
+/* Ensure the image side fills the 70vh properly */
+.about-combined-design .about-image-side {
+    flex: 1;
+    height: 100%;
+    background-image: url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,w_1200/Lina_Portfolio/main/about-hero.jpg');
+    background-size: contain; 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--nude-dark); 
+}
+
+/* ... keep the rest of your inner glass-bio-card styles ... */
+
+/* 2. THE TEXT SIDE (LEFT) */
+.about-combined-design .glass-bio-card {
+    flex: 1;
+    background-color: #9B6E4C;
+    display: flex;
+    flex-direction: column;
+    
+    /* padding: 2vh 2vh; */
+    text-align: left;
+    box-shadow: none;
+    border: none;
+    backdrop-filter: none;
+    /* margin-top: 1vh; */
+}
+
+.about-combined-design .glass-heading {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2.5rem;
+    color: var(--black);
+    text-transform: uppercase;
+    letter-spacing: 12px;
+    margin-top: 0px;
+
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+/* The Bold Editorial Line */
+.about-combined-design .glass-divider {
+    width: 100%;
+    height: 2px;
+    background-color: var(--black);
+    margin-bottom: 20px;
+}
+
+/* Paragraph Styling */
+.about-combined-design .bio-line {
+    font-family: "Cormorant Garamond", serif;
+        font-size: 1.3rem;
+    line-height: 1.8;
+    color: var(--black);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+/* Impact for the first line */
+.about-combined-design .line-1 {
+    font-family: "Cormorant Garamond", serif;
+        font-size: 1.3rem;
+    line-height: 1.8;
+    color: var(--black);
+    margin-bottom: 15px;
+    font-weight: 780;
+}
+
+/* 3. THE IMAGE SIDE (RIGHT) */
+.about-combined-design .about-image-side {
+    flex: 1;
+    height: 100%;
+    /* CLOUDINARY AI: c_fill (fill box), g_face (AI focus on face) */
+    background-image: url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,c_fill,g_north,w_auto/Lina_Portfolio/main/about-hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ================================================================
+   MOBILE RECONSTRUCTION (THE "HEADER CLEARANCE" FIX)
+================================================================ */
 @media (max-width: 768px) {
-    .glass-bio-card {
-        padding: 40px 20px;
+    .about-combined-design {
+        flex-direction: column;
+        width: 90vw;
+        
+        /* THE FIX: Increase this to clear your specific header height */
+        /* If your header is tall, change 100px to 120px */
+        margin: 100px auto 40px !important; 
+        
+        height: auto;
+        max-height: none; /* Allow it to grow naturally so text isn't swallowed */
+        overflow: visible; /* Let the page scroll naturally */
+        border: 1px solid var(--white);
+        position: relative;
     }
-    .glass-heading {
-        letter-spacing: 6px;
+
+    /* THE IMAGE SIDE: The "Room" Protector */
+    .about-combined-design .about-image-side {
+        width: 100%;
+        height: 40vh; /* Keeps the portrait dominant at the top */
+        min-height: 40vh;
+        flex-shrink: 0;
+        order: 1;
+        
+        background-size: contain;
+        background-position: center;
+        
+        /* Prevents the image from sliding up under the header inside the card */
+        margin-top: 0; 
+    }
+
+    /* THE TEXT SIDE: The Content Area */
+    .about-combined-design .glass-bio-card {
+        flex: none;
+        padding: 20px 20px ;
+        order: 2;
+        text-align: center;
+        background-color: var(--nude-dark);
+        height: auto;
+    }
+
+    .about-combined-design .glass-heading {
+        font-size: 1.8rem;
+        letter-spacing: 4px;
+        /* Ensure the heading doesn't hug the top of the card */
+        margin-top: 10px; 
     }
 }

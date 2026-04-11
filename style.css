@@ -97,7 +97,7 @@ font-size: clamp(3rem, 4vw, 10rem);
 /* --- 2. BLACK SOCIAL DIVIDER --- */
 .social-divider-bar {
     background-color: var(--black);
-    height: 50px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -106,13 +106,57 @@ font-size: clamp(3rem, 4vw, 10rem);
 
 .social-icons a {
     color: var(--white);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin: 0 15px;
     transition: opacity 0.3s ease;
 }
 
 .social-icons a:hover {
     opacity: 0.7;
+}
+
+.divider-content-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* Spacing between icons and text */
+    padding: 10px 0;
+}
+
+.home-lang-switcher {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.6); /* Faded so it doesn't compete with icons */
+}
+
+.lang-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    transition: color 0.3s ease;
+    padding: 0 5px;
+}
+
+.lang-toggle-btn:hover {
+    color: var(--gold);
+}
+
+.home-lang-switcher .pipe {
+    margin: 0 2px;
+    opacity: 0.3;
+}
+
+/* Adjust the bar height to accommodate the two rows */
+.social-divider-bar {
+    height: auto !important; /* Overrides the fixed 50px */
+    padding: 5px 0;
 }
 
 /* --- 3. THE IMAGE GRID --- */
@@ -237,22 +281,72 @@ font-size: clamp(3rem, 4vw, 10rem);
     transform: translateY(-5px); /* Pulls it up into place */
 
 }
-/* --- MOBILE STACKING --- */
+/* --- MOBILE STACKING REFINEMENT --- */
 @media (max-width: 768px) {
     .home-white-header {
         height: auto;
+        padding: 15px 0;
     }
 
     .home-portal-grid {
         flex-direction: column;
-        height: auto;
+        height: auto; /* Natural scrolling for mobile */
+        gap: 0 !important; /* Forces tiles to touch */
     }
     
     .portal-box {
-        height: 40vh; /* Give boxes room on mobile */
+        flex: none; /* Keeps tiles touching and prevents shrinking */
+        width: 100% !important;
+        
+        /* THE FIX: 35vh is a "Golden Ratio" height for mobile portals. 
+           It gives enough room for the photo without requiring too much scrolling. */
+        height: 35vh !important; 
+        
+        /* Remove side borders that look like gaps on mobile */
+        border-left: none !important;
+        border-right: none !important;
+        border: 2px solid var(--white); /* Only a bottom divider */
+        margin: 0;
+    }
+
+    .portal-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        
+        /* THE FIX: Face-Protection logic. 
+           If the subject is 'cut off', we anchor the crop to the top 15%. 
+           This ensures her head/face isn't chopped by the box boundary. */
+        object-position: center 1%; 
+    }
+
+    /* Tagline refinement for mobile */
+    .portal-tagline {
+        font-size: 1.1rem;
+        max-width: 90%;
+    }
+
+    .home-white-header .nav-name {
+        /* THE COMMANDING FIX: 
+           Bumping the floor to 3.5rem and increasing the 'growth' to 8vw 
+           so it fills the width of the phone better. */
+        font-size: clamp(2.2rem, 8vw, 3rem) !important;
+        
+        /* THE WEIGHT FIX: 
+           Wide spacing on mobile makes headers look 'weak'. 
+           Tightening this to 4px makes the name look solid and bold. */
+        letter-spacing: 4px !important;
+        
+        /* THE INSURANCE: 
+           Ensures Lina's name never breaks into two lines on small screens. */
+        white-space: nowrap;
+        
+        /* Optional: Bumping the weight if the font supports it */
+        font-weight: 700; 
     }
 }
 
+/*MAIN*/
 .main-title {
     /* Calling the font we loaded in HTML
 	font-family: "Mr De Haviland", cursive;
@@ -494,23 +588,48 @@ body, p {
 }
 
 /* Form Elements inside the glass */
+/* 1. SHARED STYLES: Inputs, Textarea, and Select */
 .lina-form input, 
-.lina-form textarea {
+.lina-form textarea,
+.lina-form select {
     width: 100%;
     padding: 15px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.5);
     font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
+    font-size: 1rem;
     letter-spacing: 1px;
+    color: var(--black);
+    border-radius: 0; /* Ensures sharp editorial edges on iOS */
 }
 
+/* 2. SELECT SPECIFIC: The "Arrow" Fix */
+.lina-form select {
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    
+    /* Custom minimalist chevron so it doesn't use the ugly browser default */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px; /* Prevents text from overlapping the arrow */
+}
+
+/* 3. FOCUS STATES: Shared */
 .lina-form input:focus, 
-.lina-form textarea:focus {
+.lina-form textarea:focus,
+.lina-form select:focus {
     outline: none;
     border-color: var(--cobalt);
-    background: white;
+    background: var(--white);
+}
+
+/* 4. IE FIX (Optional but safe) */
+.lina-form select::-ms-expand {
+    display: none;
 }
 
 /* Button centered in the card */
@@ -1408,7 +1527,7 @@ margin-bottom: 5px;
 
 .footer-nav {
     margin: 30px 0%;
-    display: flex;
+    display: grid;
     justify-content: center;
     gap: 30px;
     font-family: "Cormorant Garamond", serif;
@@ -1466,7 +1585,7 @@ margin-bottom: 5px;
 
 .copyright {
     margin-top: 40px;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     opacity: 0.5;
     text-transform: uppercase;
     letter-spacing: 1px;

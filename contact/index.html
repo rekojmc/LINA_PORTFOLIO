@@ -47,6 +47,8 @@
         <meta name="twitter:title" content="Contacto | Lina Hernandez">
         <meta name="twitter:description" content="Disponible para reservas y colaboraciones profesionales. Hablemos de tu próximo proyecto.">
         <meta name="twitter:image" content="https://linahernandezv.com/images/main/contact-hero.jpg">
+
+        <script src="/socials.js"></script>
     </head>
     <body class="no-header-clearance">
 
@@ -61,9 +63,16 @@
                 <form id="lina-contact-form" class="lina-form">
                     <input type="text" name="name" data-i18n="form_name" placeholder="YOUR NAME" required>
                     <input type="email" name="email" data-i18n="form_email" placeholder="YOUR EMAIL ADDRESS" required>
-                    <input type="text" name="reason" data-i18n="form_reason" placeholder="REASON" required>
+                    <select name="reason" class="lina-select" required>
+                        <option value="" disabled selected data-i18n="form_reason_placeholder">SELECT A REASON</option>
+                        <option value="Commercial & Editorial Campaigns" data-i18n="form_reason_campaign">Commercial & Editorial Campaigns</option>
+                        <option value="Brand Ambassador" data-i18n="form_reason_ambassador">Brand Ambassador</option>
+                        <option value="Digital Content Creation" data-i18n="form_reason_digital">Digital Content Creation</option>
+                        <option value="Creative Direction" data-i18n="form_reason_creative">Creative Direction</option>
+                        <option value="International Projects" data-i18n="form_reason_travel">International Projects</option>
+                        <option value="Other" data-i18n="form_reason_other">Other</option>
+                    </select>                    
                     <textarea name="message" data-i18n="form_message" placeholder="YOUR MESSAGE" rows="5" required></textarea>
-                    
                     <button type="submit" id="submit-btn" class="send-btn" data-i18n="form_submit">SEND MESSAGE</button>
                 </form>
             </div>
@@ -94,7 +103,7 @@
                 // 2. UI Loading State
                 btn.disabled = true;
                 btn.textContent = trans['form_sending'] || "Sending..."; 
-                feedback.textContent = ""; 
+                //feedback.textContent = ""; 
 
                 const params = new URLSearchParams();
                 for (const pair of new FormData(this)) {

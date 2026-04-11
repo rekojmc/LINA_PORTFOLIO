@@ -58,14 +58,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 2. INJECT FOOTER
-    if (footerPlaceholder) {
+if (footerPlaceholder) {
         footerPlaceholder.innerHTML = `
             <footer class="nude-footer">
                 <div class="footer-divider"></div>
                 <h2 class="footer-heading">LINA HERNANDEZ</h2>
                 <div class="footer-socials">
-                    <a href="https://instagram.com/lina.hernandez02" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://tiktok.com/@linahernandez021" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" data-social="instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" data-social="tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" data-social="facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                 </div>
                 <nav class="footer-nav">
                     <a href="${basePath}portfolio/" data-i18n="nav_portfolio">Portfolio</a>
@@ -75,8 +76,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p class="copyright">© ${new Date().getFullYear()} Lina Hernandez. <span data-i18n="copyright_rights">All rights reserved.</span></p>
             </footer>
         `;
-    }
 
+        // THE PRINCIPAL HOOK:
+        // Now that the HTML is on the page, tell socials.js to find those data-social tags.
+        if (typeof updateSocialLinks === "function") {
+            updateSocialLinks();
+        }
+
+        // If you're using a translation script (like applyTranslations), call it here too
+        // to ensure the newly injected footer text is translated immediately.
+        if (typeof applyTranslations === "function") {
+            applyTranslations();
+        }
+    }
     // Initialize Translations and UI
     updatePageText(savedLang);
     updateLangUI(savedLang);

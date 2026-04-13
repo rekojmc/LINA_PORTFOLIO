@@ -112,7 +112,7 @@
                 params.append('browser_language', lang); 
 
                 try {
-                    const googleScriptUrl = 'https://script.google.com/macros/s/AKfycby8BlsXmPVmFu4kFRH5LTeu8o57RZiWXKQjjkd6eonTS0RkGwaq4hJZ9d47b9jh_m7e/exec';
+                    const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbx_DeoTRGXl4bDZuochJOlzYvUMIWV4W0LaMPpBG-qX3xecWyhmv3tnwLV1_Na1bXLz/exec';
 
                     await fetch(googleScriptUrl, {
                         method: 'POST',
@@ -120,6 +120,9 @@
                         mode: 'no-cors',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                     });
+
+                    // --- THE FIX ---
+                    this.reset(); // This clears all inputs, textareas, and selects instantly
 
                     // SUCCESS
                     window.location.href = `thankyou.html`;

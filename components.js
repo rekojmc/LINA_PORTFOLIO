@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 2. INJECT FOOTER
-if (footerPlaceholder) {
+    if (footerPlaceholder) {
         footerPlaceholder.innerHTML = `
             <footer class="nude-footer">
                 <div class="footer-divider"></div>
@@ -123,9 +123,9 @@ async function updatePageText(lang) {
 }
 
 // 2. Language Switcher (With Auto-Close & Highlighting)
-window.setLanguage = function(lang) {
+window.setLanguage = function (lang) {
     updatePageText(lang);
-    
+
     // Auto-close menu if open
     const menu = document.getElementById('mobile-menu-overlay');
     if (menu && menu.classList.contains('active')) {
@@ -138,14 +138,14 @@ function updateLangUI(lang) {
     document.querySelectorAll('.lang-btn, .mobile-lang-switcher button').forEach(btn => {
         btn.classList.remove('active-lang');
     });
-    
+
     // Target both desktop and mobile buttons
     const activeButtons = document.querySelectorAll(`#btn-${lang}, .mobile-lang-btn-${lang}`);
     activeButtons.forEach(btn => btn.classList.add('active-lang'));
 }
 
 // 4. Mobile Menu Toggle
-window.toggleMobileMenu = function() {
+window.toggleMobileMenu = function () {
     const menu = document.getElementById('mobile-menu-overlay');
     if (!menu) return;
 
@@ -160,7 +160,7 @@ window.toggleMobileMenu = function() {
 };
 
 // 5. Random Background Generator (Pulling from Portfolio JSON)
-window.setRandomMenuBackground = async function() {
+window.setRandomMenuBackground = async function () {
     const menu = document.getElementById('mobile-menu-overlay');
     const basePath = getBasePath();
     if (!menu) return;
@@ -179,10 +179,10 @@ window.setRandomMenuBackground = async function() {
 
     if (portfolioPool && portfolioPool.length > 0) {
         const randomPhoto = portfolioPool[Math.floor(Math.random() * portfolioPool.length)];
-        
+
         // Cloudinary: Extreme blur and darkening for legibility
         const bgUrl = randomPhoto.url.replace('/upload/', '/upload/f_auto,q_auto,w_auto,e_gamma:-50,e_brightness:-50/');
-        
+
         menu.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${bgUrl}')`;
     }
 };

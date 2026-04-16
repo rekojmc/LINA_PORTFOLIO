@@ -129,7 +129,7 @@ function getOptimizedUrl(url, isVideo = false, isLightbox = false) {
     const smartCrop = `c_fill,g_face,w_${width}`;
 
     // WATERMARK LOGIC (Standardized at 2x size: w_800)
-    const watermark = 'l_lina_logo,o_30,w_800,g_south_east,x_20,y_20/';
+    const watermark = 'l_lina_logo,o_0,w_800,g_south_east,x_20,y_20/';
     
     let transform = "";
     if (isVideo) {

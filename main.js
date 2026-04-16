@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem('preferredLang') || 'en';
 
     // 2. INJECT NAV (With CloudCannon Bindings)
-if (navPlaceholder) {
-    navPlaceholder.innerHTML = `
+    if (navPlaceholder) {
+        navPlaceholder.innerHTML = `
         <nav class="glass-nav">
             <div class="nav-name">Lina Hernandez</div>
             
@@ -47,20 +47,20 @@ if (navPlaceholder) {
             </div>
         </div>
     `;
-}
-
-// Logic to open/close the menu
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu-overlay');
-    menu.classList.toggle('active');
-    
-    // Lock scrolling when menu is open
-    if (menu.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = '';
     }
-}
+
+    // Logic to open/close the menu
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu-overlay');
+        menu.classList.toggle('active');
+
+        // Lock scrolling when menu is open
+        if (menu.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
 
     // 3. INJECT FOOTER
     if (footerPlaceholder) {
@@ -95,7 +95,7 @@ document.addEventListener('contextmenu', (e) => {
 document.addEventListener('keydown', (e) => {
     // Blocks Ctrl+S, Ctrl+U (View Source), and F12 (Inspect)
     if (
-        (e.ctrlKey && (e.key === 's' || e.key === 'u')) || 
+        (e.ctrlKey && (e.key === 's' || e.key === 'u')) ||
         e.key === 'F12'
     ) {
         e.preventDefault();
@@ -133,7 +133,7 @@ async function updatePageText(lang) {
                 }
                 // If it's an icon or a link with no translation, 
                 // we STOP here so we don't wipe out the inner HTML (the icon).
-                return; 
+                return;
             }
 
             // 4. RESTORE VISIBILITY & APPLY CONTENT
@@ -157,23 +157,23 @@ async function updatePageText(lang) {
         if (activeBtn) activeBtn.classList.add('active');
 
         // 6. THE SIGNAL (Uses CustomEvent for data passing)
-        window.dispatchEvent(new CustomEvent('languageChanged', { 
-            detail: { language: lang } 
+        window.dispatchEvent(new CustomEvent('languageChanged', {
+            detail: { language: lang }
         }));
 
-    } catch (err) { 
-        console.error("Translation Error:", err); 
+    } catch (err) {
+        console.error("Translation Error:", err);
     }
 }
 
-function setLanguage(lang) { 
-    updatePageText(lang); 
+function setLanguage(lang) {
+    updatePageText(lang);
 }
 
 function initSmartNav() {
     // Target the placeholder ID instead of the injected class
     const nav = document.getElementById('global-nav');
-    
+
     if (!nav) {
         console.error("❌ [SmartNav] Could not find #global-nav wrapper.");
         return;
@@ -191,7 +191,7 @@ function initSmartNav() {
     window.addEventListener('scroll', () => {
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
         const delta = currentScroll - lastScrollTop;
-        
+
         // Get the real-time position and transform before we try to change it
         const computedStyle = window.getComputedStyle(nav);
         const currentTransform = computedStyle.getPropertyValue('transform');
@@ -203,28 +203,28 @@ function initSmartNav() {
                 nav.classList.remove('nav-hidden');
             }
             scrollDistanceDown = 0;
-        } 
-        
+        }
+
         else if (delta > 0) {
             scrollDistanceUp = 0;
             scrollDistanceDown += delta;
-            
+
             if (scrollDistanceDown > threshold && !nav.classList.contains('nav-hidden')) {
                 console.log(`🙈 [Hide Triggered] Dist: ${scrollDistanceDown}px | Current Transform: ${currentTransform}`);
                 nav.classList.add('nav-hidden');
-                
+
                 // Immediate check: Did it actually move?
                 setTimeout(() => {
                     const newTop = nav.getBoundingClientRect().top;
                     console.log(`📊 [Post-Hide Check] New Top: ${newTop}px. (If 0, CSS is being ignored)`);
                 }, 100);
             }
-        } 
-        
+        }
+
         else {
             scrollDistanceDown = 0;
             scrollDistanceUp += Math.abs(delta);
-            
+
             if (scrollDistanceUp > threshold && nav.classList.contains('nav-hidden')) {
                 console.log(`🙉 [Show Triggered] Dist: ${scrollDistanceUp}px | Current Transform: ${currentTransform}`);
                 nav.classList.remove('nav-hidden');

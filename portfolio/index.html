@@ -2,18 +2,15 @@
 <html lang="en">
 
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXSLX0F052"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'G-XXSLX0F052');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="alternate" hreflang="es" href="https://linahernandezv.com/" />
     <link rel="alternate" hreflang="en" href="https://linahernandezv.com/" />
     <link rel="alternate" hreflang="x-default" href="https://linahernandezv.com/" />
@@ -40,24 +37,8 @@
     <meta name="apple-mobile-web-app-title" content="Lina Hernandez" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://linahernandezv.com/portfolio/">
-    <meta property="og:title" content="Portafolio | Lina Hernandez">
-    <meta property="og:description"
-        content="Explora el trabajo editorial y comercial más reciente de Lina Hernandez. Disponible para contrataciones globales.">
-    <meta property="og:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
-    <meta property="og:locale" content="es_ES">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://linahernandezv.com/portfolio/">
-    <meta name="twitter:title" content="Portafolio | Lina Hernandez">
-    <meta property="twitter:description"
-        content="Modelaje editorial y comercial de alto nivel. Mira el portafolio completo y la galería.">
-    <meta name="twitter:image" content="https://linahernandezv.com/images/main/home-hero.jpg">
-
     <script src="../main.js"></script>
     <script src="../components.js" defer></script>
-
     <script src="/socials.js"></script>
 </head>
 
@@ -74,16 +55,16 @@
     </main>
 
     <div id="lightbox" class="lightbox">
+        <button id="slideshow-toggle" data-i18n="play_slideshow" onclick="toggleAutoplay(event)">Play Slideshow</button>
+
         <div class="lb-nav-zone left" onclick="changeLightbox(-1)">
             <div class="lb-arrow prev"></div>
         </div>
-
         <div class="lb-nav-zone right" onclick="changeLightbox(1)">
             <div class="lb-arrow next"></div>
         </div>
 
         <div id="lightbox-content-container"></div>
-
         <div id="lb-counter">01 / 00</div>
         <span class="close-lightbox" onclick="closeLightbox(event)">&times;</span>
     </div>
@@ -92,47 +73,39 @@
 
     <script>
         /* ================================================================
-           LINA HERNANDEZ - UNIFIED GALLERY ENGINE (V3.0 - FACE AI + SYNCED WATERMARK)
+           LINA HERNANDEZ - PORTFOLIO ENGINE (V4.0 - SMART SLIDESHOW)
         ================================================================ */
 
         // 1. GLOBAL STATE
         let allGalleryFiles = [];
         let currentLightboxIndex = 0;
         let counterTimeout;
+        let isAutoplayActive = false;
+        let autoplayTimer;
+        const SLIDE_DURATION = 5000; // 5 Seconds
 
         /**
-         * SMART OPTIMIZER: Handles Face-Centering, Watermarking, and Quality
-         * @param {string} url - Original Cloudinary URL
-         * @param {boolean} isVideo - Flag for video content
-         * @param {boolean} isLightbox - Flag for high-res lightbox view
+         * SMART OPTIMIZER: Chained transformations to prevent watermark expansion
          */
         function getOptimizedUrl(url, isVideo = false, isLightbox = false) {
-            const width = isLightbox ? 1600 : 800;
+            const smartCropIMG = `c_fill,g_face`;
+            const smartCropVID = `c_fill/g_auto:person`;
 
-            // FACE DETECTION & SMART CROP
-            // c_fill: forces the crop to fill the masonry box
-            // g_face: uses AI to center the crop on the subject's face
-            const smartCrop = `c_fill,g_face,w_${width}`;
+            // We use fl_layer_apply to anchor the watermark specifically to the final image size
+            const watermark = `l_lina_logo,o_50,g_center/c_scale,fl_relative,w_0.4/fl_layer_apply`;
 
-            // WATERMARK LOGIC (Double Size: w_800)
-            // l_lina_logo: Your logo asset ID in Cloudinary
-            // o_30: 30% opacity
-            // x_20, y_20: offset from the corner
-            const watermark = 'l_lina_logo,o_50,g_center/c_scale,w_0.4/';
             let transform = "";
             if (isVideo) {
-                // AI Face-centering works for videos too
-                transform = `vc_auto,q_auto,${smartCrop}`;
+                transform = `vc_auto,q_auto,${smartCropVID}/${watermark}`;
             } else {
-                // Slap the watermark and face-centering on images
-                transform = `f_auto,q_auto,${smartCrop},${watermark}`;
+                transform = `f_auto,q_auto,${smartCropIMG}/${watermark}`;
             }
 
             return url.replace('/upload/', `/upload/${transform}/`);
         }
 
         /**
-         * GALLERY LOADER: Builds the Masonry Grid
+         * GALLERY LOADER
          */
         async function loadDynamicGallery() {
             const loader = document.getElementById('gallery-loader');
@@ -142,11 +115,7 @@
                 const response = await fetch('portfolio-gallery.json');
                 const data = await response.json();
 
-                // --- THE CHRONOLOGICAL FIX ---
-                // We sort the array: Newest (highest date) to Oldest (lowest date)
                 allGalleryFiles = (data || []).sort((a, b) => {
-                    // If your JSON has 'date' or 'created_at', we use that. 
-                    // If neither exists, it keeps the current order.
                     const dateA = new Date(a.date || a.created_at || 0);
                     const dateB = new Date(b.date || b.created_at || 0);
                     return dateB - dateA;
@@ -156,23 +125,21 @@
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
 
-                    // MASONRY RHYTHM LOGIC
                     const col = index % 4;
                     let isTall = (index + 1) % 3 === 0;
                     let isWide = (index + 1) % 3 === 0;
-
                     if (isWide && col === 3) { isWide = false; isTall = false; }
                     if (isTall || index === 0) item.classList.add('tall');
                     if (isWide || index === 0) item.classList.add('wide');
 
                     const isVideo = fileObj.type === 'video';
-                    const thumbnailPath = getOptimizedUrl(fileObj.url, isVideo, false); // Small + Watermark
+                    const thumbnailPath = getOptimizedUrl(fileObj.url, isVideo, false);
 
                     if (isVideo) {
                         item.innerHTML = `
-                    <video src="${thumbnailPath}" muted loop playsinline class="gallery-video"></video>
-                    <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
-                `;
+                            <video src="${thumbnailPath}" muted loop playsinline class="gallery-video"></video>
+                            <div class="play-overlay-icon"><i class="fas fa-play"></i></div>
+                        `;
                         const video = item.querySelector('video');
                         item.onmouseenter = () => video.play().catch(() => { });
                         item.onmouseleave = () => { video.pause(); video.currentTime = 0; };
@@ -180,17 +147,15 @@
                         const img = document.createElement('img');
                         img.src = thumbnailPath;
                         img.loading = "lazy";
-                        img.alt = "Lina Hernandez Photography";
+                        img.alt = "Lina Hernandez Portfolio";
                         item.appendChild(img);
                     }
 
-                    // Click to open high-res lightbox
                     item.onclick = () => openLightbox(index);
                     gallery.appendChild(item);
                 });
 
                 if (loader) loader.classList.add('loader-hidden');
-
             } catch (error) {
                 console.error("Gallery Sync Error:", error);
                 if (loader) loader.classList.add('loader-hidden');
@@ -198,7 +163,59 @@
         }
 
         /**
-         * LIGHTBOX SYSTEM: High-Res view with Synced Watermark
+         * SLIDESHOW LOGIC
+         */
+        function toggleAutoplay(event) {
+            if (event) event.stopPropagation();
+            isAutoplayActive = !isAutoplayActive;
+
+            const btn = document.getElementById('slideshow-toggle');
+            const i18n = window.currentI18n || {}; // Safely pull current language strings
+
+            if (isAutoplayActive) {
+                btn.innerText = i18n['pause_slideshow'] || "Pause Slideshow";
+                btn.setAttribute('data-i18n', 'pause_slideshow');
+                btn.classList.add('playing');
+                startAutoplayTimer();
+            } else {
+                stopAutoplay();
+            }
+        }
+
+        function stopAutoplay() {
+            isAutoplayActive = false;
+            clearTimeout(autoplayTimer);
+            const btn = document.getElementById('slideshow-toggle');
+            if (btn) {
+                const i18n = window.currentI18n || {};
+                btn.innerText = i18n['play_slideshow'] || "Play Slideshow";
+                btn.setAttribute('data-i18n', 'play_slideshow');
+                btn.classList.remove('playing');
+            }
+        }
+
+        function startAutoplayTimer() {
+            clearTimeout(autoplayTimer);
+            if (!isAutoplayActive) return;
+
+            const fileObj = allGalleryFiles[currentLightboxIndex];
+
+            if (fileObj.type === 'video') {
+                const video = document.querySelector('#lightbox-content-container video');
+                if (video) {
+                    video.onended = () => {
+                        if (isAutoplayActive) changeLightbox(1, true);
+                    };
+                }
+            } else {
+                autoplayTimer = setTimeout(() => {
+                    if (isAutoplayActive) changeLightbox(1, true);
+                }, SLIDE_DURATION);
+            }
+        }
+
+        /**
+         * LIGHTBOX SYSTEM
          */
         function openLightbox(index) {
             currentLightboxIndex = index;
@@ -208,28 +225,11 @@
 
             const fileObj = allGalleryFiles[currentLightboxIndex];
             const isVideo = fileObj.type === 'video';
-
-            // Use the unified optimizer for the 1600px view
             const lbPath = getOptimizedUrl(fileObj.url, isVideo, true);
 
-            container.innerHTML = '';
-
-            if (isVideo) {
-                const video = document.createElement('video');
-                video.src = lbPath;
-                video.controls = true;
-                video.autoplay = true;
-                video.style.maxWidth = '90%';
-                video.style.maxHeight = '85vh';
-                container.appendChild(video);
-            } else {
-                const img = document.createElement('img');
-                img.src = lbPath;
-                img.className = 'lb-fade-in';
-                img.style.maxWidth = '90%';
-                img.style.maxHeight = '85vh';
-                container.appendChild(img);
-            }
+            container.innerHTML = isVideo ?
+                `<video src="${lbPath}" controls autoplay class="lb-fade-in" style="max-width:90%; max-height:85vh;"></video>` :
+                `<img src="${lbPath}" class="lb-fade-in" style="max-width:90%; max-height:85vh;">`;
 
             if (counter) {
                 counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${allGalleryFiles.length.toString().padStart(2, '0')}`;
@@ -238,9 +238,14 @@
             lb.classList.add('active');
             document.body.style.overflow = 'hidden';
             flashCounter();
+
+            if (isAutoplayActive) startAutoplayTimer();
         }
 
-        function changeLightbox(step) {
+        function changeLightbox(step, isAutomatic = false) {
+            // Kill autoplay if user manually intervenes
+            if (!isAutomatic) stopAutoplay();
+
             currentLightboxIndex += step;
             if (currentLightboxIndex >= allGalleryFiles.length) currentLightboxIndex = 0;
             else if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryFiles.length - 1;
@@ -249,6 +254,7 @@
 
         function closeLightbox(event) {
             if (event) event.stopPropagation();
+            stopAutoplay();
             const lb = document.getElementById('lightbox');
             const container = document.getElementById('lightbox-content-container');
             lb.classList.remove('active');
@@ -264,37 +270,17 @@
             counterTimeout = setTimeout(() => counter.classList.remove('visible'), 1500);
         }
 
-        /**
-         * EASTER EGG: Secret "Chloe" Word
-         */
-        let typedBuffer = "";
-        document.addEventListener('keydown', (e) => {
-            typedBuffer += e.key.toLowerCase();
-            if (typedBuffer.length > 10) typedBuffer = typedBuffer.substring(typedBuffer.length - 10);
-            if (typedBuffer.includes("chloe")) {
-                const ee = document.getElementById('easter-egg-overlay');
-                if (ee) {
-                    ee.classList.add('ee-active');
-                    setTimeout(() => ee.classList.remove('ee-active'), 5000);
-                }
-                typedBuffer = "";
-            }
-        });
-
-        // KEYBOARD NAVIGATION
-        document.addEventListener('keydown', (e) => {
-            const lb = document.getElementById('lightbox');
-            if (!lb || !lb.classList.contains('active')) return;
-            if (e.key === "ArrowRight") changeLightbox(1);
-            if (e.key === "ArrowLeft") changeLightbox(-1);
-            if (e.key === "Escape") closeLightbox();
-        });
-
         // INITIALIZE
         document.addEventListener('DOMContentLoaded', () => {
             loadDynamicGallery();
-            // Set random background for the mobile menu from components.js
-            if (window.setRandomMenuBackground) setRandomMenuBackground();
+            // Keyboard Nav
+            document.addEventListener('keydown', (e) => {
+                const lb = document.getElementById('lightbox');
+                if (!lb || !lb.classList.contains('active')) return;
+                if (e.key === "ArrowRight") changeLightbox(1);
+                if (e.key === "ArrowLeft") changeLightbox(-1);
+                if (e.key === "Escape") closeLightbox();
+            });
         });
     </script>
 </body>

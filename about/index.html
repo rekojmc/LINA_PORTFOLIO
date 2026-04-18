@@ -89,9 +89,8 @@
     </main>
 
     <div id="lightbox" class="lightbox">
-        <div class="lb-like-container" onclick="handleLikeClick(event)">
-            <i id="lb-heart" class="far fa-heart"></i>
-        </div>
+
+        <button id="slideshow-toggle" data-i18n="play_slideshow" onclick="toggleAutoplay(event)">Play Slideshow</button>
 
         <div class="lb-nav-zone left" onclick="changeLightbox(-1)">
             <div class="lb-arrow prev"></div>
@@ -122,6 +121,10 @@
         let userLikes = JSON.parse(localStorage.getItem('lina_about_likes')) || {};
         let baseLikes = 1240;
 
+        let isAutoplayActive = false;
+        let autoplayTimer;
+        const SLIDE_DURATION = 5000; // 5 Seconds
+
         /**
          * SMART OPTIMIZER: Handles Face-Centering, Watermarking, and Quality
          * @param {string} url - Original Cloudinary URL
@@ -131,21 +134,24 @@
         function getOptimizedUrl(url, isVideo = false, isLightbox = false) {
             const width = isLightbox ? 1600 : 800;
 
-            // FACE DETECTION & SMART CROP
-            // c_fill: forces the crop to fill the box
-            // g_face: uses AI to center the crop on the subject's face
-            const smartCrop = `c_fill,g_face,w_${width}`;
+            // AI FACE DETECTION & SMART CROP
+            const smartCropIMG = `c_fill,g_face`;
+            const smartCropVID = `ar_2:1,c_fill,g_auto,h_192`;
 
-            // WATERMARK LOGIC (Standardized at 2x size: w_800)
-            const watermark = 'l_lina_logo,o_50,g_center/c_scale,w_0.4/';
+            // --- THE WATERMARK RATIO FIX ---
+            // On thumbnails (800px), 35% feels right.
+            // On lightbox (1600px), we drop to 20% so it doesn't overwhelm the face.
+            const watermarkScale = isLightbox ? "0.50" : "0.45";
+
+            // fl_layer_apply is the "glue" that ensures the scale applies ONLY to the logo
+            const watermark = `l_lina_logo,o_50,g_center/c_scale,fl_relative,w_0.4/fl_layer_apply`;
 
             let transform = "";
             if (isVideo) {
-                // AI Face-centering works for videos too
-                transform = `vc_auto,q_auto,${smartCrop}`;
+                transform = `vc_auto,q_auto,${watermark}`;
             } else {
-                // Sync watermark and face-centering on images
-                transform = `f_auto,q_auto,${smartCrop},${watermark}`;
+                // We put smartCrop FIRST so the watermark is applied to the final resized image
+                transform = `f_auto,q_auto,${smartCropIMG}/${watermark}`;
             }
 
             return url.replace('/upload/', `/upload/${transform}/`);
@@ -184,11 +190,15 @@
         function refreshLikeUI(photoId) {
             const isLiked = userLikes[photoId];
 
+            // Find the heart in the lightbox
             const lbHeart = document.getElementById('lb-heart');
-            if (lbHeart) lbHeart.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+            if (lbHeart) {
+                lbHeart.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+            }
 
-            const allHearts = document.querySelectorAll('.fa-heart[data-url]');
-            allHearts.forEach(heart => {
+            // Find the heart in the grid
+            const gridHearts = document.querySelectorAll('.fa-heart[data-url]');
+            gridHearts.forEach(heart => {
                 if (heart.getAttribute('data-url') === photoId) {
                     heart.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
                 }
@@ -275,7 +285,62 @@
             }
         }
 
-        // 4. LIGHTBOX LOGIC
+        /* SLIDESHOW LOGIC */
+        function toggleAutoplay(event) {
+            if (event) event.stopPropagation();
+            isAutoplayActive = !isAutoplayActive;
+
+            const btn = document.getElementById('slideshow-toggle');
+            const i18n = window.currentI18n || {}; // Safely pull current language strings
+
+            if (isAutoplayActive) {
+                btn.innerText = i18n['pause_slideshow'] || "Pause Slideshow";
+                btn.setAttribute('data-i18n', 'pause_slideshow');
+                btn.classList.add('playing');
+                startAutoplayTimer();
+            } else {
+                stopAutoplay();
+            }
+        }
+
+        function stopAutoplay() {
+            isAutoplayActive = false;
+            clearTimeout(autoplayTimer);
+            const btn = document.getElementById('slideshow-toggle');
+            if (btn) {
+                const i18n = window.currentI18n || {};
+                btn.innerText = i18n['play_slideshow'] || "Play Slideshow";
+                btn.setAttribute('data-i18n', 'play_slideshow');
+                btn.classList.remove('playing');
+            }
+        }
+
+        function startAutoplayTimer() {
+            clearTimeout(autoplayTimer);
+            if (!isAutoplayActive) return;
+
+            const fileObj = allGalleryFiles[currentLightboxIndex];
+
+            if (fileObj.type === 'video') {
+                const video = document.querySelector('#lightbox-content-container video');
+                if (video) {
+                    video.onended = () => {
+                        if (isAutoplayActive) changeLightbox(1, true);
+                    };
+                }
+            } else {
+                autoplayTimer = setTimeout(() => {
+                    if (isAutoplayActive) changeLightbox(1, true);
+                }, SLIDE_DURATION);
+            }
+        }
+
+        /**
+         * LIGHTBOX SYSTEM
+         */
+        /**
+         * LIGHTBOX SYSTEM: Now with fixed Like Sync
+         */
         function openLightbox(index) {
             currentLightboxIndex = index;
             const lb = document.getElementById('lightbox');
@@ -284,25 +349,40 @@
 
             const fileObj = allGalleryFiles[currentLightboxIndex];
             const isVideo = fileObj.type === 'video';
-
-            // THE FIX: Use getOptimizedUrl for High-Res + Face AI + 2x Watermark
             const lbPath = getOptimizedUrl(fileObj.url, isVideo, true);
 
-            container.innerHTML = isVideo ?
-                `<video src="${lbPath}" controls autoplay style="max-width:90%; max-height:80vh;"></video>` :
-                `<img src="${lbPath}" class="lb-fade-in" style="max-width:90%; max-height:80vh;">`;
+            // Get heart state
+            const isLiked = userLikes[fileObj.url] ? 'fas' : 'far';
+
+            // Inject the wrapper, heart, and media together
+            container.innerHTML = `
+        <div class="lb-media-wrapper">
+            <div class="lb-like-container" onclick="handleLikeClick(event)">
+                <i id="lb-heart" class="${isLiked} fa-heart"></i>
+            </div>
+            
+            ${isVideo ?
+                    `<video src="${lbPath}" controls autoplay class="lb-fade-in"></video>` :
+                    `<img src="${lbPath}" class="lb-fade-in">`
+                }
+        </div>
+    `;
 
             if (counter) {
                 counter.innerText = `${(index + 1).toString().padStart(2, '0')} / ${allGalleryFiles.length.toString().padStart(2, '0')}`;
             }
 
-            refreshLikeUI(fileObj.url);
             lb.classList.add('active');
             document.body.style.overflow = 'hidden';
             flashCounter();
+
+            if (isAutoplayActive) startAutoplayTimer();
         }
 
-        function changeLightbox(step) {
+        function changeLightbox(step, isAutomatic = false) {
+            // Kill autoplay if user manually intervenes
+            if (!isAutomatic) stopAutoplay();
+
             currentLightboxIndex += step;
             if (currentLightboxIndex >= allGalleryFiles.length) currentLightboxIndex = 0;
             else if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryFiles.length - 1;
@@ -311,6 +391,7 @@
 
         function closeLightbox(event) {
             if (event) event.stopPropagation();
+            stopAutoplay();
             const lb = document.getElementById('lightbox');
             const container = document.getElementById('lightbox-content-container');
             lb.classList.remove('active');
@@ -377,7 +458,7 @@
     <div id="easter-egg-overlay" class="ee-hidden">
         <div class="ee-content">
             <img
-                src="https://res.cloudinary.com/linahernandezv/image/upload/Lina_Portfolio/other_unused/colombia_lina.jpg">
+                src="https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,c_fill,g_face/l_lina_logo,o_50,g_center/c_scale,fl_relative,w_0.4/fl_layer_apply/Lina_Portfolio/other_unused/colombia_lina.jpg">
         </div>
     </div>
 </body>

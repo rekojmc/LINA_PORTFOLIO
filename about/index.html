@@ -144,7 +144,7 @@
             const watermarkScale = isLightbox ? "0.50" : "0.45";
 
             // fl_layer_apply is the "glue" that ensures the scale applies ONLY to the logo
-            const watermark = `l_lina_logo,o_50,g_center/c_scale,fl_relative,w_0.4/fl_layer_apply`;
+            const watermark = `l_lina-logo-initial,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_30,y_10`;
 
             let transform = "";
             if (isVideo) {
@@ -458,8 +458,9 @@
     <div id="easter-egg-overlay" class="ee-hidden">
         <div class="ee-content">
             <img
-                src="https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,c_fill,g_face/l_lina_logo,o_50,g_center/c_scale,fl_relative,w_0.4/fl_layer_apply/Lina_Portfolio/other_unused/colombia_lina.jpg">
+                src="https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,c_fill,g_face/l_lina_logo,c_scale,fl_relative,w_0.25/fl_layer_apply,g_north_west,x_20,y_20/l_lina_logo,c_scale,fl_relative,w_0.25/fl_layer_apply,g_north_east,x_20,y_20/l_lina_logo,c_scale,fl_relative,w_0.25/fl_layer_apply,g_south_west,x_20,y_20/l_lina_logo,c_scale,fl_relative,w_0.25/fl_layer_apply,g_south_east,x_20,y_20/Lina_Portfolio/other_unused/colombia_lina.jpg">
         </div>
+
     </div>
 </body>
 

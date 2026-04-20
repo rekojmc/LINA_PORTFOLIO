@@ -92,7 +92,8 @@
             const smartCropVID = `c_fill/g_auto:person`;
 
             // We use fl_layer_apply to anchor the watermark specifically to the final image size
-            const watermark = `l_lina_logo,o_50,g_center/c_scale,fl_relative,w_0.4/fl_layer_apply`;
+            //const watermark = `l_lina-logo-initial,c_scale,fl_relative,w_0.1/fl_layer_apply,g_north_west,x_0,y_0/l_lina-logo-initial,c_scale,fl_relative,w_0.1/fl_layer_apply,g_north_east,x_0,y_0/l_lina-logo-initial,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_west,x_0,y_0/l_lina-logo-initial,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_0,y_0`;
+            const watermark = `l_lina-logo-initial,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_30,y_10`;
 
             let transform = "";
             if (isVideo) {

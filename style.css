@@ -698,7 +698,7 @@ p {
     background-color: var(--nude-dark);
     /* Fallback color */
     background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-        url('https://res.cloudinary.com/linahernandezv/image/upload/Lina_Portfolio/main/contact-hero.jpg');
+        url('https://res.cloudinary.com/linahernandezv/image/upload/l_lhv-2,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_50,y_50/Lina_Portfolio/main/contact-hero.jpg');
 
     /* ZOOM & POSITION LOGIC */
     background-size: 100%;
@@ -945,7 +945,7 @@ nav.glass-nav.nav-hidden {
     background-color: var(--nude-dark);
     /* Fallback color */
     background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
-        url('https://res.cloudinary.com/linahernandezv/image/upload//Lina_Portfolio/main/home-hero.jpg') center/cover no-repeat;
+        url('https://res.cloudinary.com/linahernandezv/image/upload/l_lhv-2,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_50,y_50/Lina_Portfolio/main/home-hero.jpg') center/cover no-repeat;
     /* ZOOM & POSITION LOGIC */
     background-position: center 10%;
     /* Starts the "view" 10% from the top of the photo */
@@ -1993,7 +1993,7 @@ nav.glass-nav.nav-hidden {
     background-color: var(--nude-dark);
     /* Fallback color */
     background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-        url('https://res.cloudinary.com/linahernandezv/image/upload/v1775352062/Lina_Portfolio/contact/thankyou.jpg');
+        url('https://res.cloudinary.com/linahernandezv/image/upload/l_lhv-2,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_50,y_50/v1775352062/Lina_Portfolio/contact/thankyou.jpg');
 
     background-size: cover;
     /* Image fills the container */
@@ -2357,7 +2357,7 @@ nav.glass-nav.nav-hidden {
 
         /* The Hero Background Image */
         background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)),
-            url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto/Lina_Portfolio/main/home-hero-mobile.jpeg');
+            url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto/l_lhv-2,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_50,y_50/Lina_Portfolio/main/home-hero-mobile.jpeg');
         background-size: cover;
         background-position: center;
     }
@@ -2807,7 +2807,7 @@ nav.glass-nav.nav-hidden {
     margin-left: auto;
 
     /* THE BACKGROUND: AI Face Detection URL */
-    background: url('https://res.cloudinary.com/linahernandezv/image/upload/Lina_Portfolio/main/about-hero.jpg');
+    background: url('https://res.cloudinary.com/linahernandezv/image/upload/l_lhv-2,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_50,y_50/Lina_Portfolio/main/about-hero.jpg');
     background-position: center;
     overflow: scroll;
 
@@ -2938,7 +2938,7 @@ nav.glass-nav.nav-hidden {
 .about-combined-design .about-image-side {
     flex: 1;
     height: 100%;
-    background-image: url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,w_1200/Lina_Portfolio/main/about-hero.jpg');
+    background-image: url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,w_1200/l_lhv-2,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_50,y_50/Lina_Portfolio/main/about-hero.jpg');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -3009,7 +3009,7 @@ nav.glass-nav.nav-hidden {
     flex: 1;
     height: 100%;
     /* CLOUDINARY AI: c_fill (fill box), g_face (AI focus on face) */
-    background-image: url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,c_fill,g_north,w_auto/Lina_Portfolio/main/about-hero.jpg');
+    background-image: url('https://res.cloudinary.com/linahernandezv/image/upload/f_auto,q_auto,c_fill,g_north,w_auto/l_lhv-2,c_scale,fl_relative,w_0.1/fl_layer_apply,g_south_east,x_50,y_50/Lina_Portfolio/main/about-hero.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

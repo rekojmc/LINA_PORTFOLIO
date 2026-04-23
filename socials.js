@@ -4,7 +4,7 @@ const LINA_SOCIALS = {
     facebook: "https://www.facebook.com/people/Lina-Hern%C3%A1ndez/61555678802711/",
     email: "mailto:contact@linahernandez.com", // Optional: Centralize email too
     linkedin: "https://linkedin.com/",
-    youtube: "https://www.youtube.com"
+    youtube: "https://www.youtube.com/@LinaHernandezz"
 };
 
 // Turn the logic into a named function

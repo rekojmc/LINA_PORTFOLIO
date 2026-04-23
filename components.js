@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <a href="#" data-social="instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="#" data-social="tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                     <a href="#" data-social="facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" data-social="youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
                 <nav class="footer-nav">
                     <a href="${basePath}portfolio/" data-i18n="nav_portfolio">Portfolio</a>
